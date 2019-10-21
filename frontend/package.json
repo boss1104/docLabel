@@ -1,0 +1,57 @@
+{
+  "name": "doclabel",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:8000",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "dependencies": {
+    "react": "16.10.2",
+    "react-dom": "16.10.2",
+    "react-scripts": "3.2.0"
+  },
+  "devDependencies": {
+    "@apollo/react-common": "3.1.2",
+    "@apollo/react-components": "3.1.2",
+    "@apollo/react-hooks": "3.1.2",
+    "@apollo/react-testing": "3.1.2",
+    "apollo-boost": "0.4.4",
+    "apollo-cache-persist": "0.1.1",
+    "apollo-link-context": "1.0.19",
+    "apollo-link-rest": "0.7.3",
+    "apollo-link-schema": "1.2.4",
+    "apollo-link-state": "0.4.2",
+    "apollo-upload-client": "11.0.0",
+    "axios": "0.19.0",
+    "graphql": "14.5.4",
+    "graphql-tag": "2.10.1",
+    "graphql-tools": "4.0.5",
+    "localforage": "1.7.3",
+    "node-sass": "4.12.0",
+    "raven-js": "3.27.2",
+    "react-alert": "5.5.0",
+    "react-alert-template-basic": "1.0.0",
+    "react-cookies": "0.1.1",
+    "react-document-title": "2.0.3",
+    "react-router-dom": "5.1.2",
+    "react-transition-group": "4.3.0"
+  },
+  "engines": {
+    "node": ">=9.11.1",
+    "npm": ">=5.6.0",
+    "yarn": ">=1.6.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
