@@ -144,8 +144,8 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
     str(APPS_DIR.path("static")),
-    os.path.join(str(REACT_APP_DIR.path("public"))),
-    os.path.join(str(REACT_APP_DIR.path("build")), 'static'),
+    str(REACT_APP_DIR.path("dist")),
+    # os.path.join(str(REACT_APP_DIR.path("dist")), 'static'),
 ]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
@@ -170,8 +170,7 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         "DIRS": [
             str(APPS_DIR.path("templates")),
-            str(REACT_APP_DIR.path("public")),
-            str(REACT_APP_DIR.path("build")),
+            str(REACT_APP_DIR.path("dist")),
         ],
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
