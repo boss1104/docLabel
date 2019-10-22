@@ -12,7 +12,7 @@ from rest_framework import routers
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from doclabel.user_profile.views import UserViewSet
+from doclabel.users.views import UserViewSet
 
 
 class APIRoot(routers.APIRootView):

@@ -82,7 +82,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "doclabel.user_profile.apps.UserProfileConfig"
+    "doclabel.users.apps.UsersConfig"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -101,7 +101,7 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 # LOGIN_REDIRECT_URL = "users:redirect"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
@@ -292,12 +292,17 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "doclabel.user_profile.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = "doclabel.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "doclabel.user_profile.adapters.SocialAccountAdapter"
-
+SOCIALACCOUNT_ADAPTER = "doclabel.users.adapters.SocialAccountAdapter"
+# django-rest_auth
+# ------------------------------------------------------------------------------
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "user_profile.serializers.UserSerializer"
+    "USER_DETAILS_SERIALIZER": "doclabel.users.serializers.CustomUserDetailsSerializer"
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "doclabel.users.serializers.CustomRegisterSerializer"
 }
 REST_SESSION_LOGIN = False
 

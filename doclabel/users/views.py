@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from doclabel.user_profile.serializers import UserSerializer
+from doclabel.users.serializers import CustomUserDetailsSerializer
 from rest_framework import viewsets
 
 User = get_user_model()
@@ -11,4 +11,4 @@ class UserViewSet(viewsets.ModelViewSet):
     """
 
     queryset = User.objects.all().order_by("-date_joined")
-    serializer_class = UserSerializer
+    serializer_class = CustomUserDetailsSerializer
