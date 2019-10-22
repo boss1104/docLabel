@@ -70,12 +70,19 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "rest_framework", "corsheaders", "django_celery_beat",
+    # "allauth.socialaccount.providers.facebook",
+    # "allauth.socialaccount.providers.twitter",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "rest_auth",
+    "rest_auth.registration",
+    "corsheaders",
+    "django_celery_beat",
     "graphene_django",
 ]
 
 LOCAL_APPS = [
-    "doclabel.users.apps.UsersConfig",
+    "doclabel.user_profile.apps.UserProfileConfig"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -94,11 +101,11 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-AUTH_USER_MODEL = "users.User"
+# AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+# LOGIN_REDIRECT_URL = "users:redirect"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = "account_login"
+# LOGIN_URL = "account_login"
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
@@ -168,10 +175,7 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
-        "DIRS": [
-            str(APPS_DIR.path("templates")),
-            str(REACT_APP_DIR.path("dist")),
-        ],
+        "DIRS": [str(APPS_DIR.path("templates")), str(REACT_APP_DIR.path("dist"))],
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
@@ -288,9 +292,16 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "doclabel.users.adapters.AccountAdapter"
+# ACCOUNT_ADAPTER = "doclabel.users.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = "doclabel.user_profile.adapter.MyAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "doclabel.users.adapters.SocialAccountAdapter"
+
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "user_profile.serializers.UserSerializer"
+}
+REST_SESSION_LOGIN = False
+
 
 # django-compressor
 # ------------------------------------------------------------------------------
@@ -306,9 +317,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # ------------------------------------------------------------------------------
 # http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
@@ -331,11 +340,9 @@ REST_FRAMEWORK = {
 # See: http://docs.graphene-python.org/projects/django/en/latest/tutorial-plain/#update-settings
 GRAPHENE = {
     "SCHEMA": "doclabel.graphql.schema.schema",
-    'SCHEMA_OUTPUT': 'frontend/src/apollo/schema.json',
-    'SCHEMA_INDENT': 2,
-    "MIDDLEWARE": [
-        "graphene_django.debug.DjangoDebugMiddleware",
-    ]
+    "SCHEMA_OUTPUT": "frontend/src/apollo/schema.json",
+    "SCHEMA_INDENT": 2,
+    "MIDDLEWARE": ["graphene_django.debug.DjangoDebugMiddleware"],
 }
 # NOTE: As Graphene schema gets larger, it needs more room to run the recursive graphql queries
 # See: https://github.com/graphql-python/graphene/issues/663

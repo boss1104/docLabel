@@ -8,7 +8,7 @@ redis==3.3.8  # https://github.com/antirez/redis
 celery==4.3.0  # pyup: < 5.0  # https://github.com/celery/celery
 django-celery-beat==1.5.0  # https://github.com/celery/django-celery-beat
 flower==0.9.3  # https://github.com/mher/flower
-
+ptvsd == 4.3.2
 # Django
 # ------------------------------------------------------------------------------
 django==2.2.6  # pyup: < 3.0  # https://www.djangoproject.com/
@@ -28,7 +28,7 @@ django-filter==2.2.0  # https://github.com/carltongibson/django-filter
 # Django REST Framework
 djangorestframework==3.10.3  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
-
+django-rest-auth==0.9.5 # https://github.com/Tivix/django-rest-auth
 
 # Django/ReactJS integration
 # ------------------------------------------------------------------------------
