@@ -292,10 +292,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-# ACCOUNT_ADAPTER = "doclabel.users.adapters.AccountAdapter"
-ACCOUNT_ADAPTER = "doclabel.user_profile.adapter.MyAccountAdapter"
+ACCOUNT_ADAPTER = "doclabel.user_profile.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "doclabel.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "doclabel.user_profile.adapters.SocialAccountAdapter"
 
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "user_profile.serializers.UserSerializer"

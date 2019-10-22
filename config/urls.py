@@ -51,7 +51,6 @@ router = Router(trailing_slash=False)
 router.register(r"user", UserViewSet)
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     re_path(
         r"^app/(?P<route>.*)$",
         TemplateView.as_view(template_name="index.html"),
@@ -59,18 +58,14 @@ urlpatterns = [
     ),
     # APIs
     path("api/", include(router.urls)),
-    path("api/", include("rest_auth.urls")),
-    path("api/registration/", include("rest_auth.registration.urls")),
-    path("api-docs/", include_docs_urls(title="doclabel REST API", public=False)),
+    path("api-docs/", include_docs_urls(title="Doclabel REST API", public=False)),
     path("api-auth/", include("rest_framework.urls")),
     path("accounts/", include("allauth.urls")),
+    path("api/", include("rest_auth.urls")),
+    path("api/registration/", include("rest_auth.registration.urls")),
     path(
         "graphql/",
         csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True, pretty=True)),
-    ),
-    # User management from django-all-auth
-    path(
-        "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
