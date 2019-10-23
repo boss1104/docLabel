@@ -1,6 +1,6 @@
-export const APP_NAME = 'doclab';
-export const USER_NAME_MAX_LENGTH = 35;
-export const USER_FULLNAME_MAX_LENGTH = 35;
+export const APP_NAME = 'doclabel';
+export const USER_FULLNAME_MAX_LENGTH = 255;
+export const USER_NAME_MAX_LENGTH = 255;
 export const NOT_VALID_CHARS = '$#&\\/| ';
 
 export default {

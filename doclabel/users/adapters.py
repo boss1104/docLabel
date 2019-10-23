@@ -12,7 +12,9 @@ class AccountAdapter(DefaultAccountAdapter):
 
     def get_email_confirmation_url(self, request, emailconfirmation):
         current_site = get_current_site(request)
-        return "{}/user/confirm-email/{}/".format(current_site, emailconfirmation.key)
+        return "{}/user/register-confirm/{}/".format(
+            current_site, emailconfirmation.key
+        )
 
     def save_user(self, request, user, form, commit=False):
         user = super().save_user(request, user, form, commit)

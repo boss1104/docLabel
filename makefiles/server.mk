@@ -2,7 +2,7 @@
 # ¯¯¯¯¯¯¯¯¯¯¯
 
 server.start: ## Start server in its docker container
-	docker-compose -f local.yml up
+	docker-compose -f local.yml up django
 
 server.stop: ## Start server in its docker container
 	docker-compose -f local.yml stop

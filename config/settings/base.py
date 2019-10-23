@@ -3,7 +3,8 @@ Base settings to build other settings files upon.
 """
 
 import environ
-import os
+
+# import os
 
 ROOT_DIR = (
     environ.Path(__file__) - 3
@@ -315,7 +316,12 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 # django-cors-headers
 # ------------------------------------------------------------------------------
 # https://github.com/ottoyiu/django-cors-headers#cors_origin_allow_all
-CORS_ORIGIN_ALLOW_ALL = True
+# Change CORS settings as needed
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = ()
+
+CORS_ORIGIN_REGEX_WHITELIST = (r"^(https?://)?localhost", r"^(https?://)?127.")
 
 # DJANGO REST FRAMEWORK
 # ------------------------------------------------------------------------------
@@ -323,7 +329,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": (

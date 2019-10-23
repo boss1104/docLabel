@@ -1,17 +1,4 @@
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  Popover,
-  Progress,
-  Row,
-  Select,
-  message,
-  Checkbox,
-  DatePicker,
-  Modal,
-} from 'antd';
+import { Button, Form, Input, Popover, Progress, message, DatePicker, Modal } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component } from 'react';
 import Link from 'umi/link';
@@ -19,11 +6,10 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
 import styles from './style.less';
-import { USER_FULLNAME_MAX_LENGTH, USER_NAME_MAX_LENGTH, NOT_VALID_CHARS } from './locales/en-US';
+import { USER_FULLNAME_MAX_LENGTH, USER_NAME_MAX_LENGTH } from './locales/en-US';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const InputGroup = Input.Group;
+
 const passwordStatusMap = {
   ok: (
     <div className={styles.success}>
@@ -56,7 +42,6 @@ class Register extends Component {
     confirmBirth: true,
     birth: null,
     ageHelp: '',
-    count: 0,
     confirmDirty: false,
     visible: false,
     help: '',
@@ -65,21 +50,20 @@ class Register extends Component {
   componentDidMount() {
     const { form } = this.props;
     form.setFieldsValue({
-      fullname: 'lovecopob',
-      name: 'account001',
-      email_addr: 'lovecopob@vxmail.top',
-      password: 'B2123ilu',
-      confirm: 'B2123ilu',
-      consent: true,
+      full_name: 'lovecopob',
+      username: 'account001',
+      email: 'lovecopob@vxmail.top',
+      password1: 'secret@123',
+      password2: 'secret@123',
     });
   }
 
   componentDidUpdate() {
     const { userRegister, form } = this.props;
-    const account = form.getFieldValue('email_addr');
+    const account = form.getFieldValue('email');
 
-    if (userRegister.status === 'success') {
-      message.success('Registration success!');
+    if (userRegister.status) {
+      message.success(userRegister.detail);
       router.push({
         pathname: '/user/register-result',
         state: {
@@ -119,7 +103,7 @@ class Register extends Component {
 
   getPasswordStatus = () => {
     const { form } = this.props;
-    const value = form.getFieldValue('password');
+    const value = form.getFieldValue('password1');
 
     if (value && value.length > 9) {
       return 'ok';
@@ -151,8 +135,6 @@ class Register extends Component {
   };
 
   checkFullname = (rule, value, callback) => {
-    const { form } = this.props;
-
     if (value && (value.length > USER_FULLNAME_MAX_LENGTH || value.length < 3)) {
       callback(
         formatMessage({
@@ -165,7 +147,6 @@ class Register extends Component {
   };
 
   checkUsername = (rule, value, callback) => {
-    const { form } = this.props;
     if (value && (value.length > USER_NAME_MAX_LENGTH || value.length < 3)) {
       callback(
         formatMessage({
@@ -186,7 +167,7 @@ class Register extends Component {
   checkConfirm = (rule, value, callback) => {
     const { form } = this.props;
 
-    if (value && value !== form.getFieldValue('password')) {
+    if (value && value !== form.getFieldValue('password1')) {
       callback(
         formatMessage({
           id: 'user-register.password.twice',
@@ -225,7 +206,7 @@ class Register extends Component {
         const { form } = this.props;
 
         if (value && confirmDirty) {
-          form.validateFields(['confirm'], {
+          form.validateFields(['password2'], {
             force: true,
           });
         }
@@ -235,15 +216,9 @@ class Register extends Component {
     }
   };
 
-  changePrefix = value => {
-    this.setState({
-      prefix: value,
-    });
-  };
-
   renderPasswordProgress = () => {
     const { form } = this.props;
-    const value = form.getFieldValue('password');
+    const value = form.getFieldValue('password1');
     const passwordStatus = this.getPasswordStatus();
     return value && value.length ? (
       <div className={styles[`progress-${passwordStatus}`]}>
@@ -259,10 +234,10 @@ class Register extends Component {
   };
 
   render() {
-    const { form, submitting, dispatch, userRegister } = this.props;
+    const { form, submitting, userRegister } = this.props;
     const { getFieldDecorator } = form;
-    const { errors } = userRegister;
-    const { count, prefix, help, visible, confirmBirth, ageHelp } = this.state;
+    const { status, data } = userRegister;
+    const { help, visible, confirmBirth, ageHelp } = this.state;
     return (
       <div className={styles.main}>
         <h2>
@@ -272,7 +247,7 @@ class Register extends Component {
           {confirmBirth ? (
             <Form onSubmit={this.handleSubmit}>
               <FormItem>
-                {getFieldDecorator('fullname', {
+                {getFieldDecorator('full_name', {
                   rules: [
                     {
                       required: true,
@@ -294,13 +269,13 @@ class Register extends Component {
                 )}
               </FormItem>
               <FormItem
-                {...(errors &&
-                  errors.name && {
-                    help: errors.name[0],
+                {...(!status &&
+                  data.username && {
+                    help: data.username[0],
                     validateStatus: 'error',
                   })}
               >
-                {getFieldDecorator('name', {
+                {getFieldDecorator('username', {
                   rules: [
                     {
                       required: true,
@@ -322,13 +297,13 @@ class Register extends Component {
                 )}
               </FormItem>
               <FormItem
-                {...(errors &&
-                  errors.email_addr && {
-                    help: errors.email_addr[0],
+                {...(!status &&
+                  data.email && {
+                    help: data.email[0],
                     validateStatus: 'error',
                   })}
               >
-                {getFieldDecorator('email_addr', {
+                {getFieldDecorator('email', {
                   rules: [
                     {
                       required: true,
@@ -384,7 +359,7 @@ class Register extends Component {
                   placement="right"
                   visible={visible}
                 >
-                  {getFieldDecorator('password', {
+                  {getFieldDecorator('password1', {
                     rules: [
                       {
                         validator: this.checkPassword,
@@ -402,7 +377,7 @@ class Register extends Component {
                 </Popover>
               </FormItem>
               <FormItem>
-                {getFieldDecorator('confirm', {
+                {getFieldDecorator('password2', {
                   rules: [
                     {
                       required: true,
@@ -422,16 +397,6 @@ class Register extends Component {
                       id: 'user-register.confirm-password.placeholder',
                     })}
                   />,
-                )}
-              </FormItem>
-              <FormItem>
-                {getFieldDecorator('consent', {
-                  valuePropName: 'checked',
-                  initialValue: true,
-                })(
-                  <Checkbox>
-                    <FormattedMessage id="user-register.consent.content" />
-                  </Checkbox>,
                 )}
               </FormItem>
               <FormItem>

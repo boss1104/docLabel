@@ -32,15 +32,17 @@ const codeMessage = {
 
 const errorHandler = error => {
   const { response = {}, data } = error;
+  console.log('response', response);
+  console.log('data', data);
 
   if (response && response.status) {
-    // const errorText = codeMessage[response.status] || response.statusText;
+    const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-    message.error('Please try again.');
-    // notification.error({
-    //   message: `Request error ${status}: ${url}`,
-    //   description: errorText,
-    // });
+    // message.error('Please try again.');
+    notification.error({
+      message: `Request error ${status}: ${url}`,
+      description: errorText,
+    });
 
     if (status === 401) {
       notification.error({
@@ -55,17 +57,13 @@ const errorHandler = error => {
       });
 
       window.location.reload();
-
-      return data;
     }
     // environment should not be used
     if (status === 403) {
       router.push('/exception/403');
-      return data;
     }
     if (status <= 504 && status >= 500) {
       router.push('/exception/500');
-      return data;
     }
     if (status >= 404 && status < 422) {
       router.push('/exception/404');
@@ -75,9 +73,11 @@ const errorHandler = error => {
       message: 'Network anomaly',
       description: 'Your network is abnormal and cannot connect to the server',
     });
-    return data;
   }
-  return data;
+  return {
+    statusCode: response.status,
+    ...data,
+  };
 };
 /**
  * Default parameters when configuring request

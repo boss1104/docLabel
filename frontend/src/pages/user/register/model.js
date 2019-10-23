@@ -4,21 +4,27 @@ const Model = {
   namespace: 'userRegister',
   state: {
     status: undefined,
-    errors: null,
+    data: {},
   },
   effects: {
     *submit({ payload }, { call, put }) {
       const data = yield call(register, payload);
-      console.log('data', data);
+      const { statusCode } = data;
+      if (statusCode) {
+        delete data.statusCode;
+      }
       yield put({
         type: 'registerHandle',
-        payload: data,
+        payload: {
+          status: !statusCode,
+          data,
+        },
       });
     },
   },
   reducers: {
     registerHandle(state, { payload }) {
-      return { ...state, status: payload.status, errors: payload.errors };
+      return { ...state, status: payload.status, data: payload.data };
     },
   },
 };

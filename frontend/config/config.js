@@ -124,11 +124,10 @@ export default {
     },
   },
   manifest: {
-    basePath: '/',
+    basePath: '/app/',
   },
   base: '/app/',
   publicPath: '/static/',
-  exportStatic: {},
   chainWebpack: webpackPlugin,
   proxy: {
     '/api': {
