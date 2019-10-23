@@ -4,6 +4,7 @@ import { Redirect } from 'umi';
 import { stringify } from 'querystring';
 import PageLoading from '@/components/PageLoading';
 import { getAuthority } from '@/utils/authority';
+
 @connect(({ user, loading }) => ({
   currentUser: user.currentUser,
   loading: loading.models.user,
@@ -30,13 +31,10 @@ class SecurityLayout extends React.Component {
     const { isReady } = this.state;
     const { children, loading, currentUser } = this.props;
     // You can replace it to your authentication rule (such as check token exists)
-
-    const isLogin = getAuthority() !== 'undefined';
-    console.log('isLogin', isLogin);
+    const isLogin = getAuthority() !== 'undefined' && getAuthority() !== null;
     const queryString = stringify({
       redirect: window.location.href,
     });
-
     if ((!isLogin && loading) || !isReady) {
       return <PageLoading />;
     }

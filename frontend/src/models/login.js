@@ -3,8 +3,8 @@ import { stringify } from 'querystring';
 import { accountLogin, accountLogout } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
-import { reloadAuthorized } from '@/utils/Authorized';
-import { reloadAuthorizationInterceptors } from '@/utils/request';
+// import { reloadAuthorized } from '@/utils/Authorized';
+// import { reloadAuthorizationInterceptors } from '@/utils/request';
 
 const Model = {
   namespace: 'login',
@@ -13,18 +13,19 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(accountLogin, payload);
-      console.log(response);
-
+      console.log(payload);
+      const res = yield call(accountLogin, payload);
+      console.log(res);
+      const { statusCode, key } = res;
       yield put({
         type: 'changeLoginStatus',
-        payload: { ...response },
+        payload: { status: statusCode ? 'error' : 'success', token: key },
       });
-
-      // Login successfully
-      if (response.status === 'success') {
-        reloadAuthorized();
-        reloadAuthorizationInterceptors();
+      if (!statusCode) {
+        console.log('!statusCode', !statusCode);
+        // Login successfully
+        // reloadAuthorized();
+        // reloadAuthorizationInterceptors();
         // Stored token
         const { remember } = payload;
         if (remember) {
@@ -32,14 +33,14 @@ const Model = {
           // localStorage.setItem('access_token', response.access_token);
           // localStorage.setItem('refresh_token', reposonse.refresh_token);
         }
-        // Redirect
+        // Redirect;
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
           if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
+            redirect = redirect.substr(urlParams.origin.length + 4);
             if (redirect.match(/^\/.*#/)) {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
             }
@@ -56,7 +57,6 @@ const Model = {
       const { redirect } = getPageQuery(); // redirect
       const response = yield call(accountLogout);
       console.log(response);
-      // changeLoginStatus
       yield put({
         type: 'changeLoginStatus',
         payload: {
@@ -64,7 +64,7 @@ const Model = {
           currentAuthority: 'guest',
         },
       });
-      reloadAuthorized();
+      // reloadAuthorized();
       if (window.location.pathname !== '/user/login' && !redirect) {
         yield put(
           routerRedux.replace({
@@ -79,7 +79,7 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.access_token);
+      setAuthority(payload.token);
       return { ...state, status: payload.status };
     },
   },

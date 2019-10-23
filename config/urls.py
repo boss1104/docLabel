@@ -48,7 +48,7 @@ class Router(routers.DefaultRouter):
 
 
 router = Router(trailing_slash=False)
-router.register(r"user", UserViewSet)
+router.register(r"users", UserViewSet)
 
 urlpatterns = [
     re_path(

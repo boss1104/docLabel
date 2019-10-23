@@ -32,8 +32,8 @@ const codeMessage = {
 
 const errorHandler = error => {
   const { response = {}, data } = error;
-  console.log('response', response);
-  console.log('data', data);
+  // console.log('response', response);
+  // console.log('data', data);
 
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -44,30 +44,30 @@ const errorHandler = error => {
       description: errorText,
     });
 
-    if (status === 401) {
-      notification.error({
-        message: 'Not logged in or the login has expired, please log in again.',
-      });
-      // @HACK
-      /* eslint-disable no-underscore-dangle */
-      // localStorage.removeItem("antd-pro-authority");
-      // setAuthority("")
-      window.g_app._store.dispatch({
-        type: 'login/logout',
-      });
+    // if (status === 401) {
+    //   notification.error({
+    //     message: 'Not logged in or the login has expired, please log in again.',
+    //   });
+    //   // @HACK
+    //   /* eslint-disable no-underscore-dangle */
+    //   // localStorage.removeItem("antd-pro-authority");
+    //   // setAuthority("")
+    //   window.g_app._store.dispatch({
+    //     type: 'login/logout',
+    //   });
 
-      window.location.reload();
-    }
-    // environment should not be used
-    if (status === 403) {
-      router.push('/exception/403');
-    }
-    if (status <= 504 && status >= 500) {
-      router.push('/exception/500');
-    }
-    if (status >= 404 && status < 422) {
-      router.push('/exception/404');
-    }
+    //   window.location.reload();
+    // }
+    // // environment should not be used
+    // if (status === 403) {
+    //   router.push('/exception/403');
+    // }
+    // if (status <= 504 && status >= 500) {
+    //   router.push('/exception/500');
+    // }
+    // if (status >= 404 && status < 422) {
+    //   router.push('/exception/404');
+    // }
   } else if (!response) {
     notification.error({
       message: 'Network anomaly',
@@ -88,22 +88,44 @@ const request = extend({
   // Default error handling
   credentials: 'include', // Whether the default request is taken cookie
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('antd-pro-authority')}`,
+    Authorization: `Token ${localStorage.getItem('antd-pro-authority')}`,
   },
 });
 
-const reloadAuthorizationInterceptors = () => {
-  request.interceptors.request.use((url, options) => ({
+request.interceptors.request.use((url, options) => {
+  const token = localStorage.getItem('antd-pro-authority');
+  console.log('token', token);
+  const { headers } = options;
+  let newHeader;
+  if (token === 'undefined' || token === null) {
+    delete headers.Authorization;
+  } else {
+    newHeader = {
+      ...headers,
+      Authorization: `Token ${token}`,
+    };
+  }
+
+  return {
     options: {
       ...options,
-      headers: {
-        ...options.headers,
-        Authorization: `Bearer ${localStorage.getItem('antd-pro-authority')}`,
-      },
+      headers: { ...newHeader },
     },
-  }));
-};
+  };
+});
 
-export { reloadAuthorizationInterceptors };
+// const reloadAuthorizationInterceptors = () => {
+//   request.interceptors.request.use((url, options) => ({
+//     options: {
+//       ...options,
+//       headers: {
+//         ...options.headers,
+//         Authorization: `Bearer ${localStorage.getItem('antd-pro-authority')}`,
+//       },
+//     },
+//   }));
+// };
+
+// export { reloadAuthorizationInterceptors };
 
 export default request;

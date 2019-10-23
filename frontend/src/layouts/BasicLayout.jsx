@@ -56,9 +56,9 @@ const BasicLayout = props => {
 
   useEffect(() => {
     if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
+      // dispatch({
+      //   type: 'user/fetchCurrent',
+      // });
       dispatch({
         type: 'settings/getSetting',
       });

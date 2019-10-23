@@ -1,5 +1,4 @@
 import { queryCurrent, query as queryUsers } from '@/services/user';
-import { getUserId } from '@/utils/authority';
 
 const UserModel = {
   namespace: 'user',
@@ -16,12 +15,8 @@ const UserModel = {
     },
 
     *fetchCurrent(_, { call, put }) {
-      const userId = getUserId();
-      console.log('userId', userId);
-      let response = {};
-      if (userId) {
-        response = yield call(queryCurrent, userId);
-      }
+      const response = yield call(queryCurrent);
+      console.log('fetchCurrent', response);
       yield put({
         type: 'saveCurrentUser',
         payload: response,

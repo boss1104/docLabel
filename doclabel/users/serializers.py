@@ -5,10 +5,10 @@ from rest_auth.registration.serializers import RegisterSerializer
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
 
-    full_name = serializers.CharField(source="users.full_name", required=False)
+    full_name = serializers.CharField(required=True)
 
     class Meta(UserDetailsSerializer.Meta):
-        fields = UserDetailsSerializer.Meta.fields + ("full_name",)
+        fields = ("url", "id", "username", "email", "full_name")
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop("userprofile", {})

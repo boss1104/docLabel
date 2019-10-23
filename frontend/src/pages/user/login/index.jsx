@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Icon, Button } from 'antd';
+import { Alert, Checkbox, Button } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component } from 'react';
 import Link from 'umi/link';
@@ -6,7 +6,7 @@ import { connect } from 'dva';
 import LoginComponents from './components/Login';
 import styles from './style.less';
 
-const { Email, Password, Submit } = LoginComponents;
+const { Username, Password, Submit } = LoginComponents;
 
 @connect(({ login, loading }) => ({
   userLogin: login,
@@ -29,8 +29,7 @@ class Login extends Component {
     const { autoLogin } = this.state;
     if (!err) {
       const { dispatch } = this.props;
-      const payload = { ...values, remember: autoLogin };
-      // console.log('payload', payload);
+      const payload = { ...values };
       dispatch({
         type: 'login/login',
         payload,
@@ -51,19 +50,18 @@ class Login extends Component {
 
   render() {
     const { userLogin, submitting } = this.props;
-    const { status, type: loginType } = userLogin;
+    const { status } = userLogin;
     const { type, autoLogin } = this.state;
     return (
       <div className={styles.main}>
         <LoginComponents
           defaultActiveKey={type}
-          onTabChange={this.onTabChange}
           onSubmit={this.handleSubmit}
           onCreate={form => {
             this.loginForm = form;
             form.setFieldsValue({
-              email: 'sondh0127@gmail.com',
-              password: 'B2123ilu',
+              username: 'account001',
+              password: 'secret@123',
             });
           }}
         >
@@ -79,25 +77,34 @@ class Login extends Component {
             >
               Logout
             </Button>
+            <Button
+              onClick={() => {
+                const { dispatch } = this.props;
+                dispatch({
+                  type: 'user/fetchCurrent',
+                });
+              }}
+            >
+              Me
+            </Button>
           </h2>
           {status === 'error' &&
-            loginType === 'account' &&
             !submitting &&
             this.renderMessage(
               formatMessage({
                 id: 'user-login.login.message-invalid-credentials',
               }),
             )}
-          <Email
-            name="email"
+          <Username
+            name="username"
             placeholder={formatMessage({
-              id: 'user-login.login.email',
+              id: 'user-login.login.username',
             })}
             rules={[
               {
                 required: true,
                 message: formatMessage({
-                  id: 'user-login.email.required',
+                  id: 'user-login.username.required',
                 }),
               },
             ]}

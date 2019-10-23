@@ -3,17 +3,17 @@ import React from 'react';
 import styles from './index.less';
 
 export default {
-  Email: {
+  Username: {
     props: {
       size: 'large',
-      id: 'email',
+      id: 'username',
       prefix: <Icon type="user" className={styles.prefixIcon} />,
-      placeholder: '',
+      placeholder: 'username',
     },
     rules: [
       {
         required: true,
-        message: 'Please enter your email!',
+        message: 'Please enter your username!',
       },
     ],
   },
@@ -23,7 +23,7 @@ export default {
       prefix: <Icon type="lock" className={styles.prefixIcon} />,
       type: 'password',
       id: 'password',
-      placeholder: '888888',
+      placeholder: 'password',
     },
     rules: [
       {
