@@ -1,10 +1,11 @@
 import slash from 'slash2';
+import themes from './themes';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
 import webpackPlugin from './plugin.config';
 import routes from './routes';
 
-const { pwa, primaryColor } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
+const { pwa, themeName } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
@@ -86,9 +87,7 @@ export default {
   // umi routes: https://umijs.org/zh/guide/router.html
   routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
-  theme: {
-    'primary-color': primaryColor,
-  },
+  theme: themes[themeName],
   define: {
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:
       ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。

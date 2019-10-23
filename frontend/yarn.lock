@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@ant-design/aliyun-theme@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@ant-design/aliyun-theme/-/aliyun-theme-0.0.4.tgz#d2b6973f300bd3dd10a16b47c89f48d99423eb76"
+  integrity sha512-3yRoMxXcGoivZPhhR3IS9xPLqRNgKGiHhsiEr16F3AmAGHgWPlBPB5ukyerTXnS3zkbawXW+XposoQ2ORwGuHw==
+
 "@ant-design/colors@^3.1.0", "@ant-design/colors@^3.2.2":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@ant-design/colors/-/colors-3.2.2.tgz#5ad43d619e911f3488ebac303d606e66a8423903"
@@ -16,6 +21,13 @@
   dependencies:
     gud "^1.0.0"
     warning "^4.0.3"
+
+"@ant-design/dark-theme@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@ant-design/dark-theme/-/dark-theme-1.0.3.tgz#f06b4d8c62eba547a80661b68400c181c991392b"
+  integrity sha512-jd7y7GSbhta7dUsoAIqdBSAzFN6tx6mZaps2r6h+NhYoifOo7TGzagVYkjPR/27s6FK2vwzBhLBU1XPaVicfVw==
+  dependencies:
+    "@ant-design/colors" "^3.1.0"
 
 "@ant-design/icons-react@~2.0.1":
   version "2.0.1"

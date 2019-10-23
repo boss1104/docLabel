@@ -1,4 +1,5 @@
 export default {
+  themeName: 'dark',
   navTheme: 'dark',
   primaryColor: '#1890FF',
   layout: 'sidemenu',
