@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 from libcloud.base import DriverType, get_driver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
 from rest_framework import generics, filters, status
@@ -22,6 +22,7 @@ from .serializers import (
     # UserSerializer,
 )
 from .serializers import ProjectPolymorphicSerializer
+
 from .utils import (
     CSVParser,
     ExcelParser,
@@ -52,13 +53,14 @@ class Features(APIView):
 
 
 class ProjectList(generics.ListCreateAPIView):
-    serializer_class = ProjectSerializer
+    serializer_class = ProjectPolymorphicSerializer
     pagination_class = None
-    permission_classes = (IsAuthenticated, IsAdminUserAndWriteOnly)
+    # REVIEW: Any logged in user can create their projects
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         # Projects belong to the request users
-        return self.request.user.projects
+        return Project.objects.filter(Q(users__id=self.request.user.id) | Q(public=True))
 
     def perform_create(self, serializer):
         # perform addition method, this will add a user to users list

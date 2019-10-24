@@ -11,13 +11,13 @@ from .managers import AnnotationManager, Seq2seqAnnotationManager
 
 User = get_user_model()
 
-DOCUMENT_CLASSIFICATION = "DocumentClassification"
-SEQUENCE_LABELING = "SequenceLabeling"
-SEQ2SEQ = "Seq2seq"
+DOCUMENT_CLASSIFICATION = "document_classification"
+SEQUENCE_LABELING = "sequence_labeling"
+SEQ2SEQ = "seq2seq"
 PROJECT_CHOICES = (
-    (DOCUMENT_CLASSIFICATION, "document classification"),
-    (SEQUENCE_LABELING, "sequence labeling"),
-    (SEQ2SEQ, "sequence to sequence"),
+    (DOCUMENT_CLASSIFICATION, "Document Classification"),
+    (SEQUENCE_LABELING, "Sequence Labeling"),
+    (SEQ2SEQ, "Sequence to Sequence"),
 )
 
 
@@ -31,7 +31,9 @@ class Project(PolymorphicModel):
     users = models.ManyToManyField(User, related_name="projects")
     project_type = models.CharField(max_length=30, choices=PROJECT_CHOICES)
     randomize_document_order = models.BooleanField(default=False)
+    # Allow see annotation from other user
     collaborative_annotation = models.BooleanField(default=False)
+    public = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse("upload", args=[self.id])
