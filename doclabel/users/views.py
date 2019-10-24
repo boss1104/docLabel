@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
-from doclabel.users.serializers import CustomUserDetailsSerializer
 from rest_framework import viewsets
+
+from .serializers import CustomUserDetailsSerializer
 
 User = get_user_model()
 

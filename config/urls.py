@@ -39,6 +39,7 @@ class APIRoot(routers.APIRootView):
         data = super(APIRoot, self).get(request, *args, **kwargs).data
         self.addURl(request, "rest_auth.urls", data, *args, **kwargs)
         self.addURl(request, "rest_auth.registration.urls", data, *args, **kwargs)
+        self.addURl(request, "doclabel.core.urls", data, *args, **kwargs)
 
         return Response(data)
 
@@ -58,6 +59,7 @@ urlpatterns = [
     ),
     # APIs
     path("api/", include(router.urls)),
+    path("api/", include("doclabel.core.urls")),
     path("api-docs/", include_docs_urls(title="Doclabel REST API", public=False)),
     path("api-auth/", include("rest_framework.urls")),
     path("accounts/", include("allauth.urls")),
