@@ -98,7 +98,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "collaborative_annotation",
         )
         # REVIEW: We can change user "owner", "users" but cant change "project_type"
-        read_only_fields = ("image", "updated_at", "project_type")
+        read_only_fields = ("image", "updated_at")
 
 
 class TextClassificationProjectSerializer(serializers.ModelSerializer):
@@ -156,7 +156,6 @@ class Seq2seqProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectPolymorphicSerializer(PolymorphicSerializer):
-    resource_type_field_name = "project_type"
     #  It's the same now
     model_serializer_mapping = {
         Project: ProjectSerializer,

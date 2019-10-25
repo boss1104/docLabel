@@ -6,7 +6,13 @@ from .models import TextClassificationProject, SequenceLabelingProject, Seq2seqP
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("name", "description", "project_type", "randomize_document_order")
+    list_display = (
+        "name",
+        "id",
+        "description",
+        "project_type",
+        "randomize_document_order",
+    )
     ordering = ("project_type",)
     search_fields = ("name",)
 
