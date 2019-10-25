@@ -50,7 +50,12 @@ class ProjectList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         # Projects belong to the request users
-        return Project.objects.filter(Q(users__id=self.request.user.id) | Q(public=True))
+        queryset = Project.objects.filter(Q(users__id=self.request.user.id) | Q(public=True))
+        project_types = self.request.GET.getlist("type")
+        if len(project_types):
+            return queryset.filter(project_type__in=project_types)
+        return queryset
+
 
     def perform_create(self, serializer):
         # perform addition method, this will add a user to users list
