@@ -60,6 +60,7 @@ urlpatterns = [
     # APIs
     path("api/", include(router.urls)),
     path("api/", include("doclabel.core.urls")),
+    # TODO: What is this
     path("api-docs/", include_docs_urls(title="Doclabel REST API", public=False)),
     path("api-auth/", include("rest_framework.urls")),
     path("accounts/", include("allauth.urls")),

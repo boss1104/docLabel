@@ -1,22 +1,33 @@
-import { queryFakeList } from './service';
+import { queryProjectList } from './service';
 
 const Model = {
   namespace: 'projects',
   state: {
+    count: null,
+    next: null,
+    previous: null,
     list: [],
+    page: 1,
   },
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+      console.log('payload', payload);
+      const response = yield call(queryProjectList, payload);
       yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
+        type: 'projectList',
+        payload: {
+          ...response,
+          list: response.results,
+        },
       });
     },
   },
   reducers: {
-    queryList(state, action) {
-      return { ...state, list: action.payload };
+    changePage(state, action) {
+      return { ...state, page: action.payload };
+    },
+    projectList(state, action) {
+      return { ...state, ...action.payload };
     },
   },
 };
