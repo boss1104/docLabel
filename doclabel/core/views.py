@@ -14,7 +14,7 @@ from rest_framework_csv.renderers import CSVRenderer
 
 from .filters import DocumentFilter
 from .models import Project, Label, Document
-from .permissions import IsAdminUserAndWriteOnly, IsProjectUser, IsOwnAnnotation
+from .permissions import IsAdminUserAndWriteOnly, IsProjectUser, IsOwnAnnotation, IsProjectOwnerOrReadOnly
 from .serializers import (
     ProjectSerializer,
     LabelSerializer,
@@ -64,14 +64,14 @@ class ProjectList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # perform addition method, this will add a user to users list
-        serializer.save(users=[self.request.user])
+        serializer.save(users=[self.request.user], owner=self.request.user)
 
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Project.objects.all()
+    queryset = Project.objects.filter()
     serializer_class = ProjectSerializer
     lookup_url_kwarg = "project_id"
-    permission_classes = (IsAuthenticated, IsProjectUser, IsAdminUserAndWriteOnly)
+    permission_classes = (IsAuthenticated, IsProjectOwnerOrReadOnly)
 
 
 class StatisticsAPI(APIView):

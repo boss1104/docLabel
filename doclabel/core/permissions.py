@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAdminUser
+from rest_framework import permissions
 
 from .models import Project
 
 
-class IsProjectUser(BasePermission):
+class IsProjectUser(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
         project_id = view.kwargs.get("project_id") or request.query_params.get(
@@ -16,12 +16,23 @@ class IsProjectUser(BasePermission):
         return user in project.users.all()
 
 
-class IsAdminUserAndWriteOnly(BasePermission):
-    def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
+class IsProjectOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
             return True
 
-        return IsAdminUser().has_permission(request, view)
+        # Instance must have an attribute named `owner`.
+        return obj.owner == request.user
+
+
+class IsAdminUserAndWriteOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return permissions.IsAdminUser().has_permission(request, view)
 
 
 class SuperUserMixin(UserPassesTestMixin):
@@ -29,7 +40,7 @@ class SuperUserMixin(UserPassesTestMixin):
         return self.request.user.is_superuser
 
 
-class IsOwnAnnotation(BasePermission):
+class IsOwnAnnotation(permissions.BasePermission):
     def has_permission(self, request, view):
         project_id = view.kwargs.get("project_id")
         annotation_id = view.kwargs.get("annotation_id")

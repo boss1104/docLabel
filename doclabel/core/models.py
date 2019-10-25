@@ -11,9 +11,9 @@ from .managers import AnnotationManager, Seq2seqAnnotationManager
 
 User = get_user_model()
 
-DOCUMENT_CLASSIFICATION = "document_classification"
-SEQUENCE_LABELING = "sequence_labeling"
-SEQ2SEQ = "seq2seq"
+DOCUMENT_CLASSIFICATION = "TextClassificationProject"
+SEQUENCE_LABELING = "SequenceLabelingProject"
+SEQ2SEQ = "Seq2seqProject"
 PROJECT_CHOICES = (
     (DOCUMENT_CLASSIFICATION, "Document Classification"),
     (SEQUENCE_LABELING, "Sequence Labeling"),
@@ -28,7 +28,8 @@ class Project(PolymorphicModel):
     guideline = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    users = models.ManyToManyField(User, related_name="projects")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
+    users = models.ManyToManyField(User, related_name="contribute_projects")
     project_type = models.CharField(max_length=30, choices=PROJECT_CHOICES)
     randomize_document_order = models.BooleanField(default=False)
     # Allow see annotation from other user

@@ -90,13 +90,15 @@ class ProjectSerializer(serializers.ModelSerializer):
             "description",
             "guideline",
             "users",
+            "owner",
             "project_type",
             "image",
             "updated_at",
             "randomize_document_order",
             "collaborative_annotation",
         )
-        read_only_fields = ("image", "updated_at")
+        # REVIEW: We can change user "owner", "users" but cant change "project_type"
+        read_only_fields = ("image", "updated_at", "project_type")
 
 
 class TextClassificationProjectSerializer(serializers.ModelSerializer):
@@ -108,12 +110,13 @@ class TextClassificationProjectSerializer(serializers.ModelSerializer):
             "description",
             "guideline",
             "users",
+            "owner",
             "project_type",
             "image",
             "updated_at",
             "randomize_document_order",
         )
-        read_only_fields = ("image", "updated_at", "users")
+        read_only_fields = ("image", "updated_at", "users", "owner")
 
 
 class SequenceLabelingProjectSerializer(serializers.ModelSerializer):
@@ -125,12 +128,13 @@ class SequenceLabelingProjectSerializer(serializers.ModelSerializer):
             "description",
             "guideline",
             "users",
+            "owner",
             "project_type",
             "image",
             "updated_at",
             "randomize_document_order",
         )
-        read_only_fields = ("image", "updated_at", "users")
+        read_only_fields = ("image", "updated_at", "users", "owner")
 
 
 class Seq2seqProjectSerializer(serializers.ModelSerializer):
@@ -142,15 +146,17 @@ class Seq2seqProjectSerializer(serializers.ModelSerializer):
             "description",
             "guideline",
             "users",
+            "owner",
             "project_type",
             "image",
             "updated_at",
             "randomize_document_order",
         )
-        read_only_fields = ("image", "updated_at", "users")
+        read_only_fields = ("image", "updated_at", "users", "owner")
 
 
 class ProjectPolymorphicSerializer(PolymorphicSerializer):
+    resource_type_field_name = "project_type"
     #  It's the same now
     model_serializer_mapping = {
         Project: ProjectSerializer,
