@@ -23,7 +23,7 @@ PROJECT_CHOICES = (
 
 # Project
 class Project(PolymorphicModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField(default="")
     guideline = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)

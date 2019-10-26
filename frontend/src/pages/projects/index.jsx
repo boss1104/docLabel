@@ -1,10 +1,15 @@
-import { Card, Col, Form, List, Row, Select, Typography, Avatar, Icon, Tooltip } from 'antd';
-import React, { Component } from 'react';
+import { Card, Col, Form, List, Row, Select, Typography, Avatar, Tooltip } from 'antd';
+
+import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { router } from 'umi';
+
+import { PROJECT_TYPE } from './components/constants';
+
 import AvatarList from './components/AvatarList';
 import StandardFormRow from './components/StandardFormRow';
+import ModalForm from './components/CreateModalForm';
 import TagSelect from './components/TagSelect';
 import styles from './style.less';
 
@@ -12,26 +17,12 @@ const { Option } = Select;
 const FormItem = Form.Item;
 const { Paragraph } = Typography;
 
-const PROJECT_TYPE = {
-  TextClassificationProject: {
-    icon: <Icon type="smile" theme="twoTone" />,
-    label: 'Document Classification',
-  },
-  SequenceLabelingProject: {
-    icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,
-    label: 'Sequence Labeling',
-  },
-  Seq2seqProject: {
-    icon: <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />,
-    label: 'Sequence to Sequence',
-  },
-};
-
+// TODO: Search by project name
 const Projects = ({
-  projects: { list = [], count },
+  projects: { list = [], count, status, errors },
   dispatch,
   loading,
-  form: { getFieldDecorator },
+  form,
   location: { query, path },
 }) => {
   React.useEffect(() => {
@@ -40,6 +31,8 @@ const Projects = ({
       payload: query,
     });
   }, [query]);
+
+  const { getFieldDecorator } = form;
 
   const paginationProps = {
     current: Number(query.page),
@@ -123,6 +116,14 @@ const Projects = ({
     },
   };
 
+  const handleCreateProject = formValue => {
+    console.log('TCL: formValue', formValue);
+    dispatch({
+      type: 'projects/createProject',
+      payload: formValue,
+    });
+  };
+
   return (
     <div className={styles.coverCardList}>
       <Card bordered={false}>
@@ -148,7 +149,14 @@ const Projects = ({
               )}
             </FormItem>
           </StandardFormRow>
-          <StandardFormRow title="Other options" grid last>
+          <StandardFormRow
+            title="Other options"
+            grid
+            last
+            style={{
+              paddingBottom: 11,
+            }}
+          >
             <Row gutter={16}>
               <Col lg={8} md={10} sm={10} xs={24}>
                 <FormItem {...formItemLayout} label="Author">
@@ -184,6 +192,11 @@ const Projects = ({
             </Row>
           </StandardFormRow>
         </Form>
+        <ModalForm
+          buttonText="Create project"
+          onSubmit={handleCreateProject}
+          errors={status ? null : errors}
+        />
       </Card>
       <div className={styles.cardList}>{cardList}</div>
     </div>
@@ -195,6 +208,7 @@ const WrapForm = Form.create({
     router.push({
       pathname: location.path,
       query: {
+        // FIXME: maybe bug
         type: changedValues.category,
         page: 1,
       },

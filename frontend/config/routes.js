@@ -60,6 +60,28 @@ export default [
             component: './projects',
           },
           {
+            name: 'exception',
+            hideInMenu: true,
+            path: '/exception',
+            routes: [
+              {
+                name: '403',
+                path: '/exception/403',
+                component: './exception/403',
+              },
+              {
+                name: '404',
+                path: '/exception/404',
+                component: './exception/404',
+              },
+              {
+                name: '500',
+                path: '/exception/500',
+                component: './exception/500',
+              },
+            ],
+          },
+          {
             component: './404',
           },
         ],
