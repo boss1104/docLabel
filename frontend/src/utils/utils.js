@@ -9,7 +9,12 @@ export const isAntDesignPro = () => {
   }
 
   return window.location.hostname === 'preview.pro.ant.design';
-}; // 给官方演示站点用，用于关闭真实开发环境不需要使用的特性
+};
+
+/**
+ * Used for official demo sites to turn off features that are not needed in real-world
+ * development environments
+ */
 
 export const isAntDesignProOrDev = () => {
   const { NODE_ENV } = process.env;

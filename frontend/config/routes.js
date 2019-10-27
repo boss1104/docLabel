@@ -1,9 +1,5 @@
 export default [
   {
-    path: '/test',
-    component: './user/test',
-  },
-  {
     path: '/user',
     component: '../layouts/UserLayout',
     routes: [
@@ -39,6 +35,68 @@ export default [
     component: '../layouts/SecurityLayout',
     routes: [
       {
+        path: '/projects/:id',
+        component: '../layouts/ProjectLayout',
+        authority: ['admin', 'user'],
+        routes: [
+          {
+            path: '/projects/:id',
+            redirect: '/projects/:id/dashboard',
+          },
+          {
+            name: 'dashboard',
+            icon: 'project',
+            path: '/projects/:id/dashboard',
+            component: './project/dashboard',
+          },
+          {
+            name: 'task',
+            icon: 'database',
+            path: '/projects/:id/task',
+            component: './project/task',
+          },
+          {
+            name: 'label',
+            icon: 'flag',
+            path: '/projects/:id/label',
+            component: './project/label',
+          },
+          {
+            name: 'contributor',
+            icon: 'team',
+            path: '/projects/:id/contributor',
+            component: './project/contributor',
+          },
+          {
+            name: 'export',
+            icon: 'cloud-download',
+            path: '/projects/:id/export',
+            component: './project/export',
+          },
+          {
+            name: 'setting',
+            icon: 'setting',
+            path: '/projects/:id/setting',
+            component: './project/setting',
+          },
+          {
+            name: 'guide',
+            icon: 'deployment-unit',
+            path: '/projects/:id/guide',
+            component: './project/guide',
+          },
+          {
+            name: 'test',
+            icon: 'smile',
+            path: '/projects/:id/test',
+            component: './project/test',
+          },
+          // {
+          //   component: './404',
+          // },
+        ],
+      },
+      {
         path: '/',
         component: '../layouts/BasicLayout',
         authority: ['admin', 'user'],
@@ -54,10 +112,10 @@ export default [
             component: './Welcome',
           },
           {
-            name: 'projects',
-            icon: 'smile',
-            path: '/projects',
-            component: './projects',
+            name: 'Explore',
+            icon: 'monitor',
+            path: '/explore',
+            component: './explore',
           },
           {
             name: 'exception',
@@ -81,11 +139,9 @@ export default [
               },
             ],
           },
-          {
-            component: './404',
-          },
         ],
       },
+
       {
         component: './404',
       },

@@ -79,6 +79,8 @@ const errorHandler = error => {
  */
 
 const request = extend({
+  // TODO: Remove in production
+  timeout: 1000,
   errorHandler,
   // Default error handling
   credentials: 'include', // Whether the default request is taken cookie
