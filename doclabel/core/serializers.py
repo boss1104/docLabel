@@ -98,7 +98,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "collaborative_annotation",
         )
         # REVIEW: We can change user "owner", "users" but cant change "project_type"
-        read_only_fields = ("image", "updated_at")
+        read_only_fields = ("image", "updated_at", "project_type")
 
 
 class TextClassificationProjectSerializer(serializers.ModelSerializer):
