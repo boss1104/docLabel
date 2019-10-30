@@ -112,7 +112,7 @@ export default [
             component: './Welcome',
           },
           {
-            name: 'Explore',
+            name: 'explore',
             icon: 'monitor',
             path: '/explore',
             component: './explore',

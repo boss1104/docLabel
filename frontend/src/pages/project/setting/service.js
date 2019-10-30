@@ -5,3 +5,10 @@ export function deleteProject(id) {
     method: 'DELETE',
   });
 }
+
+export function updateProject({ id, data }) {
+  return request(`/api/projects/${id}/`, {
+    method: 'PATCH',
+    data,
+  });
+}
