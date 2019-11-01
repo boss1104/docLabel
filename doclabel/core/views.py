@@ -113,11 +113,21 @@ class ApproveLabelsAPI(APIView):
 class LabelList(generics.ListCreateAPIView):
     serializer_class = LabelSerializer
     pagination_class = None
-    permission_classes = (IsProjectUser, IsAdminUserAndWriteOnly)
+    # permission_classes = (IsProjectUser, IsAdminUserAndWriteOnly)
+    permission_classes = (IsProjectOwnerOrReadOnly,)
 
     def get_queryset(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
         return project.labels
+
+    def create(self, request, *args, **kwargs):
+        request_data = request.data
+        request_data.update({"project": kwargs['project_id']})
+        serializer = self.get_serializer(data=request_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])

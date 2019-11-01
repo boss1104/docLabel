@@ -11,9 +11,8 @@ const Setting = props => {
     project: { currentProject },
     loading,
     loadingUpdateProject,
-    setting: { status, errors },
+    setting: { hasError, errors },
   } = props;
-  console.log('TCL: loadingUpdateProject', loadingUpdateProject);
 
   const inputRef = React.useRef(null);
 
@@ -75,7 +74,7 @@ const Setting = props => {
               currentProject={currentProject}
               onSubmit={handleSubmit}
               loading={loadingUpdateProject}
-              errors={status ? null : errors}
+              errors={hasError ? null : errors}
             ></ProjectInfoForm>
             <div>Task setting ( redundancy| scheduler | delete all tasks)</div>
             <div>Contribution settings</div>

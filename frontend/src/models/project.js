@@ -27,7 +27,6 @@ const UserModel = {
         const str = '/projects/';
         if (pathname.includes(str)) {
           let id = pathname.substr(pathname.indexOf(str) + str.length);
-          console.log("TCL: setup -> id.indexOf('/')", id.indexOf('/'));
           id = id.substr(0, id.indexOf('/') === -1 ? id.length : id.indexOf('/'));
           dispatch({
             type: 'fetchProject',

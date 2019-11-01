@@ -4,7 +4,7 @@ import { deleteProject, updateProject } from './service';
 const Model = {
   namespace: 'setting',
   state: {
-    status: undefined,
+    hasError: false,
     errors: [],
   },
   effects: {
@@ -16,7 +16,7 @@ const Model = {
         yield put({
           type: 'changeState',
           payload: {
-            status: false,
+            hasError: true,
             errors: response,
           },
         });
@@ -24,7 +24,7 @@ const Model = {
         yield put({
           type: 'changeState',
           payload: {
-            status: true,
+            hasError: false,
             errors: [],
           },
         });

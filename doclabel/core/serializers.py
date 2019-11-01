@@ -1,7 +1,10 @@
+import json
+
 # from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_polymorphic.serializers import PolymorphicSerializer
 from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueTogetherValidator
 
 
 from .models import Label, Project, Document
@@ -17,11 +20,8 @@ from .models import DocumentAnnotation, SequenceAnnotation, Seq2seqAnnotation
 
 class LabelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
-        if "prefix_key" not in attrs and "suffix_key" not in attrs:
-            return super().validate(attrs)
-
-        prefix_key = attrs["prefix_key"]
-        suffix_key = attrs["suffix_key"]
+        prefix_key = attrs["prefix_key"] if ("prefix_key" in attrs) else None
+        suffix_key = attrs["suffix_key"] if ("suffix_key" in attrs) else None
 
         # In the case of user don't set any shortcut key.
         if prefix_key is None and suffix_key is None:
@@ -29,7 +29,7 @@ class LabelSerializer(serializers.ModelSerializer):
 
         # Don't allow shortcut key not to have a suffix key.
         if prefix_key and not suffix_key:
-            raise ValidationError("Shortcut key may not have a suffix key.")
+            raise ValidationError("suffix_key:Shortcut key may not have a suffix key.")
 
         # Don't allow to save same shortcut key when prefix_key is null.
         try:
@@ -41,7 +41,7 @@ class LabelSerializer(serializers.ModelSerializer):
             if Label.objects.filter(
                 suffix_key=suffix_key, prefix_key=prefix_key, project=project_id
             ).exists():
-                raise ValidationError("Duplicate key.")
+                raise ValidationError("suffix_key:Duplicate hotkey.")
         return super().validate(attrs)
 
     class Meta:
@@ -50,10 +50,18 @@ class LabelSerializer(serializers.ModelSerializer):
             "id",
             "text",
             "prefix_key",
+            "project",
             "suffix_key",
             "background_color",
             "text_color",
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Label.objects.all(),
+                fields=["text", "project"],
+                message="text:Duplicate text label for this project",
+            )
+        ]
 
 
 class DocumentSerializer(serializers.ModelSerializer):

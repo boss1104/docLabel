@@ -11,10 +11,10 @@ export async function removeRule(params) {
     data: { ...params, method: 'delete' },
   });
 }
-export async function addRule(params) {
-  return request('/api/rule', {
+export async function addLabel({ id, data }) {
+  return request(`/api/projects/${id}/labels/`, {
     method: 'POST',
-    data: { ...params, method: 'post' },
+    data,
   });
 }
 export async function updateRule(params) {
