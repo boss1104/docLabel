@@ -23,8 +23,14 @@ class IsProjectOwnerOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
+        user = request.user
+        project_id = view.kwargs.get("project_id") or request.query_params.get(
+            "project_id"
+        )
+        project = get_object_or_404(Project, pk=project_id)
+
         # Instance must have an attribute named `owner`.
-        return obj.owner == request.user
+        return project.owner == user
 
 
 class IsAdminUserAndWriteOnly(permissions.BasePermission):

@@ -35,12 +35,17 @@ class LabelSerializer(serializers.ModelSerializer):
         try:
             context = self.context["request"].parser_context
             project_id = context["kwargs"]["project_id"]
+            label_id = context["kwargs"]["label_id"]
         except (AttributeError, KeyError):
             pass  # unit tests don't always have the correct context set up
         else:
-            if Label.objects.filter(
-                suffix_key=suffix_key, prefix_key=prefix_key, project=project_id
-            ).exists():
+            if (
+                Label.objects.exclude(id=label_id)
+                .filter(
+                    suffix_key=suffix_key, prefix_key=prefix_key, project=project_id
+                )
+                .exists()
+            ):
                 raise ValidationError("suffix_key:Duplicate hotkey.")
         return super().validate(attrs)
 

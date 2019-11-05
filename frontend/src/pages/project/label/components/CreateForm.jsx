@@ -9,7 +9,7 @@ const shortKeys = 'abcdefghijklmnopqrstuvwxyz';
 const SHORT_KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 export default Form.create()(props => {
-  const { form, modalVisible, setModalVisible, handleAdd, loading, onCreate } = props;
+  const { form, modalVisible, setModalVisible, handleSubmit, loading, onCreate } = props;
   const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
@@ -27,7 +27,7 @@ export default Form.create()(props => {
           setModalVisible(false);
           form.resetFields();
         }
-        handleAdd(fieldsValue);
+        handleSubmit(fieldsValue);
       }
     });
   };
@@ -72,6 +72,7 @@ export default Form.create()(props => {
       title="Add Label"
       visible={modalVisible}
       okText="Submit and Close"
+      cancelText="Close"
       confirmLoading={loading}
       okButtonProps={{ disabled: hasErrors(getFieldsError()) }}
       onOk={() => handleOk(true)}
@@ -85,6 +86,9 @@ export default Form.create()(props => {
           handleOk();
         }}
       >
+        <Form.Item label="id" style={{ display: 'none' }}>
+          {getFieldDecorator('id', {})(<Input />)}
+        </Form.Item>
         <FormItem
           label="Text"
           // validateStatus={getFieldError('text') ? 'error' : ''}

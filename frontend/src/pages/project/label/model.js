@@ -1,60 +1,55 @@
-import { addLabel, queryRule, removeRule, updateRule } from './service';
+import { addLabel, queryLabel, removeRule, updateLabel } from './service';
 
 const Model = {
   namespace: 'label',
   state: {
-    data: {
-      list: [],
-      pagination: {},
-    },
+    list: [],
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
-      // const response = yield call(queryRule, payload);
-      // yield put({
-      //   type: 'save',
-      //   payload: response,
-      // });
+    *fetch({ payload: projectId }, { call, put }) {
+      const response = yield call(queryLabel, { projectId, params: {} });
+      yield put({
+        type: 'save',
+        payload: response,
+      });
     },
 
-    *add({ payload, callback }, { call, put, select }) {
-      const id = yield select(state => state.project.currentProject.id);
-      const response = yield call(addLabel, { data: payload, id });
+    *add({ payload, callback }, { call, put }) {
+      const response = yield call(addLabel, payload);
 
       const { statusCode } = response;
       if (statusCode) {
         delete response.statusCode;
         if (callback) callback(response);
       } else {
-        yield put({
-          type: 'save',
-          payload: response,
-        });
+        // TODO: Re fetching ?
+        console.log('TCL: *add -> response', response);
+
+        if (callback) callback();
+      }
+    },
+    *update({ payload, callback }, { call }) {
+      const response = yield call(updateLabel, payload);
+      const { statusCode: error } = response;
+      if (error) {
+        delete response.statusCode;
+        if (callback) callback(response);
+      } else {
+        // TODO: Re fetching ?
+        console.log('TCL: *add -> response', response);
+
         if (callback) callback();
       }
     },
 
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-
-    *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
       if (callback) callback();
     },
   },
   reducers: {
     save(state, action) {
-      return { ...state, data: action.payload };
+      return { ...state, list: action.payload };
     },
   },
 };

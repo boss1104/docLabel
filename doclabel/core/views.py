@@ -135,10 +135,14 @@ class LabelList(generics.ListCreateAPIView):
 
 
 class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Label.objects.all()
+    # queryset = Label.objects.all()
     serializer_class = LabelSerializer
     lookup_url_kwarg = "label_id"
-    permission_classes = (IsProjectUser, IsAdminUserAndWriteOnly)
+    permission_classes = (IsProjectOwnerOrReadOnly,)
+
+    def get_queryset(self):
+        project = get_object_or_404(Project, pk=self.kwargs["project_id"])
+        return project.labels
 
 
 class DocumentList(generics.ListCreateAPIView):

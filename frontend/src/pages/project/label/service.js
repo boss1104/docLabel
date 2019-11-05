@@ -1,25 +1,27 @@
 import request from '@/utils/request';
 
-export async function queryRule(params) {
-  return request('/api/rule', {
+export async function queryLabel({ projectId, params }) {
+  return request(`/api/projects/${projectId}/labels/`, {
     params,
   });
 }
-export async function removeRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'delete' },
-  });
-}
-export async function addLabel({ id, data }) {
-  return request(`/api/projects/${id}/labels/`, {
+
+export async function addLabel({ projectId, data }) {
+  return request(`/api/projects/${projectId}/labels/`, {
     method: 'POST',
     data,
   });
 }
-export async function updateRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: { ...params, method: 'update' },
+
+export async function updateLabel({ projectId, labelId, data }) {
+  return request(`/api/projects/${projectId}/labels/${labelId}/`, {
+    method: 'PATCH',
+    data,
+  });
+}
+
+export async function removeRule({ projectId, labelId }) {
+  return request(`/api/projects/${projectId}/labels/${labelId}/`, {
+    method: 'DELETE',
   });
 }
