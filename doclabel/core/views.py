@@ -161,7 +161,7 @@ class DocumentList(generics.ListCreateAPIView):
         "seq2seq_annotations__updated_at",
     )
     filter_class = DocumentFilter
-    permission_classes = (IsProjectUser, IsAdminUserAndWriteOnly)
+    permission_classes = (IsProjectOwnerOrReadOnly,)
 
     def get_queryset(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -184,7 +184,7 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     lookup_url_kwarg = "doc_id"
-    permission_classes = (IsProjectUser, IsAdminUserAndWriteOnly)
+    permission_classes = (IsProjectOwnerOrReadOnly,)
 
 
 class AnnotationList(generics.ListCreateAPIView):
@@ -233,7 +233,8 @@ class AnnotationDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class TextUploadAPI(APIView):
     parser_classes = (MultiPartParser,)
-    permission_classes = (IsProjectUser, IsAdminUser)
+    # TODO: IsProjectOwner
+    permission_classes = (IsProjectUser,)
 
     def post(self, request, *args, **kwargs):
         if "file" not in request.data:

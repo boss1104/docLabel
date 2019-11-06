@@ -367,3 +367,6 @@ GRAPHENE_RECURSION_LIMIT = env.int("GRAPHENE_RECURSION_LIMIT", default=3500)
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# Size of the batch for creating documents
+# on the import phase
+IMPORT_BATCH_SIZE = env.int("IMPORT_BATCH_SIZE", 500)

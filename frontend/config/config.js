@@ -130,6 +130,7 @@ export default {
   },
   base: '/app/',
   publicPath: '/static/',
+  urlLoaderExcludes: [/\.txt$/, /\.jsonl$/, /\.csv$/, /\.xlsx$/, /\.conll$/],
   chainWebpack: webpackPlugin,
   proxy: {
     '/api': {

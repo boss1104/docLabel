@@ -69,6 +69,36 @@ export default config => {
     ]);
   } // optimize chunks
 
+  config.module
+    .rule('txt')
+    .test(/\.txt$/)
+    .use('raw')
+    .loader('raw-loader');
+
+  config.module
+    .rule('csv')
+    .test(/\.csv$/)
+    .use('raw')
+    .loader('raw-loader');
+
+  config.module
+    .rule('jsonl')
+    .test(/\.jsonl$/)
+    .use('raw')
+    .loader('raw-loader');
+
+  config.module
+    .rule('xlsx')
+    .test(/\.xls.?$/)
+    .use('raw')
+    .loader('excel-loader');
+
+  config.module
+    .rule('conll')
+    .test(/\.conll$/)
+    .use('raw')
+    .loader('raw-loader');
+
   config.optimization // share the same chunks across different modules
     .runtimeChunk(false)
     .splitChunks({

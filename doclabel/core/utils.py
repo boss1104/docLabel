@@ -65,7 +65,7 @@ class BaseStorage(object):
         return [label for label in labels if label not in created]
 
     @classmethod
-    def to_serializer_format(cls, labels, created, random_seed=None):
+    def to_serializer_format(cls, labels, created, project_id, random_seed=None):
         existing_shortkeys = {(label.suffix_key, label.prefix_key)
                               for label in created.values()}
 
@@ -83,6 +83,7 @@ class BaseStorage(object):
             color = Color.random(seed=random_seed)
             serializer_label['background_color'] = color.hex
             serializer_label['text_color'] = color.contrast_color.hex
+            serializer_label['project'] = project_id
 
             serializer_labels.append(serializer_label)
 
@@ -132,7 +133,7 @@ class ClassificationStorage(BaseStorage):
             labels = self.extract_label(data)
             unique_labels = self.extract_unique_labels(labels)
             unique_labels = self.exclude_created_labels(unique_labels, saved_labels)
-            unique_labels = self.to_serializer_format(unique_labels, saved_labels)
+            unique_labels = self.to_serializer_format(unique_labels, saved_labels, self.project.id)
             new_labels = self.save_label(unique_labels)
             saved_labels = self.update_saved_labels(saved_labels, new_labels)
             annotations = self.make_annotations(docs, labels, saved_labels)
@@ -167,7 +168,7 @@ class SequenceLabelingStorage(BaseStorage):
             labels = self.extract_label(data)
             unique_labels = self.extract_unique_labels(labels)
             unique_labels = self.exclude_created_labels(unique_labels, saved_labels)
-            unique_labels = self.to_serializer_format(unique_labels, saved_labels)
+            unique_labels = self.to_serializer_format(unique_labels, saved_labels, self.project.id)
             new_labels = self.save_label(unique_labels)
             saved_labels = self.update_saved_labels(saved_labels, new_labels)
             annotations = self.make_annotations(docs, labels, saved_labels)

@@ -59,7 +59,7 @@ class StandardTable extends Component {
     });
   };
 
-  handleTableChange = (pagination, filters, sorter, ...rest) => {
+  handleTableChange = ({ pagination, filters, sorter, ...rest }) => {
     const { onChange } = this.props;
 
     if (onChange) {
@@ -76,11 +76,13 @@ class StandardTable extends Component {
   render() {
     const { selectedRowKeys, needTotalList } = this.state;
     const { data, rowKey, ...rest } = this.props;
+
     const { list = [], pagination = false } = data || {};
     const paginationProps = pagination
       ? {
-          showSizeChanger: true,
           showQuickJumper: true,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${pagination.total} items`,
+          pageSize: 5,
           ...pagination,
         }
       : false;
@@ -97,7 +99,7 @@ class StandardTable extends Component {
           <Alert
             message={
               <Fragment>
-                已选择{' '}
+                Choosen{' '}
                 <a
                   style={{
                     fontWeight: 600,
@@ -105,7 +107,7 @@ class StandardTable extends Component {
                 >
                   {selectedRowKeys.length}
                 </a>{' '}
-                项&nbsp;&nbsp;
+                item&nbsp;&nbsp;
                 {needTotalList.map((item, index) => (
                   <span
                     style={{
@@ -114,7 +116,7 @@ class StandardTable extends Component {
                     key={item.dataIndex}
                   >
                     {item.title}
-                    总计&nbsp;
+                    Total&nbsp;
                     <span
                       style={{
                         fontWeight: 600,
@@ -130,7 +132,7 @@ class StandardTable extends Component {
                     marginLeft: 24,
                   }}
                 >
-                  清空
+                  Empty
                 </a>
               </Fragment>
             }

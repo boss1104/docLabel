@@ -1,7 +1,7 @@
-import { addRule, queryRule, removeRule, updateRule } from './service';
+import { queryTask, removeTask, updateTask } from './service';
 
 const Model = {
-  namespace: 'listAndtableList',
+  namespace: 'task',
   state: {
     data: {
       list: [],
@@ -10,33 +10,34 @@ const Model = {
   },
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRule, payload);
+      const response = yield call(queryTask, payload);
       yield put({
         type: 'save',
-        payload: response,
+        payload: {
+          list: response.results,
+          pagination: {
+            total: response.count,
+          },
+        },
       });
     },
 
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
+    // *add({ payload, callback }, { call, put }) {
+    //   const response = yield call(addTask, payload);
+    //   yield put({
+    //     type: 'save',
+    //     payload: response,
+    //   });
+    //   if (callback) callback();
+    // },
 
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      const response = yield call(removeTask, payload);
       if (callback) callback();
     },
 
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
+      const response = yield call(updateTask, payload);
       yield put({
         type: 'save',
         payload: response,

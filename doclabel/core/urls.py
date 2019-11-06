@@ -17,6 +17,7 @@ urlpatterns = [
     # path("auth-token", obtain_auth_token),
     path("features/", Features.as_view(), name="features"),
     path("cloud-upload/", CloudUploadAPI.as_view(), name="cloud_uploader"),
+    # WORKDONE
     path("projects/", ProjectList.as_view(), name="project_list"),
     path("projects/<int:project_id>/", ProjectDetail.as_view(), name="project_detail"),
     path(
@@ -36,6 +37,7 @@ urlpatterns = [
         DocumentDetail.as_view(),
         name="doc_detail",
     ),
+    # WORKDONE
     path(
         "projects/<int:project_id>/docs/<int:doc_id>/approve-labels/",
         ApproveLabelsAPI.as_view(),

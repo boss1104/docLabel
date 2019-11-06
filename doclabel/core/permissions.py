@@ -16,21 +16,39 @@ class IsProjectUser(permissions.BasePermission):
         return user in project.users.all()
 
 
-class IsProjectOwnerOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
+class IsProjectOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
         user = request.user
         project_id = view.kwargs.get("project_id") or request.query_params.get(
             "project_id"
         )
         project = get_object_or_404(Project, pk=project_id)
 
-        # Instance must have an attribute named `owner`.
         return project.owner == user
+
+
+class IsProjectOwnerOrReadOnly(IsProjectOwner):
+    def has_permission(self, request, view):
+        return super().has_permission(request, view) or (
+            request.method in permissions.SAFE_METHODS
+        )
+
+
+# class IsProjectOwnerOrReadOnly(permissions.BasePermission):
+#     def has_object_permission(self, request, view, obj):
+#         # Read permissions are allowed to any request,
+#         # so we'll always allow GET, HEAD or OPTIONS requests.
+#         if request.method in permissions.SAFE_METHODS:
+#             return True
+
+#         user = request.user
+#         project_id = view.kwargs.get("project_id") or request.query_params.get(
+#             "project_id"
+#         )
+#         project = get_object_or_404(Project, pk=project_id)
+
+#         # Instance must have an attribute named `owner`.
+#         return project.owner == user
 
 
 class IsAdminUserAndWriteOnly(permissions.BasePermission):
