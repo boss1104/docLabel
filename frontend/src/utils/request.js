@@ -29,20 +29,12 @@ const codeMessage = {
 /**
  * Exception handler
  */
-
 const errorHandler = error => {
-  const { response = {}, data } = error;
-  // console.log('response', response);
-  // console.log('data', data);
+  const { response } = error;
 
   if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
-
-    // notification.error({
-    //   message: `Request error ${status}: ${url}`,
-    //   description: errorText,
-    // });
+    const { status } = response;
+    const errorText = codeMessage[status] || response.statusText;
 
     if (status === 401) {
       message.error('Not logged in or the login has expired, please log in again.');
@@ -64,15 +56,9 @@ const errorHandler = error => {
       router.push('/exception/404');
     }
   } else if (!response) {
-    notification.error({
-      message: 'Network anomaly',
-      description: 'Your network is abnormal and cannot connect to the server',
-    });
+    message.error('Your network is abnormal and cannot connect to the server');
   }
-  return {
-    statusCode: response.status,
-    ...data,
-  };
+  return error;
 };
 /**
  * Default parameters when configuring request
@@ -80,8 +66,7 @@ const errorHandler = error => {
 
 const request = extend({
   // TODO: Remove in production
-  timeout: 1000,
-  errorHandler,
+  // errorHandler,
   // Default error handling
   credentials: 'include', // Whether the default request is taken cookie
   headers: {
@@ -91,7 +76,6 @@ const request = extend({
 
 request.interceptors.request.use((url, options) => {
   const token = localStorage.getItem('antd-pro-authority');
-  // console.log('token', token);
   const { headers } = options;
   let newHeader;
   if (token === 'undefined' || token === null) {

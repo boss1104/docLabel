@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-export async function queryTask({ projectId, params }) {
+export async function queryTask({ projectId, params = { page: 1 } }) {
   return request(`/api/projects/${projectId}/docs/`, {
     params,
   });

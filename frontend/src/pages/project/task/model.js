@@ -1,25 +1,38 @@
 import { queryTask, removeTask, updateTask } from './service';
+import { getPageQuery, arrayToObject } from '@/utils/utils';
 
 const Model = {
   namespace: 'task',
   state: {
-    data: {
-      list: [],
-      pagination: {},
-    },
+    list: [],
+    pagination: {},
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryTask, payload);
-      yield put({
-        type: 'save',
-        payload: {
-          list: response.results,
+    *fetch({ payload }, { call, put, take, select }) {
+      let projectId = yield select(state => state.project.currentProject.id);
+      if (!projectId) {
+        const action = yield take('project/saveCurrentProject');
+        projectId = action.payload.id;
+      }
+      try {
+        const response = yield call(queryTask, { projectId, ...payload });
+
+        const ret = {
+          list: arrayToObject(response.results, 'id'),
           pagination: {
             total: response.count,
+            next: getPageQuery(response.next),
+            previous: getPageQuery(response.previous),
           },
-        },
-      });
+        };
+        yield put({
+          type: 'save',
+          payload: ret,
+        });
+        return ret;
+      } catch (error) {
+        return error.data;
+      }
     },
 
     // *add({ payload, callback }, { call, put }) {
@@ -47,8 +60,24 @@ const Model = {
   },
   reducers: {
     save(state, action) {
-      return { ...state, data: action.payload };
+      return { ...state, ...action.payload };
+    },
+  },
+  subscriptions: {
+    setup({ dispatch, history }) {
+      return history.listen(({ pathname, query }) => {
+        console.log('TCL: setup -> query', query);
+        if (pathname.includes('/task')) {
+          dispatch({
+            type: 'fetch',
+            payload: {
+              params: query,
+            },
+          });
+        }
+      });
     },
   },
 };
+
 export default Model;

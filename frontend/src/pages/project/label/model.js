@@ -1,4 +1,5 @@
 import { addLabel, queryLabel, removeRule, updateLabel } from './service';
+import { arrayToObject } from '@/utils/utils';
 
 const Model = {
   namespace: 'label',
@@ -6,12 +7,20 @@ const Model = {
     list: [],
   },
   effects: {
-    *fetch({ payload: projectId }, { call, put }) {
-      const response = yield call(queryLabel, { projectId, params: {} });
+    *fetch({ payload }, { call, put, select, take }) {
+      let projectId = yield select(state => state.project.currentProject.id);
+      if (!projectId) {
+        const action = yield take('project/saveCurrentProject');
+        projectId = action.payload.id;
+      }
+      const response = yield call(queryLabel, { projectId, ...payload });
+      const ret = arrayToObject(response, 'id');
       yield put({
         type: 'save',
-        payload: response,
+        payload: ret,
       });
+
+      return ret;
     },
 
     *add({ payload, callback }, { call, put }) {

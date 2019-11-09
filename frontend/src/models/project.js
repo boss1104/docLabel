@@ -10,10 +10,7 @@ const UserModel = {
       // payload ~ params
       const response = yield call(queryCurrent, payload);
       // console.log('TCL: *fetchProject -> response', response);
-      yield put({
-        type: 'saveCurrentProject',
-        payload: response,
-      });
+      yield put({ type: 'saveCurrentProject', payload: response });
     },
   },
   reducers: {
@@ -22,7 +19,7 @@ const UserModel = {
     },
   },
   subscriptions: {
-    setup({ dispatch, history, ...rest }) {
+    setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         const str = '/projects/';
         if (pathname.includes(str)) {

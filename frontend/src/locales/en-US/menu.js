@@ -1,6 +1,7 @@
 export default {
   'menu.welcome': 'Welcome',
   'menu.explore': 'Explore',
+  'menu.annotation': 'Annotation',
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Home',
   'menu.login': 'Login',

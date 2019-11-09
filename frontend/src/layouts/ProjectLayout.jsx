@@ -3,46 +3,74 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout from '@ant-design/pro-layout';
+import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
+import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import withRouter from 'umi/withRouter';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro } from '@/utils/utils';
+import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 /**
  * use Authorized check all menu item
  */
+
+const noMatch = (
+  <Result
+    status="403"
+    title="403"
+    subTitle="Sorry, you are not authorized to access this page."
+    extra={
+      <Button type="primary">
+        <Link to="/user/login">Go Login</Link>
+      </Button>
+    }
+  />
+);
+
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
     return Authorized.check(item.authority, localItem, null);
   });
 
-const footerRender = (_, defaultDom) => {
+const defaultFooterDom = (
+  <DefaultFooter
+    copyright="2019 ICT"
+    links={[
+      {
+        key: 'Ant Design Pro',
+        title: 'Ant Design Pro',
+        href: 'https://pro.ant.design',
+        blankTarget: true,
+      },
+      {
+        key: 'github',
+        title: <Icon type="github" />,
+        href: 'https://github.com/ant-design/ant-design-pro',
+        blankTarget: true,
+      },
+      {
+        key: 'Ant Design',
+        title: 'Ant Design',
+        href: 'https://ant.design',
+        blankTarget: true,
+      },
+    ]}
+  />
+);
+
+const footerRender = () => {
   if (!isAntDesignPro()) {
-    return (
-      <>
-        {/* {defaultDom} */}
-        <div
-          style={{
-            padding: '0px 24px 24px',
-            textAlign: 'center',
-          }}
-        >
-          {/* TODO: refer defaultDom design */}
-          Doclabel HS
-        </div>
-      </>
-    );
+    return defaultFooterDom;
   }
 
   return (
     <>
-      {defaultDom}
+      {defaultFooterDom}
       <div
         style={{
           padding: '0px 24px 24px',
@@ -62,7 +90,15 @@ const footerRender = (_, defaultDom) => {
 };
 
 const ProjectLayout = props => {
-  const { dispatch, children, settings, match } = props;
+  const {
+    dispatch,
+    children,
+    settings,
+    match,
+    location = {
+      pathname: '/app',
+    },
+  } = props;
   /**
    * constructor
    */
@@ -89,6 +125,10 @@ const ProjectLayout = props => {
       });
     }
   };
+  // get children authority
+  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+    authority: undefined,
+  };
 
   return (
     <ProLayout
@@ -110,16 +150,7 @@ const ProjectLayout = props => {
 
         return <Link to={path}>{defaultDom}</Link>;
       }}
-      breadcrumbRender={(routers = []) => [
-        // {
-        //   path: '/project/dashboard',
-        //   breadcrumbName: formatMessage({
-        //     id: 'menu.projectHome',
-        //     defaultMessage: 'Project',
-        //   }),
-        // },
-        ...routers,
-      ]}
+      breadcrumbRender={(routers = []) => [...routers]}
       // Antd Breadcrumb
       itemRender={(route, params, routes, paths) => {
         const first = routes.indexOf(route) === 0;
@@ -133,9 +164,12 @@ const ProjectLayout = props => {
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
       {...props}
-      // {...settings}
+      {...settings}
+      layout="sidemenu"
     >
-      {children}
+      <Authorized authority={authorized.authority} noMatch={noMatch}>
+        {children}
+      </Authorized>
     </ProLayout>
   );
 };

@@ -7,12 +7,25 @@ import ProLayout from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
+import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro } from '@/utils/utils';
+import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 
+const noMatch = (
+  <Result
+    status="403"
+    title="403"
+    subTitle="Sorry, you are not authorized to access this page."
+    extra={
+      <Button type="primary">
+        <Link to="/user/login">Go Login</Link>
+      </Button>
+    }
+  />
+);
 /**
  * use Authorized check all menu item
  */
@@ -22,14 +35,14 @@ const menuDataRender = menuList =>
     return Authorized.check(item.authority, localItem, null);
   });
 
-const footerRender = (_, defaultDom) => {
+const footerRender = (_, defaultFooterDom) => {
   if (!isAntDesignPro()) {
-    return defaultDom;
+    return defaultFooterDom;
   }
 
   return (
     <>
-      {defaultDom}
+      {defaultFooterDom}
       <div
         style={{
           padding: '0px 24px 24px',
@@ -49,7 +62,14 @@ const footerRender = (_, defaultDom) => {
 };
 
 const BasicLayout = props => {
-  const { dispatch, children, settings } = props;
+  const {
+    dispatch,
+    children,
+    settings,
+    location = {
+      pathname: '/app',
+    },
+  } = props;
   /**
    * constructor
    */
@@ -77,6 +97,11 @@ const BasicLayout = props => {
     }
   };
 
+  // get children authority
+  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+    authority: undefined,
+  };
+
   return (
     <ProLayout
       logo={logo}
@@ -90,7 +115,7 @@ const BasicLayout = props => {
       }}
       breadcrumbRender={(routers = []) => [
         {
-          path: '/',
+          path: '/app',
           breadcrumbName: formatMessage({
             id: 'menu.home',
             defaultMessage: 'Home',
@@ -106,14 +131,16 @@ const BasicLayout = props => {
           <span>{route.breadcrumbName}</span>
         );
       }}
-      footerRender={footerRender}
+      // footerRender={footerRender}
       menuDataRender={menuDataRender}
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
       {...props}
       {...settings}
     >
-      {children}
+      <Authorized authority={authorized.authority} noMatch={noMatch}>
+        {children}
+      </Authorized>
     </ProLayout>
   );
 };
