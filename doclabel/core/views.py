@@ -120,14 +120,10 @@ class LabelList(generics.ListCreateAPIView):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
         return project.labels
 
+    # TODO: check working or not
     def create(self, request, *args, **kwargs):
-        request_data = request.data
-        request_data.update({"project": kwargs['project_id']})
-        serializer = self.get_serializer(data=request_data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        request.data["project"] = self.kwargs["project_id"]
+        return super().create(request, args, kwargs)
 
     def perform_create(self, serializer):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -189,7 +185,7 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class AnnotationList(generics.ListCreateAPIView):
     pagination_class = None
-    permission_classes = (IsProjectUser)
+    permission_classes = (IsProjectUser,)
 
     def get_serializer_class(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])

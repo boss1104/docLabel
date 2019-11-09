@@ -37,6 +37,11 @@ urlpatterns = [
         DocumentDetail.as_view(),
         name="doc_detail",
     ),
+    path(
+        "projects/<int:project_id>/docs/upload/",
+        TextUploadAPI.as_view(),
+        name="doc_uploader",
+    ),
     # WORKDONE
     path(
         "projects/<int:project_id>/docs/<int:doc_id>/approve-labels/",
@@ -52,11 +57,6 @@ urlpatterns = [
         "projects/<int:project_id>/docs/<int:doc_id>/annotations/<int:annotation_id>/",
         AnnotationDetail.as_view(),
         name="annotation_detail",
-    ),
-    path(
-        "projects/<int:project_id>/docs/upload/",
-        TextUploadAPI.as_view(),
-        name="doc_uploader",
     ),
     path(
         "projects/<int:project_id>/docs/download/",

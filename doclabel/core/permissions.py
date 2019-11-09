@@ -50,7 +50,7 @@ class IsProjectOwnerOrReadOnly(IsProjectOwner):
 #         # Instance must have an attribute named `owner`.
 #         return project.owner == user
 
-
+# TODO: check permissions
 class IsAdminUserAndWriteOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
