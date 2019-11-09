@@ -22,6 +22,7 @@ const GlobalHeaderRight = props => {
         placeholder={formatMessage({
           id: 'component.globalHeader.search',
         })}
+        defaultValue="umi ui"
         dataSource={[
           formatMessage({
             id: 'component.globalHeader.search.example1',
@@ -33,12 +34,12 @@ const GlobalHeaderRight = props => {
             id: 'component.globalHeader.search.example3',
           }),
         ]}
-        onSearch={value => {
-          console.log('input', value);
-        }}
-        onPressEnter={value => {
-          console.log('enter', value);
-        }}
+        // onSearch={value => {
+        //   console.log('input', value);
+        // }}
+        // onPressEnter={value => {
+        //   console.log('enter', value);
+        // }}
       />
       <Tooltip
         title={formatMessage({
