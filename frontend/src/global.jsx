@@ -3,15 +3,6 @@ import React from 'react';
 import { formatMessage } from 'umi-plugin-react/locale';
 import defaultSettings from '../config/defaultSettings';
 
-// const configMessage = () => {
-//   const height = window.innerHeight;
-//   message.config({ top: height - 64 });
-// };
-
-// configMessage();
-
-// window.addEventListener('resize', () => configMessage());
-
 const { pwa } = defaultSettings; // if pwa is true
 
 if (pwa) {
@@ -53,7 +44,8 @@ if (pwa) {
           },
           [channel.port2],
         );
-      }); // Refresh current page to use the updated HTML and other assets after SW has skiped waiting
+      });
+      // Refresh current page to use the updated HTML and other assets after SW has skiped waiting
 
       window.location.reload(true);
       return true;

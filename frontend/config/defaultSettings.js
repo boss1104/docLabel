@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: 'Documents Labelling',
+  title: 'Doclabel',
   pwa: false,
   iconfontUrl: '',
 };

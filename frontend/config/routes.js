@@ -85,12 +85,7 @@ export default [
             path: '/projects/:id/guide',
             component: './project/guide',
           },
-          {
-            name: 'test',
-            icon: 'smile',
-            path: '/projects/:id/test',
-            component: './project/test',
-          },
+
           // {
           //   component: './404',
           // },
@@ -116,6 +111,12 @@ export default [
             icon: 'monitor',
             path: '/explore',
             component: './explore',
+          },
+          {
+            name: 'annotation',
+            hideInMenu: true,
+            path: '/annotation/projects/:id',
+            component: './annotation',
           },
           {
             name: 'exception',
