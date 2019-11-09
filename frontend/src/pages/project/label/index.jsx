@@ -1,15 +1,12 @@
 import React from 'react';
-import { Menu, Button, message, Card, Divider, Table, Popconfirm } from 'antd';
+import { Button, message, Card, Divider, Table, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 
 import styles from './index.less';
 import CreateForm from './components/CreateForm';
 
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
+// TODO: make color random
 
 export default connect(({ project, label, loading }) => ({
   project,
@@ -28,13 +25,10 @@ export default connect(({ project, label, loading }) => ({
   const formRef = React.useRef(null);
   // Effects
   React.useEffect(() => {
-    if (projectId) {
-      dispatch({
-        type: 'label/fetch',
-        payload: projectId,
-      });
-    }
-  }, [projectId]);
+    dispatch({
+      type: 'label/fetch',
+    });
+  }, []);
 
   // Functions
   const callBackFormError = errors => {
@@ -143,7 +137,7 @@ export default connect(({ project, label, loading }) => ({
       title: 'Prefix',
       dataIndex: 'prefix_key',
       align: 'right',
-      render: text => text.toUpperCase(),
+      render: text => text && text.toUpperCase(),
     },
     {
       title: 'Key',
@@ -177,13 +171,6 @@ export default connect(({ project, label, loading }) => ({
       ),
     },
   ];
-
-  const menu = (
-    <Menu onClick={() => {}} selectedKeys={[]}>
-      <Menu.Item key="remove">Remove</Menu.Item>
-      <Menu.Item key="approval">Approval</Menu.Item>
-    </Menu>
-  );
 
   return (
     <PageHeaderWrapper

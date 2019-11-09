@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button, Card, Divider, Dropdown, Form, Icon, Menu, Popconfirm, message } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -19,31 +20,25 @@ export default connect(({ project, task, loading }) => ({
   loading: loading.models.task,
 }))(
   Form.create()(props => {
-    const {
-      project,
-      task: { data },
-      loading,
-      form,
-      dispatch,
-    } = props;
+    const { project, task, loading, form, dispatch } = props;
     const { currentProject } = project;
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [formValues, setFormValues] = React.useState({});
 
-    const fetchTask = filters => {
-      dispatch({
-        type: 'task/fetch',
-        payload: {
-          projectId: currentProject.id,
-          params: filters,
-        },
-      });
+    const fetchTask = async filters => {
+      try {
+        const res = await dispatch({
+          type: 'task/fetch',
+          payload: {
+            params: { page: 1 },
+          },
+        });
+        console.log('TCL: res', res);
+      } catch (error) {
+        console.log('TCL: error', error);
+      }
     };
-
-    React.useEffect(() => {
-      if (currentProject.id) fetchTask();
-    }, [currentProject.id]);
 
     const handleRemoveTask = record => {
       dispatch({
@@ -199,7 +194,7 @@ export default connect(({ project, task, loading }) => ({
               rowKey={record => record.id}
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={task}
               columns={columns}
               onSelectRow={handleSelectRows}
               onChange={handleStandardTableChange}
