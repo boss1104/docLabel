@@ -1,0 +1,25 @@
+@import '~antd/es/style/themes/default.less';
+
+.main {
+  margin: -24px;
+
+  .content {
+    padding: 40px;
+    :global(.ant-tag) {
+      margin-right: 24px;
+      padding: 0 15px;
+      font-size: 14px;
+      line-height: 32px;
+
+      span {
+        margin-right: 7px;
+      }
+      :global(.anticon-close) {
+        font-size: 14px;
+      }
+    }
+    :global(.ant-pagination-simple-pager) {
+      height: 40px;
+    }
+  }
+}
