@@ -1,35 +1,36 @@
-import { queryLabel } from './service';
+import { addAnno, removeAnno } from './service';
 import { arrayToObject } from '@/utils/utils';
 
 export default {
   namespace: 'annotation',
   state: {
-    tasksList: {},
-    taskPagination: {},
-    labelsList: {},
+    // taskid: [{}]
+    annotation: {},
   },
   effects: {
-    *queryAnnotation({ payload }, { call, put, take }) {
+    *addAnno({ payload }, { call, put, select }) {
+      const projectId = yield select(state => state.project.currentProject.id);
+      const { taskId, data } = payload;
       try {
-        const label = yield take('label/save');
-        const task = yield take('task/save');
-        const ret = {
-          tasksList: arrayToObject(task.payload.list, 'id'),
-          taskPagination: task.payload.pagination,
-          labelsList: arrayToObject(label.payload, 'id'),
-        };
-        yield put({
-          type: 'saveAnnotation',
-          payload: ret,
-        });
-        return ret;
+        const res = yield call(addAnno, { projectId, taskId, data });
+        return res;
+      } catch (error) {
+        return error.data;
+      }
+    },
+    *removeAnno({ payload }, { call, put, select }) {
+      const projectId = yield select(state => state.project.currentProject.id);
+      const { taskId, annotationId } = payload;
+      try {
+        const res = yield call(removeAnno, { projectId, taskId, annotationId });
+        return res;
       } catch (error) {
         return error.data;
       }
     },
   },
   reducers: {
-    saveAnnotation: (state, { payload = [] }) => ({
+    saveAnnotation: (state, { payload = {} }) => ({
       ...state,
       ...payload,
     }),

@@ -9,3 +9,16 @@ export async function queryLabel({ projectId, params }) {
     params,
   });
 }
+
+export async function addAnno({ projectId, taskId, data }) {
+  return request(`/api/projects/${projectId}/docs/${taskId}/annotations/`, {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function removeAnno({ projectId, taskId, annotationId }) {
+  return request(`/api/projects/${projectId}/docs/${taskId}/annotations/${annotationId}/`, {
+    method: 'DELETE',
+  });
+}

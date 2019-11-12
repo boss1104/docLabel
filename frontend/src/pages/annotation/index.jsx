@@ -1,15 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-import React from 'react';
+import React, { useRef } from 'react';
 import { connect } from 'dva';
-import { Layout, Button, Row, Col, Progress, Card, Tag, Typography, Spin, Icon } from 'antd';
-import { useLogger, useSetState } from 'react-use';
+import { Layout, Button, Row, Col, Progress, Card, Tag, Typography, Spin, Icon, Empty } from 'antd';
 import { router } from 'umi';
 
 import styles from './index.less';
 import LabelPreview from './components/LabelPreview';
 import SiderList from './components/SiderList';
 import TaskPagination from './components/TaskPagination';
+import { arrayToObject } from '@/utils/utils';
+import TextClassificationProject from './components/AnnotationArea/TextClassificationProject';
+import SequenceLabelingProject from './components/AnnotationArea/SequenceLabelingProject';
+import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
 
 const { Content } = Layout;
 const pageSize = 4;
@@ -23,12 +24,15 @@ const getSidebarTotal = (total, limit) => {
 
 const getSidebarPage = (offset, limit) => (limit !== 0 ? Math.ceil(offset / limit) + 1 : 0);
 
+let oldData;
+
 const Annotation = connect(({ project, task, label, loading }) => ({
   project,
   task,
   taskLoading: loading.effects['task/fetch'],
   label,
   labelLoading: loading.effects['label/fetch'],
+  annoLoading: loading.models.annotation,
 }))(props => {
   const {
     dispatch,
@@ -38,32 +42,27 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     label: { list: labelList },
     labelLoading,
     location: { query },
+    annoLoading,
   } = props;
-  // useLogger('Annotation', taskLoading);
 
   /**
    * States
    */
-  const [{ searchQuery, annotations, collapsed, selectedKeys }, setState] = useSetState({
-    searchQuery: '',
-    annotations: [],
-    collapsed: false,
-    selectedKeys: [],
-  });
 
+  const [collapsed, setCollapsed] = React.useState(false);
+  const [annotations, setAnnotations] = React.useState({});
   const [sidebarTotal, setSidebarTotal] = React.useState(0);
   const [sidebarPage, setSidebarPage] = React.useState(0);
-  const [paginationType, setPaginationType] = React.useState('next');
+  const [paginationType, setPaginationType] = React.useState('');
+  const [searchQuery, setSearchQuery] = React.useState('');
   const [pageNumber, setPageNumber] = React.useState(0);
-
-  const getLimitFromNext = next => {};
+  const [offset, setOffset] = React.useState(0);
 
   /**
-   * Constructor
+   * Handler
    */
-
   const queryLabel = async () => {
-    await dispatch({
+    const res = await dispatch({
       type: 'label/fetch',
     });
   };
@@ -71,29 +70,31 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   const queryTask = async () => {
     try {
       const q = searchQuery ? { q: searchQuery } : {};
+      // doc_annotations__isnull=${state}
       const res = await dispatch({
         type: 'task/fetch',
         payload: { params: { offset: query.offset, ...q } },
       });
-
+      const anno = {};
+      Object.entries(res.list).forEach(([key, val]) => {
+        anno[key] = val.annotations;
+      });
+      // console.log('[DEBUG]: queryTask -> anno', anno);
       // Then
-
-      const { offset = 0, limit } = query;
+      const { offset: queryOffset = 0, limit } = query;
       const { next, previous, total } = res.pagination;
 
       const limitCount = next || limit ? query.limit : total;
 
       setSidebarTotal(getSidebarTotal(total, limitCount));
-      setSidebarPage(getSidebarPage(offset, limitCount));
-
+      setSidebarPage(getSidebarPage(queryOffset, limitCount));
+      setAnnotations(anno);
       if (paginationType === 'next') {
         setPageNumber(0);
       } else if (paginationType === 'prev') {
         setPageNumber(Object.keys(res.list).length - 1);
       }
-      // setState({
-      //   selectedKeys: [Object.keys(res.list)[pageNumber]],
-      // });
+      setOffset(Number(queryOffset));
     } catch (error) {
       console.log('TCL: fetch -> error', error);
     }
@@ -108,45 +109,37 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     queryTask();
   }, [query]);
 
-  const getColor = text => {
-    // const labelColor = labelsList.find(l => l.text === text);
-    // return labelColor.background_color;
-  };
-
   const handleChangeKey = key => {
-    // setSelectedKeys([key]);
+    setPageNumber(Number(key));
   };
 
   const handleChangeSearch = value => {
-    // setSearchQuery(value);
+    setSearchQuery(value);
   };
 
-  const handleNextPagination = async () => {
-    console.log('[DEBUG]: handleNextPagination -> handleNextPagination');
+  const handleNextPagination = () => {
     const { next } = pagination;
     if (next) {
-      queryTask();
-      setPageNumber(0);
-    } else {
-      setPageNumber(Object.keys(taskList).length - 1);
+      setPaginationType('next');
+      router.push({
+        query: next,
+      });
     }
     // resetScrollbar();
   };
 
-  const handlePrevPagination = async () => {
-    console.log('[DEBUG]: handlePrevPagination -> handlePrevPagination');
+  const handlePrevPagination = () => {
     const { previous } = pagination;
-
     if (previous) {
-      queryTask();
-      setPageNumber(Object.keys(taskList).length - previous.limit);
-    } else {
-      setPageNumber(0);
+      setPaginationType('next');
+      router.push({
+        query: previous,
+      });
     }
     // resetScrollbar();
   };
 
-  const handleNextPage = async () => {
+  const handleNextPage = () => {
     const page = pageNumber + 1;
     const { length } = Object.keys(taskList);
     const { next } = pagination;
@@ -161,11 +154,11 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       }
     } else {
       setPageNumber(page);
-      // this.resetScrollbar();
+      // resetScrollbar()
     }
   };
 
-  const handlePrevPage = async () => {
+  const handlePrevPage = () => {
     const page = pageNumber - 1;
     const { previous } = pagination;
     if (page === -1) {
@@ -180,11 +173,76 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     } else {
       setPageNumber(page);
     }
+    // resetScrollbar();
   };
+  const taskId = React.useMemo(() => Object.keys(taskList)[pageNumber], [pageNumber, taskList]);
 
+  // console.log('data===oldData ', memoHotkey === oldData);
+  // oldData = memoHotkey;
+
+  // console.log('[DEBUG]: taskId', taskId);
   /**
    * Init variables
    */
+
+  const handleRemoveLabel = async annotationId => {
+    console.log('[DEBUG]: handleRemoveLabel -> annotationId', annotationId);
+    const res = await dispatch({
+      type: 'annotation/removeAnno',
+      payload: {
+        taskId,
+        annotationId,
+      },
+    });
+    const newAnno = annotations[taskId].filter(val => val.id !== Number(annotationId));
+    console.log('[DEBUG]: handleRemoveLabel -> newAnno', newAnno);
+    setAnnotations({ ...annotations, [taskId]: newAnno });
+  };
+
+  const handleAddLabel = async data => {
+    const res = await dispatch({
+      type: 'annotation/addAnno',
+      payload: {
+        taskId,
+        data,
+      },
+    });
+    console.log('[DEBUG]: res', res);
+    setAnnotations({ ...annotations, [taskId]: [...annotations[taskId], res] });
+  };
+
+  const AnnotationArea = {
+    TextClassificationProject: (
+      <TextClassificationProject
+        labelList={labelList}
+        annoList={annotations[taskId]}
+        loading={annoLoading}
+        task={taskId ? taskList[taskId] : null}
+        handleRemoveLabel={handleRemoveLabel}
+        handleAddLabel={handleAddLabel}
+      />
+    ),
+    SequenceLabelingProject: (
+      <SequenceLabelingProject
+        labelList={labelList}
+        annoList={annotations[taskId]}
+        loading={annoLoading}
+        task={taskId ? taskList[taskId] : null}
+        handleRemoveLabel={handleRemoveLabel}
+        handleAddLabel={handleAddLabel}
+      />
+    ),
+    Seq2seqProject: (
+      <Seq2seqProject
+        labelList={labelList}
+        annoList={annotations[taskId]}
+        loading={annoLoading}
+        task={taskId ? taskList[taskId] : null}
+        handleRemoveLabel={handleRemoveLabel}
+        handleAddLabel={handleAddLabel}
+      />
+    ),
+  };
 
   return (
     <div className={styles.main}>
@@ -192,10 +250,10 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         <SiderList
           // collapsed={collapsed}
           onChangeKey={handleChangeKey}
-          selectedKeys={selectedKeys}
           onSearchChange={handleChangeSearch}
           pageSize={sidebarTotal}
           page={sidebarPage}
+          pageNumber={pageNumber}
         />
         <Layout>
           <Spin spinning={labelLoading || taskLoading} size="small">
@@ -221,65 +279,40 @@ const Annotation = connect(({ project, task, label, loading }) => ({
                   </Col>
                 </Row>
               </Card>
-              <Card>
-                <Row type="flex">
-                  <Col span={2}>Labels: </Col>
-                  <Col span={22}>
-                    <Row type="flex" gutter={[24, 16]}>
-                      {labelList &&
-                        Object.keys(labelList).map(key => (
-                          <Col>
-                            <LabelPreview key={key} label={labelList[key]} onClick={() => {}} />
-                          </Col>
-                        ))}
-                    </Row>
-                  </Col>
-                </Row>
-              </Card>
-              <Card>
-                <Row type="flex">
-                  <Col span={2}>Classification: </Col>
-                  <Col span={22}>
-                    {annotations.length !== 0 &&
-                      annotations.map(val => (
-                        <Tag
-                          key={val}
-                          color={getColor(val)}
-                          closable
-                          onClose={() => {
-                            // const tags = chosenLabels.filter(tag => tag !== val);
-                            // setChosenLabels(tags);
-                          }}
-                        >
-                          <span>{val}</span>
-                        </Tag>
-                      ))}
-                    {!(annotations.length !== 0) && <span>None</span>}
-                  </Col>
-                </Row>
-              </Card>
+              {currentProject && AnnotationArea[currentProject.project_type]}
               <Card>
                 <Row type="flex" justify="center">
                   <Col>
-                    {Object.keys(taskList)[pageNumber] && (
-                      <Typography.Title level={3}>
-                        {taskList[Object.keys(taskList)[pageNumber]].text}
-                      </Typography.Title>
-                    )}
+                    <Button
+                      title="Previous Page"
+                      size="large"
+                      type="default"
+                      style={{ margin: '0 16px' }}
+                      disabled={!pagination.previous}
+                      onClick={handlePrevPagination}
+                    >
+                      <Icon type="double-left" />
+                    </Button>
                   </Col>
-                </Row>
-              </Card>
-              <Card>
-                <Row type="flex" justify="center">
                   <Col>
                     <TaskPagination
                       onNextPage={handleNextPage}
                       onPrevPage={handlePrevPage}
                       total={pagination.total}
-                      current={
-                        query.offset ? Number(query.offset) + pageNumber + 1 : pageNumber + 1
-                      }
+                      current={offset + pageNumber + 1}
                     />
+                  </Col>
+                  <Col>
+                    <Button
+                      title="Next Page"
+                      size="large"
+                      type="default"
+                      style={{ margin: '0 16px' }}
+                      disabled={!pagination.next}
+                      onClick={handleNextPagination}
+                    >
+                      <Icon type="double-right" />
+                    </Button>
                   </Col>
                 </Row>
               </Card>

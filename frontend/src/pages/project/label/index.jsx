@@ -171,7 +171,11 @@ export default connect(({ project, label, loading }) => ({
       ),
     },
   ];
-
+  const dataSourceTranform = React.useMemo(() => {
+    const list = dataSource ? Object.entries(dataSource).map(([key, val]) => val) : [];
+    console.log('[DEBUG]: list', list);
+    return list;
+  }, [dataSource]);
   return (
     <PageHeaderWrapper
       content={
@@ -185,7 +189,7 @@ export default connect(({ project, label, loading }) => ({
         <Table
           rowKey={record => record.id}
           loading={loading}
-          dataSource={dataSource}
+          dataSource={dataSourceTranform}
           columns={columns}
         />
       </Card>

@@ -7,6 +7,7 @@ import CreateForm from './components/CreateForm';
 import StandardTable from './components/StandardTable';
 import UpdateForm from './components/UpdateForm';
 import styles from './index.less';
+import TagSelect from '@/pages/explore/components/TagSelect';
 
 const getValue = obj =>
   Object.keys(obj)
@@ -25,6 +26,15 @@ export default connect(({ project, task, loading }) => ({
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [formValues, setFormValues] = React.useState({});
+
+    const taskTransform = React.useMemo(() => {
+      const list = task.list ? Object.entries(task.list).map(([key, val]) => val) : [];
+      console.log('[DEBUG]: list', list);
+      return {
+        ...task,
+        list,
+      };
+    }, [task]);
 
     const fetchTask = async filters => {
       try {
@@ -194,7 +204,7 @@ export default connect(({ project, task, loading }) => ({
               rowKey={record => record.id}
               selectedRows={selectedRows}
               loading={loading}
-              data={task}
+              data={taskTransform}
               columns={columns}
               onSelectRow={handleSelectRows}
               onChange={handleStandardTableChange}

@@ -9,7 +9,10 @@ export default function(props) {
   /**
    * Init variables
    */
-  const { label, onClick } = props;
+  const { label, onClick = () => {} } = props;
+  if (!label) {
+    return null;
+  }
   const { text, prefixKey, suffixKey, backgroundColor, textColor } = camelcaseKeys(label);
 
   const isLongText = text.length > MAX_LEN;

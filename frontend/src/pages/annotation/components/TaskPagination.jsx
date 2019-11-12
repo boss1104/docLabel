@@ -5,13 +5,14 @@ function TaskPagination({ onNextPage, onPrevPage, total, current }) {
   return (
     <Pagination
       simple
-      defaultCurrent={current}
+      current={current}
       defaultPageSize={1}
       total={total}
       itemRender={(page, type, originalElement) => {
         if (type === 'next') {
           return (
             <Button
+              title="Next Task"
               size="large"
               type="default"
               style={{ margin: '0 16px' }}
@@ -25,6 +26,7 @@ function TaskPagination({ onNextPage, onPrevPage, total, current }) {
         if (type === 'prev') {
           return (
             <Button
+              title="Previous Task"
               size="large"
               type="default"
               style={{ margin: '0 16px' }}
@@ -37,7 +39,7 @@ function TaskPagination({ onNextPage, onPrevPage, total, current }) {
         }
         return originalElement;
       }}
-    />
+    ></Pagination>
   );
 }
 export default TaskPagination;

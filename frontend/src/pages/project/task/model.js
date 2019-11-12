@@ -21,8 +21,8 @@ const Model = {
           list: arrayToObject(response.results, 'id'),
           pagination: {
             total: response.count,
-            next: getPageQuery(response.next),
-            previous: getPageQuery(response.previous),
+            next: response.next && getPageQuery(response.next),
+            previous: response.previous && getPageQuery(response.previous),
           },
         };
         yield put({

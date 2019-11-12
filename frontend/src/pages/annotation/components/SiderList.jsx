@@ -18,9 +18,9 @@ const SiderList = connect(({ project, task, loading }) => ({
     taskLoading,
     // Parent props
     onChangeKey,
-    selectedKeys,
     pageSize,
     page,
+    pageNumber,
   } = props;
   // console.log('SiderList render');
 
@@ -71,15 +71,16 @@ const SiderList = connect(({ project, task, loading }) => ({
           <Menu
             theme="dark"
             mode="inline"
-            selectedKeys={selectedKeys}
+            selectedKeys={[`${pageNumber}`]}
             onClick={({ key }) => {
               if (onChangeKey) onChangeKey(key);
             }}
           >
             <Menu.Divider />
             {list &&
-              Object.keys(list).map(key => (
-                <Menu.Item key={key}>
+              Object.keys(list).map((key, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Menu.Item key={index}>
                   <Icon type="check" />
                   <span>{list[key].text.slice(0, 60)}</span>
                 </Menu.Item>
