@@ -22,3 +22,10 @@ export async function removeAnno({ projectId, taskId, annotationId }) {
     method: 'DELETE',
   });
 }
+
+export async function editAnno({ projectId, taskId, annotationId, data }) {
+  return request(`/api/projects/${projectId}/docs/${taskId}/annotations/${annotationId}/`, {
+    method: 'PUT',
+    data,
+  });
+}

@@ -1,5 +1,4 @@
-import { addAnno, removeAnno } from './service';
-import { arrayToObject } from '@/utils/utils';
+import { addAnno, removeAnno, editAnno } from './service';
 
 export default {
   namespace: 'annotation',
@@ -13,6 +12,16 @@ export default {
       const { taskId, data } = payload;
       try {
         const res = yield call(addAnno, { projectId, taskId, data });
+        return res;
+      } catch (error) {
+        return error.data;
+      }
+    },
+    *editAnno({ payload }, { call, put, select }) {
+      const projectId = yield select(state => state.project.currentProject.id);
+      const { taskId, annotationId, data } = payload;
+      try {
+        const res = yield call(editAnno, { projectId, taskId, annotationId, data });
         return res;
       } catch (error) {
         return error.data;

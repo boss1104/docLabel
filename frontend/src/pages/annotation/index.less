@@ -27,5 +27,20 @@
     :global(.ant-empty-normal) {
       margin: 8px 0;
     }
+
+    :global(.ant-input) {
+      font-size: 24px;
+    }
+    :global(.ant-list-item) {
+      cursor: pointer;
+      button {
+        display: none;
+      }
+      &:hover {
+        button {
+          display: block;
+        }
+      }
+    }
   }
 }

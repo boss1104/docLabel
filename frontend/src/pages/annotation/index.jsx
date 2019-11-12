@@ -211,6 +211,20 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     setAnnotations({ ...annotations, [taskId]: [...annotations[taskId], res] });
   };
 
+  const handleEditLabel = async (annotationId, data) => {
+    const res = await dispatch({
+      type: 'annotation/editAnno',
+      payload: {
+        taskId,
+        annotationId,
+        data,
+      },
+    });
+    console.log('[DEBUG]: res', res);
+    const newAnno = annotations[taskId].map(val => (res.id !== val.id ? val : res));
+    setAnnotations({ ...annotations, [taskId]: newAnno });
+  };
+
   const AnnotationArea = {
     TextClassificationProject: (
       <TextClassificationProject
@@ -240,6 +254,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         task={taskId ? taskList[taskId] : null}
         handleRemoveLabel={handleRemoveLabel}
         handleAddLabel={handleAddLabel}
+        handleEditLabel={handleEditLabel}
       />
     ),
   };
