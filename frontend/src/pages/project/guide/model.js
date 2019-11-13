@@ -1,25 +1,27 @@
-import { fetch } from './service';
+import { updateGuideline } from './service';
 
 const Model = {
   namespace: 'guide',
-  state: {
-    status: undefined
-  },
+  state: {},
   effects: {
-    *fetch({ payload }, { call, put, select }) {
-      // const response = yield call(fetch, payload);
-      // yield put({
-      //   type: 'changeState',
-      //   payload: {
-      //     ...response,
-      //   },
-      // });
-    }
+    *updateGuideline({ payload }, { call, put, select, take }) {
+      let projectId = yield select(state => state.project.currentProject.id);
+      if (!projectId) {
+        const action = yield take('project/saveCurrentProject');
+        projectId = action.payload.id;
+      }
+      const response = yield call(updateGuideline, { projectId, data: payload });
+      yield put({
+        type: 'project/saveCurrentProject',
+        payload: response,
+      });
+      return response;
+    },
   },
   reducers: {
-    changeState(state, action) {
+    changeGuide(state, action) {
       return { ...state, ...action.payload };
-    }
-  }
+    },
+  },
 };
 export default Model;

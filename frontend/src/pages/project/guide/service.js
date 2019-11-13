@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 
-export function fetch(values) {
-  return request('/api/', {
-    method: 'POST',
-    data: values,
+export async function updateGuideline({ projectId, data }) {
+  return request(`/api/projects/${projectId}/`, {
+    method: 'PATCH',
+    data,
   });
 }

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Menu, Icon, Layout, Input, Spin } from 'antd';
+import { Button, Menu, Icon, Layout, Input, Spin, Row, Col, Typography, Descriptions } from 'antd';
 import { connect } from 'dva';
+import { router, Link } from 'umi';
 
 const { Sider } = Layout;
 const { Search } = Input;
@@ -21,9 +22,11 @@ const SiderList = connect(({ project, task, loading }) => ({
     pageSize,
     page,
     pageNumber,
+    annotations = [],
   } = props;
   // console.log('SiderList render');
 
+  const annoList = Object.values(annotations) || [];
   /**
    * Handle Function
    */
@@ -43,19 +46,23 @@ const SiderList = connect(({ project, task, loading }) => ({
       onCollapse={(collapsed, type) => {
         console.log(collapsed, type);
       }}
-      width={400}
+      width={320}
+      style={{
+        overflow: 'auto',
+        height: '100vh',
+        position: 'fixed',
+        left: 0,
+      }}
     >
       <Spin spinning={projectLoading} size="small">
         <section>
-          <h3>
-            Project Info
-            <Button type="primary" onClick={() => {}}>
-              Go to project setting (If project admin)
-            </Button>
-          </h3>
-          <div>
-            <div>Project name</div>
-            {currentProject.name}
+          <div style={{ margin: '24px 24px 0' }}>
+            <Descriptions title="Project Info" size="middle" column={1}>
+              <Descriptions.Item label="Project Name">{currentProject.name}</Descriptions.Item>
+              <Descriptions.Item label="Settings">
+                <Link to={`/projects/${currentProject.id}/dashboard`}>Edit</Link>
+              </Descriptions.Item>
+            </Descriptions>
           </div>
         </section>
       </Spin>
@@ -81,8 +88,14 @@ const SiderList = connect(({ project, task, loading }) => ({
               Object.keys(list).map((key, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <Menu.Item key={index}>
-                  <Icon type="check" />
-                  <span>{list[key].text.slice(0, 60)}</span>
+                  <Row gutter={16} type="flex">
+                    <Col span={2}>
+                      {annoList[index] && annoList[index].length !== 0 && <Icon type="check" />}
+                    </Col>
+                    <Col span={22}>
+                      <Typography.Paragraph ellipsis>{list[key].text}</Typography.Paragraph>
+                    </Col>
+                  </Row>
                 </Menu.Item>
               ))}
           </Menu>

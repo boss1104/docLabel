@@ -1,8 +1,7 @@
 import request from '@/utils/request';
 
-export function fetch(values) {
-  return request('requestUrl', {
-    method: 'POST',
-    data: values,
+export async function fetchStatistics({ projectId }) {
+  return request(`/api/projects/${projectId}/statistics/`, {
+    method: 'GET',
   });
 }

@@ -27,7 +27,7 @@ function TextClassificationProject({
       <Card>
         <Row type="flex">
           <Col span={2}>Classification: </Col>
-          <Col span={22}>
+          <Col span={24}>
             <Spin spinning={!!loading}>
               <Row type="flex" gutter={[0, 16]} justify="center">
                 {annoList.length > 0 &&

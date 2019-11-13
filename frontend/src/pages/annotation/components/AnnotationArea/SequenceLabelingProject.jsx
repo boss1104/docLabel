@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Tooltip, Spin, Card } from 'antd';
+import { Row, Col, Tooltip, Spin, Card, Icon } from 'antd';
 import { TextAnnotator, TokenAnnotator } from 'react-text-annotate';
 import LabelList from '../LabelList';
 import LabelPreview from '../LabelPreview';
@@ -75,9 +75,9 @@ function SequenceLabelingProject({
               <TokenAnnotator
                 style={{
                   fontFamily: 'IBM Plex Sans',
-                  maxWidth: 500,
-                  lineHeight: 1.5,
+                  lineHeight: 2,
                   fontSize: 20,
+                  padding: 0.2,
                 }}
                 tokens={task.text.split(' ')}
                 value={value}
@@ -89,10 +89,16 @@ function SequenceLabelingProject({
                 renderMark={props => (
                   <Tooltip title={props.tag.text}>
                     <mark
-                      style={{ backgroundColor: props.tag.background_color }}
+                      style={{ backgroundColor: props.tag.background_color, cursor: 'pointer' }}
                       onClick={() => props.onClick({ start: props.start, end: props.end })}
                     >
-                      {props.content}
+                      {props.content}{' '}
+                      {
+                        <Icon
+                          type="close-circle"
+                          style={{ fontSize: 14, lineHeight: 2, color: '#444457' }}
+                        />
+                      }
                     </mark>{' '}
                   </Tooltip>
                 )}

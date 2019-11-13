@@ -1,24 +1,34 @@
-import { fetch } from './service';
+import { fetchStatistics } from './service';
 
 const Model = {
   namespace: 'dashboard',
   state: {
-    status: undefined,
+    statistics: {},
   },
   effects: {
-    *fetch({ payload }, { call, put, select }) {
-      // const response = yield call(fetch, payload);
-      // yield put({
-      //   type: 'changeProjects',
-      //   payload: {
-      //     ...response,
-      //     list: response.results,
-      //   },
-      // });
+    *fetchStatistics({ payload }, { call, put, select, take }) {
+      let projectId = yield select(state => state.project.currentProject.id);
+      if (!projectId) {
+        const action = yield take('project/saveCurrentProject');
+        projectId = action.payload.id;
+      }
+      try {
+        const response = yield call(fetchStatistics, { projectId });
+        const ret = { ...response };
+        yield put({
+          type: 'changeDashboard',
+          payload: {
+            statistics: ret,
+          },
+        });
+        return ret;
+      } catch (error) {
+        return error.data;
+      }
     },
   },
   reducers: {
-    changeState(state, action) {
+    changeDashboard(state, action) {
       return { ...state, ...action.payload };
     },
   },

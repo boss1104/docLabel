@@ -1,16 +1,16 @@
 import React, { useRef } from 'react';
 import { connect } from 'dva';
-import { Layout, Button, Row, Col, Progress, Card, Tag, Typography, Spin, Icon, Empty } from 'antd';
+import { Layout, Button, Row, Col, Progress, Card, Spin, Icon, Modal, Typography } from 'antd';
 import { router } from 'umi';
+import { GridContent } from '@ant-design/pro-layout';
 
 import styles from './index.less';
-import LabelPreview from './components/LabelPreview';
 import SiderList from './components/SiderList';
 import TaskPagination from './components/TaskPagination';
-import { arrayToObject } from '@/utils/utils';
 import TextClassificationProject from './components/AnnotationArea/TextClassificationProject';
 import SequenceLabelingProject from './components/AnnotationArea/SequenceLabelingProject';
 import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
+import Markdown from '@/components/Markdown';
 
 const { Content } = Layout;
 const pageSize = 4;
@@ -23,8 +23,6 @@ const getSidebarTotal = (total, limit) => {
 };
 
 const getSidebarPage = (offset, limit) => (limit !== 0 ? Math.ceil(offset / limit) + 1 : 0);
-
-let oldData;
 
 const Annotation = connect(({ project, task, label, loading }) => ({
   project,
@@ -57,7 +55,12 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   const [searchQuery, setSearchQuery] = React.useState('');
   const [pageNumber, setPageNumber] = React.useState(0);
   const [offset, setOffset] = React.useState(0);
+  // Statistics
+  const [totalTask, setTotalTask] = React.useState(0);
+  const [remaining, setRemaining] = React.useState(0);
 
+  // Modal
+  const [visible, setVisible] = React.useState(false);
   /**
    * Handler
    */
@@ -108,6 +111,18 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   React.useEffect(() => {
     queryTask();
   }, [query]);
+
+  React.useEffect(() => {
+    const queryStatistics = async () => {
+      const res = await dispatch({
+        type: 'dashboard/fetchStatistics',
+      });
+      const { total, remaining: resRemaining } = res;
+      setTotalTask(total);
+      setRemaining(resRemaining);
+    };
+    queryStatistics();
+  }, [annotations]);
 
   const handleChangeKey = key => {
     setPageNumber(Number(key));
@@ -177,16 +192,12 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   };
   const taskId = React.useMemo(() => Object.keys(taskList)[pageNumber], [pageNumber, taskList]);
 
-  // console.log('data===oldData ', memoHotkey === oldData);
-  // oldData = memoHotkey;
-
   // console.log('[DEBUG]: taskId', taskId);
   /**
    * Init variables
    */
 
   const handleRemoveLabel = async annotationId => {
-    console.log('[DEBUG]: handleRemoveLabel -> annotationId', annotationId);
     const res = await dispatch({
       type: 'annotation/removeAnno',
       payload: {
@@ -195,7 +206,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       },
     });
     const newAnno = annotations[taskId].filter(val => val.id !== Number(annotationId));
-    console.log('[DEBUG]: handleRemoveLabel -> newAnno', newAnno);
     setAnnotations({ ...annotations, [taskId]: newAnno });
   };
 
@@ -207,7 +217,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         data,
       },
     });
-    console.log('[DEBUG]: res', res);
     setAnnotations({ ...annotations, [taskId]: [...annotations[taskId], res] });
   };
 
@@ -220,7 +229,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         data,
       },
     });
-    console.log('[DEBUG]: res', res);
     const newAnno = annotations[taskId].map(val => (res.id !== val.id ? val : res));
     setAnnotations({ ...annotations, [taskId]: newAnno });
   };
@@ -258,84 +266,118 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       />
     ),
   };
+  /**
+   * Variables
+   */
+  const approved = true;
 
   return (
-    <div className={styles.main}>
-      <Layout>
-        <SiderList
-          // collapsed={collapsed}
-          onChangeKey={handleChangeKey}
-          onSearchChange={handleChangeSearch}
-          pageSize={sidebarTotal}
-          page={sidebarPage}
-          pageNumber={pageNumber}
-        />
+    <GridContent>
+      <div className={styles.main}>
         <Layout>
-          <Spin spinning={labelLoading || taskLoading} size="small">
-            <Content className={styles.content}>
-              <Card>
-                <Row type="flex" gutter={24}>
-                  <Col span={2}>Progress:</Col>
-                  <Col span={8}>
-                    <Progress percent={50} status="active" strokeColor="#00a854" strokeWidth={15} />
-                  </Col>
-                  <Col span={14}>
-                    <Row type="flex" gutter={48} justify="end">
-                      <Col>
-                        <Button type="primary" icon="download" size="large" />
-                      </Col>
-                      <Col>
-                        <Button type="primary" icon="download" size="large" />
-                      </Col>
-                      <Col>
-                        <Button type="primary" icon="download" size="large" />
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Card>
-              {currentProject && AnnotationArea[currentProject.project_type]}
-              <Card>
-                <Row type="flex" justify="center">
-                  <Col>
-                    <Button
-                      title="Previous Page"
-                      size="large"
-                      type="default"
-                      style={{ margin: '0 16px' }}
-                      disabled={!pagination.previous}
-                      onClick={handlePrevPagination}
-                    >
-                      <Icon type="double-left" />
-                    </Button>
-                  </Col>
-                  <Col>
-                    <TaskPagination
-                      onNextPage={handleNextPage}
-                      onPrevPage={handlePrevPage}
-                      total={pagination.total}
-                      current={offset + pageNumber + 1}
-                    />
-                  </Col>
-                  <Col>
-                    <Button
-                      title="Next Page"
-                      size="large"
-                      type="default"
-                      style={{ margin: '0 16px' }}
-                      disabled={!pagination.next}
-                      onClick={handleNextPagination}
-                    >
-                      <Icon type="double-right" />
-                    </Button>
-                  </Col>
-                </Row>
-              </Card>
-            </Content>
-          </Spin>
+          <SiderList
+            // collapsed={collapsed}
+            onChangeKey={handleChangeKey}
+            onSearchChange={handleChangeSearch}
+            pageSize={sidebarTotal}
+            page={sidebarPage}
+            pageNumber={pageNumber}
+            annotations={annotations}
+          />
+          <Layout style={{ marginLeft: 320 }}>
+            <Spin spinning={labelLoading || taskLoading} size="small">
+              <Content className={styles.content}>
+                <Card>
+                  <Row type="flex" gutter={24}>
+                    <Col span={2}>Progress:</Col>
+                    <Col span={8}>
+                      <Progress
+                        percent={Math.floor(((totalTask - remaining) / totalTask) * 100)}
+                        format={() => `${totalTask - remaining}/${totalTask}`}
+                        status="active"
+                        strokeColor="#00a854"
+                        strokeWidth={15}
+                      />
+                    </Col>
+                    <Col span={14}>
+                      <Row type="flex" gutter={48} justify="end">
+                        <Col>
+                          {/* isSuperUser */}
+                          <Button
+                            icon={approved ? 'check-circle' : 'question-circle'}
+                            size="large"
+                          />
+                        </Col>
+                        <Col>
+                          <Button
+                            icon="deployment-unit"
+                            size="large"
+                            onClick={() => setVisible(true)}
+                          />
+                          <Modal
+                            width={700}
+                            title={
+                              <Typography.Title level={4}>Annotation Guideline</Typography.Title>
+                            }
+                            visible={visible}
+                            footer={null}
+                            onCancel={() => setVisible(false)}
+                          >
+                            <div style={{ margin: '0 24px', overflow: 'auto' }}>
+                              <Markdown markdownSrc={currentProject.guideline} />
+                            </div>
+                          </Modal>
+                        </Col>
+                        <Col>
+                          <Button icon="inbox" size="large" />
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Card>
+                {currentProject && AnnotationArea[currentProject.project_type]}
+                <Card>
+                  <Row type="flex" justify="center">
+                    <Col>
+                      <Button
+                        title="Previous Page"
+                        size="large"
+                        type="default"
+                        style={{ margin: '0 16px' }}
+                        disabled={!pagination.previous}
+                        onClick={handlePrevPagination}
+                      >
+                        <Icon type="double-left" />
+                      </Button>
+                    </Col>
+                    <Col>
+                      <TaskPagination
+                        onNextPage={handleNextPage}
+                        onPrevPage={handlePrevPage}
+                        total={pagination.total}
+                        current={offset + pageNumber + 1}
+                      />
+                    </Col>
+                    <Col>
+                      <Button
+                        title="Next Page"
+                        size="large"
+                        type="default"
+                        style={{ margin: '0 16px' }}
+                        disabled={!pagination.next}
+                        onClick={handleNextPagination}
+                      >
+                        <Icon type="double-right" />
+                      </Button>
+                    </Col>
+                  </Row>
+                </Card>
+              </Content>
+            </Spin>
+          </Layout>
         </Layout>
-      </Layout>
-    </div>
+      </div>
+    </GridContent>
   );
 });
 
