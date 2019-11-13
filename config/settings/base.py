@@ -369,3 +369,10 @@ GRAPHENE_RECURSION_LIMIT = env.int("GRAPHENE_RECURSION_LIMIT", default=3500)
 # Size of the batch for creating documents
 # on the import phase
 IMPORT_BATCH_SIZE = env.int("IMPORT_BATCH_SIZE", 500)
+
+
+ROLE_PROJECT_ADMIN = env("ROLE_PROJECT_ADMIN", default="project_admin")
+ROLE_ANNOTATOR = env("ROLE_ANNOTATOR", default="annotator")
+ROLE_ANNOTATION_APPROVER = env(
+    "ROLE_ANNOTATION_APPROVER", default="annotation_approver"
+)

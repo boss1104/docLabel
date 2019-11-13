@@ -3,7 +3,6 @@ from django.urls import path
 # from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.urlpatterns import format_suffix_patterns
 
-# from .views import Me, Features
 from .views import Features
 from .views import ProjectList, ProjectDetail
 from .views import LabelList, LabelDetail, ApproveLabelsAPI
@@ -11,6 +10,8 @@ from .views import DocumentList, DocumentDetail
 from .views import AnnotationList, AnnotationDetail
 from .views import TextUploadAPI, TextDownloadAPI, CloudUploadAPI
 from .views import StatisticsAPI
+
+from .views import RoleMappingList, RoleMappingDetail, Roles
 
 
 urlpatterns = [
@@ -62,6 +63,18 @@ urlpatterns = [
         "projects/<int:project_id>/docs/download/",
         TextDownloadAPI.as_view(),
         name="doc_downloader",
+    ),
+    # New endpoints
+    path("roles", Roles.as_view(), name="roles"),
+    path(
+        "projects/<int:project_id>/roles",
+        RoleMappingList.as_view(),
+        name="rolemapping_list",
+    ),
+    path(
+        "projects/<int:project_id>/roles/<int:rolemapping_id>",
+        RoleMappingDetail.as_view(),
+        name="rolemapping_detail",
     ),
 ]
 

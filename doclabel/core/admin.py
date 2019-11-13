@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import Label, Document, Project
+from .models import Role, RoleMapping
 from .models import DocumentAnnotation, SequenceAnnotation, Seq2seqAnnotation
 from .models import TextClassificationProject, SequenceLabelingProject, Seq2seqProject
 
@@ -47,6 +48,18 @@ class Seq2seqAnnotationAdmin(admin.ModelAdmin):
     search_fields = ("document",)
 
 
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")
+    ordering = ("name",)
+    search_fields = ("name",)
+
+
+class RoleMappingAdmin(admin.ModelAdmin):
+    list_display = ("user", "role", "project")
+    ordering = ("user",)
+    search_fields = ("user",)
+
+
 # Project
 admin.site.register(Project, ProjectAdmin)
 
@@ -62,3 +75,6 @@ admin.site.register(Seq2seqAnnotation, Seq2seqAnnotationAdmin)
 # Label
 admin.site.register(Label, LabelAdmin)
 admin.site.register(Document, DocumentAdmin)
+
+admin.site.register(Role, RoleAdmin)
+admin.site.register(RoleMapping, RoleMappingAdmin)

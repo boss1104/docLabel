@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Count, F, Q
@@ -6,22 +7,22 @@ from libcloud.base import DriverType, get_driver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
 from rest_framework import generics, filters, status
 from rest_framework.exceptions import ParseError, ValidationError
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework_csv.renderers import CSVRenderer
 
 from .filters import DocumentFilter
-from .models import Project, Label, Document
-from .permissions import IsAdminUserAndWriteOnly, IsProjectUser, IsOwnAnnotation, IsProjectOwnerOrReadOnly
+from .models import Project, Label, Document, RoleMapping, Role
+from .permissions import IsProjectAdmin, IsAnnotatorAndReadOnly, IsAnnotator, IsAnnotationApproverAndReadOnly, IsOwnAnnotation, IsAnnotationApprover
+
 from .serializers import (
     ProjectSerializer,
     LabelSerializer,
     DocumentSerializer,
     # UserSerializer,
 )
-from .serializers import ProjectPolymorphicSerializer
+from .serializers import ProjectPolymorphicSerializer, RoleMappingSerializer, RoleSerializer
 
 from .utils import (
     CSVParser,
@@ -34,6 +35,8 @@ from .utils import (
 from .utils import JSONLRenderer
 from .utils import JSONPainter, CSVPainter
 
+IsInProjectReadOnlyOrAdmin = (IsAnnotatorAndReadOnly | IsAnnotationApproverAndReadOnly | IsProjectAdmin)
+IsInProjectOrAdmin = (IsAnnotator | IsAnnotationApprover | IsProjectAdmin)
 
 class Features(APIView):
 
@@ -47,6 +50,7 @@ class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectPolymorphicSerializer
     # pagination_class = None
     # REVIEW: Any logged in user can create their projects
+    permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get_queryset(self):
         # Projects belong to the request users
@@ -59,20 +63,20 @@ class ProjectList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # perform addition method, this will add a user to users list
-        serializer.save(users=[self.request.user], owner=self.request.user)
+        serializer.save(users=[self.request.user])
 
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
-    # Only owner user can
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     lookup_url_kwarg = "project_id"
-    permission_classes = (IsProjectOwnerOrReadOnly,)
+    permission_classes = [IsInProjectReadOnlyOrAdmin]
+
 
 
 class StatisticsAPI(APIView):
     pagination_class = None
-    permission_classes = (IsProjectUser, IsAdminUserAndWriteOnly)
+    permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get(self, request, *args, **kwargs):
         p = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -100,7 +104,7 @@ class StatisticsAPI(APIView):
 
 
 class ApproveLabelsAPI(APIView):
-    permission_classes = (IsProjectUser, IsAdminUser)
+    permission_classes = [IsAnnotationApprover | IsProjectAdmin]
 
     def post(self, request, *args, **kwargs):
         approved = self.request.data.get("approved", True)
@@ -113,8 +117,7 @@ class ApproveLabelsAPI(APIView):
 class LabelList(generics.ListCreateAPIView):
     serializer_class = LabelSerializer
     pagination_class = None
-    # permission_classes = (IsProjectUser, IsAdminUserAndWriteOnly)
-    permission_classes = (IsProjectOwnerOrReadOnly,)
+    permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get_queryset(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -134,7 +137,7 @@ class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
     # queryset = Label.objects.all()
     serializer_class = LabelSerializer
     lookup_url_kwarg = "label_id"
-    permission_classes = (IsProjectOwnerOrReadOnly,)
+    permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get_queryset(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -157,7 +160,7 @@ class DocumentList(generics.ListCreateAPIView):
         "seq2seq_annotations__updated_at",
     )
     filter_class = DocumentFilter
-    permission_classes = (IsProjectOwnerOrReadOnly,)
+    permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get_queryset(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -180,12 +183,12 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     lookup_url_kwarg = "doc_id"
-    permission_classes = (IsProjectOwnerOrReadOnly,)
+    permission_classes = [IsInProjectReadOnlyOrAdmin]
 
 
 class AnnotationList(generics.ListCreateAPIView):
     pagination_class = None
-    permission_classes = (IsProjectUser,)
+    permission_classes = [IsInProjectOrAdmin]
 
     def get_serializer_class(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -213,7 +216,7 @@ class AnnotationList(generics.ListCreateAPIView):
 
 class AnnotationDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = "annotation_id"
-    permission_classes = (IsProjectUser, IsOwnAnnotation)
+    permission_classes = [((IsAnnotator | IsAnnotationApprover) & IsOwnAnnotation) | IsProjectAdmin]
 
     def get_serializer_class(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -229,8 +232,7 @@ class AnnotationDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class TextUploadAPI(APIView):
     parser_classes = (MultiPartParser,)
-    # TODO: IsProjectOwner
-    permission_classes = (IsProjectUser,)
+    permission_classes = [IsProjectAdmin]
 
     def post(self, request, *args, **kwargs):
         if "file" not in request.data:
@@ -325,7 +327,7 @@ class CloudUploadAPI(APIView):
 
 
 class TextDownloadAPI(APIView):
-    permission_classes = (IsProjectUser, IsAdminUser)
+    permission_classes = TextUploadAPI.permission_classes
     renderer_classes = (CSVRenderer, JSONLRenderer)
 
     def get(self, request, *args, **kwargs):
@@ -350,3 +352,30 @@ class TextDownloadAPI(APIView):
             return JSONPainter()
         else:
             raise ValidationError("format {} is invalid.".format(format))
+
+class Roles(generics.ListCreateAPIView):
+    serializer_class = RoleSerializer
+    pagination_class = None
+    permission_classes = [IsProjectAdmin]
+    queryset = Role.objects.all()
+
+
+class RoleMappingList(generics.ListCreateAPIView):
+    serializer_class = RoleMappingSerializer
+    pagination_class = None
+    permission_classes = [IsProjectAdmin]
+
+    def get_queryset(self):
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        return project.role_mappings
+
+    def perform_create(self, serializer):
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        serializer.save(project=project)
+
+
+class RoleMappingDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = RoleMapping.objects.all()
+    serializer_class = RoleMappingSerializer
+    lookup_url_kwarg = 'rolemapping_id'
+    permission_classes = [IsProjectAdmin]
