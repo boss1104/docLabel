@@ -2,22 +2,32 @@ import { FormattedMessage } from 'umi-plugin-react/locale';
 import { Button, Result, Icon, message } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
+import { router } from 'umi';
 import styles from './style.less';
 
-const RegisterConfirm = ({ dispatch, match }) => {
-  const confirmEmail = () => {
+const RegisterConfirm = ({ dispatch, match, loading }) => {
+  const confirmEmail = async () => {
     const { params } = match;
     if (params) {
-      dispatch({
-        type: 'userRegisterConfirm/confirm',
-        payload: params,
-      });
+      try {
+        await dispatch({
+          type: 'userRegister/confirm',
+          payload: params,
+        });
+        message.success('Successfully confirm email!');
+
+        router.push({
+          pathname: '/user/login',
+        });
+      } catch (e) {
+        message.error('Something wrong. Try again!');
+      }
     }
   };
 
   const actions = (
     <div className={styles.actions}>
-      <Button size="large" type="primary" onClick={confirmEmail}>
+      <Button size="large" type="primary" onClick={confirmEmail} loading={loading}>
         <FormattedMessage id="user-register-confirm.confirm" />
       </Button>
     </div>
@@ -36,14 +46,12 @@ const RegisterConfirm = ({ dispatch, match }) => {
             <FormattedMessage id="user-register-confirm.result.msg" />
           </div>
         }
-        // subTitle={<FormattedMessage id="user-register-confirm.redirect"></FormattedMessage>}
         extra={actions}
       />
     </div>
   );
 };
 
-export default connect(({ userLogin, loading }) => ({
-  userLogin,
-  submitting: loading.effects['userLogin/confirm'],
+export default connect(({ loading }) => ({
+  submitting: loading.effects['userRegister/confirm'],
 }))(RegisterConfirm);

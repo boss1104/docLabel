@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Button } from 'antd';
+import { Alert, Checkbox, Button, message } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component } from 'react';
 import Link from 'umi/link';
@@ -7,6 +7,11 @@ import LoginComponents from './components/Login';
 import styles from './style.less';
 
 const { Username, Password, Submit } = LoginComponents;
+
+const nonFieldErrors = {
+  'E-mail is not verified.': 'user-login.login.email-not-verified',
+  'Unable to log in with provided credentials.': 'user-login.login.invalid-credentials',
+};
 
 @connect(({ login, loading }) => ({
   userLogin: login,
@@ -17,6 +22,7 @@ class Login extends Component {
 
   state = {
     autoLogin: true,
+    error: false,
   };
 
   changeAutoLogin = e => {
@@ -25,15 +31,25 @@ class Login extends Component {
     });
   };
 
-  handleSubmit = (err, values) => {
+  handleSubmit = async (err, values) => {
     const { autoLogin } = this.state;
     if (!err) {
       const { dispatch } = this.props;
-      const payload = { ...values };
-      dispatch({
-        type: 'login/login',
-        payload,
-      });
+      try {
+        await dispatch({
+          type: 'login/login',
+          payload: { ...values },
+        });
+        this.setState({
+          error: false,
+        });
+        message.success('Successfully login!');
+      } catch (e) {
+        const { data } = e;
+        this.setState({
+          error: data.non_field_errors[0],
+        });
+      }
     }
   };
 
@@ -49,9 +65,8 @@ class Login extends Component {
   );
 
   render() {
-    const { userLogin, submitting } = this.props;
-    const { status } = userLogin;
-    const { type, autoLogin } = this.state;
+    const { submitting } = this.props;
+    const { type, autoLogin, error } = this.state;
     return (
       <div className={styles.main}>
         <LoginComponents
@@ -67,32 +82,32 @@ class Login extends Component {
         >
           <h2>
             <FormattedMessage id="user-login.login.title" />
-            <Button
-              onClick={() => {
-                const { dispatch } = this.props;
-                dispatch({
-                  type: 'login/logout',
-                });
-              }}
-            >
-              Logout
-            </Button>
-            <Button
-              onClick={() => {
-                const { dispatch } = this.props;
-                dispatch({
-                  type: 'user/fetchCurrent',
-                });
-              }}
-            >
-              Me
-            </Button>
+            {/* <Button */}
+            {/*  onClick={() => { */}
+            {/*    const { dispatch } = this.props; */}
+            {/*    dispatch({ */}
+            {/*      type: 'login/logout', */}
+            {/*    }); */}
+            {/*  }} */}
+            {/* > */}
+            {/*  Logout */}
+            {/* </Button> */}
+            {/* <Button */}
+            {/*  onClick={() => { */}
+            {/*    const { dispatch } = this.props; */}
+            {/*    dispatch({ */}
+            {/*      type: 'user/fetchCurrent', */}
+            {/*    }); */}
+            {/*  }} */}
+            {/* > */}
+            {/*  Me */}
+            {/* </Button> */}
           </h2>
-          {status === 'error' &&
+          {error &&
             !submitting &&
             this.renderMessage(
               formatMessage({
-                id: 'user-login.login.message-invalid-credentials',
+                id: nonFieldErrors[error],
               }),
             )}
           <Username

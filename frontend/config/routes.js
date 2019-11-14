@@ -26,7 +26,7 @@ export default [
       {
         name: 'register-confirm',
         path: '/user/register-confirm/:key',
-        component: './user/register-confirm/$key',
+        component: './user/register-confirm',
       },
       {
         component: './exception/404',
