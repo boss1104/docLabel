@@ -28,6 +28,29 @@ export default [
         path: '/user/register-confirm/:key',
         component: './user/register-confirm/$key',
       },
+      {
+        component: './exception/404',
+      },
+    ],
+  },
+  {
+    path: '/exception',
+    routes: [
+      {
+        name: '403',
+        path: '/exception/403',
+        component: './exception/403',
+      },
+      {
+        name: '404',
+        path: '/exception/404',
+        component: './exception/404',
+      },
+      {
+        name: '500',
+        path: '/exception/500',
+        component: './exception/500',
+      },
     ],
   },
   {
@@ -85,10 +108,6 @@ export default [
             path: '/projects/:id/guide',
             component: './project/guide',
           },
-
-          // {
-          //   component: './404',
-          // },
         ],
       },
       {
@@ -118,37 +137,14 @@ export default [
             path: '/annotation/projects/:id',
             component: './annotation',
           },
-          {
-            name: 'exception',
-            hideInMenu: true,
-            path: '/exception',
-            routes: [
-              {
-                name: '403',
-                path: '/exception/403',
-                component: './exception/403',
-              },
-              {
-                name: '404',
-                path: '/exception/404',
-                component: './exception/404',
-              },
-              {
-                name: '500',
-                path: '/exception/500',
-                component: './exception/500',
-              },
-            ],
-          },
         ],
       },
-
       {
-        component: './404',
+        component: './exception/404',
       },
     ],
   },
   {
-    component: './404',
+    component: './exception/404',
   },
 ];

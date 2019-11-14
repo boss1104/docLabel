@@ -1,19 +1,14 @@
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
-import { Button, Result, Form } from 'antd';
+import { FormattedMessage } from 'umi-plugin-react/locale';
+import { Button, Result } from 'antd';
 import Link from 'umi/link';
 import React from 'react';
 import styles from './style.less';
 
 const actions = (
   <div className={styles.actions}>
-    <Link to="/projects">
+    <Link to="/explore">
       <Button size="large" type="primary">
         <FormattedMessage id="userandregister-result.register-result.view-projects" />
-      </Button>
-    </Link>
-    <Link to="/">
-      <Button size="large">
-        <FormattedMessage id="userandregister-result.register-result.back-home" />
       </Button>
     </Link>
   </div>
@@ -36,10 +31,10 @@ const RegisterResult = ({ location }) => (
     subTitle={
       <div>
         <p>
-          <FormattedMessage id="userandregister-result.register-result.activation-email"></FormattedMessage>
+          <FormattedMessage id="userandregister-result.register-result.activation-email" />
         </p>
         <p>
-          <FormattedMessage id="userandregister-result.register-result.amazing"></FormattedMessage>
+          <FormattedMessage id="userandregister-result.register-result.amazing" />
         </p>
       </div>
     }

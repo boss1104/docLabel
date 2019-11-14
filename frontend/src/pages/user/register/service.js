@@ -6,3 +6,9 @@ export async function register(params) {
     data: params,
   });
 }
+export async function confirmRegister(params) {
+  return request('/api/registration/verify-email/', {
+    method: 'POST',
+    data: params,
+  });
+}

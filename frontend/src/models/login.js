@@ -1,5 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'querystring';
+import { message } from 'antd';
 import { accountLogin, accountLogout } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
@@ -8,9 +9,7 @@ import { getPageQuery } from '@/utils/utils';
 
 const Model = {
   namespace: 'login',
-  state: {
-    status: undefined,
-  },
+  state: {},
   effects: {
     *login({ payload }, { call, put }) {
       console.log(payload);
@@ -56,11 +55,9 @@ const Model = {
     *logout(_, { call, put }) {
       const { redirect } = getPageQuery(); // redirect
       const response = yield call(accountLogout);
-      console.log(response);
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: false,
           currentAuthority: 'guest',
         },
       });
@@ -80,7 +77,7 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.token);
-      return { ...state, status: payload.status };
+      return { ...state, ...payload };
     },
   },
 };

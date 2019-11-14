@@ -50,27 +50,12 @@ class Register extends Component {
   componentDidMount() {
     const { form } = this.props;
     form.setFieldsValue({
-      full_name: 'lovecopob',
+      full_name: 'account001',
       username: 'account001',
-      email: 'lovecopob@vxmail.top',
+      email: 'jefaf39409@hideemail.net',
       password1: 'secret@123',
       password2: 'secret@123',
     });
-  }
-
-  componentDidUpdate() {
-    const { userRegister, form } = this.props;
-    const account = form.getFieldValue('email');
-
-    if (userRegister.status) {
-      message.success(userRegister.detail);
-      router.push({
-        pathname: '/user/register-result',
-        state: {
-          account,
-        },
-      });
-    }
   }
 
   checkAge = () => {
@@ -119,19 +104,35 @@ class Register extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { form, dispatch } = this.props;
-    form.validateFields(
-      {
-        force: true,
-      },
-      (err, values) => {
-        if (!err) {
-          dispatch({
+    form.validateFields({ force: true }, async (err, values) => {
+      if (!err) {
+        try {
+          const res = await dispatch({
             type: 'userRegister/submit',
-            payload: { ...values },
+            payload: values,
           });
+
+          message.success(res.detail);
+          router.push({
+            pathname: '/user/register-result',
+            state: {
+              account: form.getFieldValue('email'),
+            },
+          });
+        } catch (error) {
+          const { data } = error;
+          Object.entries(data).forEach(([key, value]) => {
+            data[key] = {
+              value: form.getFieldValue(key),
+              errors: [new Error(value[0])],
+            };
+          });
+
+          form.setFields({ ...data });
+          message.error('Something wrong! Try again');
         }
-      },
-    );
+      }
+    });
   };
 
   checkFullname = (rule, value, callback) => {
@@ -186,7 +187,7 @@ class Register extends Component {
         help: formatMessage({
           id: 'user-register.password.required',
         }),
-        visible: !!value,
+        visible: true,
       });
       callback('error');
     } else {
@@ -194,14 +195,13 @@ class Register extends Component {
         help: '',
       });
 
-      if (!visible) {
-        this.setState({
-          visible: !!value,
-        });
-      }
-
       if (value.length < 6) {
         callback('error');
+        if (!visible) {
+          this.setState({
+            visible: !!value,
+          });
+        }
       } else {
         const { form } = this.props;
 
@@ -236,13 +236,13 @@ class Register extends Component {
   render() {
     const { form, submitting, userRegister } = this.props;
     const { getFieldDecorator } = form;
-    const { status, data } = userRegister;
-    const { help, visible, confirmBirth, ageHelp } = this.state;
+    const { help, visible, confirmBirth, ageHelp, error } = this.state;
     return (
       <div className={styles.main}>
         <h2>
           <FormattedMessage id="user-register.register.register" />
         </h2>
+        <Button onClick={() => this.handleRegister({})}>Call</Button>
         <div>
           {confirmBirth ? (
             <Form onSubmit={this.handleSubmit}>
@@ -268,13 +268,7 @@ class Register extends Component {
                   />,
                 )}
               </FormItem>
-              <FormItem
-                {...(!status &&
-                  data.username && {
-                    help: data.username[0],
-                    validateStatus: 'error',
-                  })}
-              >
+              <FormItem>
                 {getFieldDecorator('username', {
                   rules: [
                     {
@@ -296,13 +290,7 @@ class Register extends Component {
                   />,
                 )}
               </FormItem>
-              <FormItem
-                {...(!status &&
-                  data.email && {
-                    help: data.email[0],
-                    validateStatus: 'error',
-                  })}
-              >
+              <FormItem>
                 {getFieldDecorator('email', {
                   rules: [
                     {

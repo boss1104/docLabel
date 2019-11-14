@@ -66,7 +66,6 @@ const Model = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        console.log('TCL: setup -> query', query);
         if (pathname.includes('/task')) {
           dispatch({
             type: 'fetch',

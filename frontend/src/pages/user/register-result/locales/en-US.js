@@ -14,12 +14,12 @@ export default {
   'userandregister-result.register.register': 'Register',
   'userandregister-result.register.get-verification-code': 'Get code',
   'userandregister-result.register.sign-in': 'Already have an account?',
-  'userandregister-result.register-result.msg': 'Account：registered at {email}',
+  'userandregister-result.register-result.msg': 'Registered at "{email}"',
   'userandregister-result.register-result.activation-email':
-    'The activation email has been sent to your email address. Please log in to the email in time and click on the link in the email to verify the account.',
+    'Please log in to the email in time and click on the link in the email to verify the account.',
   'userandregister-result.register-result.amazing':
     'In the meantime, you can check some of the amazing projects',
   'userandregister-result.register-result.back-home': 'Back to home',
-  'userandregister-result.register-result.view-projects': 'View projects',
+  'userandregister-result.register-result.view-projects': 'Explore',
   'userandregister-result.navBar.lang': 'Languages',
 };

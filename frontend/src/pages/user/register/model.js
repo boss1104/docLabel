@@ -1,30 +1,31 @@
-import { register } from './service';
+import { register, confirmRegister } from './service';
 
 const Model = {
   namespace: 'userRegister',
-  state: {
-    status: undefined,
-    data: {},
-  },
+  state: {},
   effects: {
     *submit({ payload }, { call, put }) {
-      const data = yield call(register, payload);
-      const { statusCode } = data;
-      if (statusCode) {
-        delete data.statusCode;
-      }
+      const res = yield call(register, payload);
       yield put({
-        type: 'registerHandle',
-        payload: {
-          status: !statusCode,
-          data,
-        },
+        type: 'changeRegister',
+        payload: res,
       });
+
+      return res;
+    },
+    *confirm({ payload }, { call, put }) {
+      const res = yield call(confirmRegister, payload);
+      yield put({
+        type: 'changeRegister',
+        payload: res,
+      });
+
+      return res;
     },
   },
   reducers: {
-    registerHandle(state, { payload }) {
-      return { ...state, status: payload.status, data: payload.data };
+    changeRegister(state, { payload }) {
+      return { ...state, ...payload };
     },
   },
 };
