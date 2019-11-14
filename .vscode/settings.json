@@ -1,3 +1,11 @@
 {
-  "python.pythonPath": "/home/sondh/.pyenv/versions/3.6.9/bin/python"
+  "python.pythonPath": "/home/sondh/.pyenv/versions/3.6.9/bin/python",
+  "python.formatting.provider": "black",
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": [
+    "--max-line-length=100"
+    // "--ignore=E402,F841,F401,E302,E305,E203,W503,W504"
+  ],
+  "python.linting.enabled": true
 }

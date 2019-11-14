@@ -13,3 +13,4 @@ class User(AbstractUser):
         max_length=255,
         validators=[MinLengthValidator(3)],
     )
+    avatar = models.ImageField(upload_to="user_avatar/", blank=True)

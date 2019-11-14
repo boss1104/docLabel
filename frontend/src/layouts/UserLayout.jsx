@@ -4,9 +4,11 @@ import Link from 'umi/link';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
+import { router } from 'umi';
 import SelectLang from '@/components/SelectLang';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
+import { getAuthority } from '@/utils/authority';
 
 const UserLayout = props => {
   const {
@@ -22,6 +24,13 @@ const UserLayout = props => {
     },
   } = props;
   const { breadcrumb } = getMenuData(routes);
+
+  const isLogin = getAuthority() !== 'undefined' && getAuthority() !== null;
+
+  if (isLogin) {
+    router.push('/app');
+  }
+
   return (
     <DocumentTitle
       title={getPageTitle({

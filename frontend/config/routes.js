@@ -117,19 +117,31 @@ export default [
         routes: [
           {
             path: '/',
-            redirect: '/welcome',
+            redirect: '/home',
           },
           {
-            path: '/welcome',
-            name: 'welcome',
+            path: '/home',
+            name: 'home',
             icon: 'smile',
-            component: './Welcome',
+            component: './Home',
           },
           {
             name: 'explore',
             icon: 'monitor',
             path: '/explore',
             component: './explore',
+          },
+          {
+            name: 'account-center',
+            path: '/account/center',
+            icon: 'profile',
+            component: './account/center',
+          },
+          {
+            name: 'account-settings',
+            hideInMenu: true,
+            path: '/account/settings',
+            component: './account/settings',
           },
           {
             name: 'annotation',

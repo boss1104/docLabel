@@ -15,6 +15,8 @@ export default {
   'menu.export': 'Export',
   'menu.setting': 'Project settings',
   'menu.guide': 'Guide line',
+  'menu.account-center': 'My Account',
+  'menu.account-settings': 'Account Settings',
   'menu.test': 'Test ref',
 
   'menu.exception.403': '403',
@@ -35,7 +37,6 @@ export default {
   'menu.list.search-list.articles': 'Search List(articles)',
   'menu.list.search-list.projects': 'Search List(projects)',
   'menu.list.search-list.applications': 'Search List(applications)',
-  'menu.profile': 'Profile',
   'menu.profile.basic': 'Basic Profile',
   'menu.profile.advanced': 'Advanced Profile',
   'menu.result': 'Result',

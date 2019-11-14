@@ -14,7 +14,14 @@ from rest_framework_csv.renderers import CSVRenderer
 
 from .filters import DocumentFilter
 from .models import Project, Label, Document, RoleMapping, Role
-from .permissions import IsProjectAdmin, IsAnnotatorAndReadOnly, IsAnnotator, IsAnnotationApproverAndReadOnly, IsOwnAnnotation, IsAnnotationApprover
+from .permissions import (
+    IsProjectAdmin,
+    IsAnnotatorAndReadOnly,
+    IsAnnotator,
+    IsAnnotationApproverAndReadOnly,
+    IsOwnAnnotation,
+    IsAnnotationApprover,
+)
 
 from .serializers import (
     ProjectSerializer,
@@ -22,7 +29,11 @@ from .serializers import (
     DocumentSerializer,
     # UserSerializer,
 )
-from .serializers import ProjectPolymorphicSerializer, RoleMappingSerializer, RoleSerializer
+from .serializers import (
+    ProjectPolymorphicSerializer,
+    RoleMappingSerializer,
+    RoleSerializer,
+)
 
 from .utils import (
     CSVParser,
@@ -35,11 +46,13 @@ from .utils import (
 from .utils import JSONLRenderer
 from .utils import JSONPainter, CSVPainter
 
-IsInProjectReadOnlyOrAdmin = (IsAnnotatorAndReadOnly | IsAnnotationApproverAndReadOnly | IsProjectAdmin)
-IsInProjectOrAdmin = (IsAnnotator | IsAnnotationApprover | IsProjectAdmin)
+IsInProjectReadOnlyOrAdmin = (
+    IsAnnotatorAndReadOnly | IsAnnotationApproverAndReadOnly | IsProjectAdmin
+)
+IsInProjectOrAdmin = IsAnnotator | IsAnnotationApprover | IsProjectAdmin
+
 
 class Features(APIView):
-
     def get(self, request, *args, **kwargs):
         return Response(
             {"cloud_upload": bool(settings.CLOUD_BROWSER_APACHE_LIBCLOUD_PROVIDER)}
@@ -54,12 +67,13 @@ class ProjectList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         # Projects belong to the request users
-        queryset = Project.objects.filter(Q(users__id=self.request.user.id) | Q(public=True))
+        queryset = Project.objects.filter(
+            Q(users__id=self.request.user.id) | Q(public=True)
+        )
         project_types = self.request.GET.getlist("type")
         if len(project_types):
             return queryset.filter(project_type__in=project_types)
         return queryset
-
 
     def perform_create(self, serializer):
         # perform addition method, this will add a user to users list
@@ -71,7 +85,6 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
     lookup_url_kwarg = "project_id"
     permission_classes = [IsInProjectReadOnlyOrAdmin]
-
 
 
 class StatisticsAPI(APIView):
@@ -216,7 +229,9 @@ class AnnotationList(generics.ListCreateAPIView):
 
 class AnnotationDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = "annotation_id"
-    permission_classes = [((IsAnnotator | IsAnnotationApprover) & IsOwnAnnotation) | IsProjectAdmin]
+    permission_classes = [
+        ((IsAnnotator | IsAnnotationApprover) & IsOwnAnnotation) | IsProjectAdmin
+    ]
 
     def get_serializer_class(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -353,6 +368,7 @@ class TextDownloadAPI(APIView):
         else:
             raise ValidationError("format {} is invalid.".format(format))
 
+
 class Roles(generics.ListCreateAPIView):
     serializer_class = RoleSerializer
     pagination_class = None
@@ -366,16 +382,16 @@ class RoleMappingList(generics.ListCreateAPIView):
     permission_classes = [IsProjectAdmin]
 
     def get_queryset(self):
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        project = get_object_or_404(Project, pk=self.kwargs["project_id"])
         return project.role_mappings
 
     def perform_create(self, serializer):
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        project = get_object_or_404(Project, pk=self.kwargs["project_id"])
         serializer.save(project=project)
 
 
 class RoleMappingDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = RoleMapping.objects.all()
     serializer_class = RoleMappingSerializer
-    lookup_url_kwarg = 'rolemapping_id'
+    lookup_url_kwarg = "rolemapping_id"
     permission_classes = [IsProjectAdmin]

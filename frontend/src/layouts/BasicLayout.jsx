@@ -114,13 +114,13 @@ const BasicLayout = props => {
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
-        {
-          path: '/app',
-          breadcrumbName: formatMessage({
-            id: 'menu.home',
-            defaultMessage: 'Home',
-          }),
-        },
+        // {
+        //   path: '/app',
+        //   breadcrumbName: formatMessage({
+        //     id: 'menu.home',
+        //     defaultMessage: 'Home',
+        //   }),
+        // },
         ...routers,
       ]}
       itemRender={(route, params, routes, paths) => {
