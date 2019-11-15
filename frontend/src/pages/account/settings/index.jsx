@@ -11,8 +11,8 @@ import styles from './style.less';
 
 const { Item } = Menu;
 
-@connect(({ accountAndsettings }) => ({
-  currentUser: accountAndsettings.currentUser,
+@connect(({ user }) => ({
+  currentUser: user.currentUser,
 }))
 class Settings extends Component {
   main = undefined;
@@ -20,24 +20,19 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     const menuMap = {
-      base: (
-        <FormattedMessage id="accountandsettings.menuMap.basic" defaultMessage="Basic Settings" />
-      ),
+      base: <FormattedMessage id="accountSettings.menuMap.basic" defaultMessage="Basic Settings" />,
       security: (
         <FormattedMessage
-          id="accountandsettings.menuMap.security"
+          id="accountSettings.menuMap.security"
           defaultMessage="Security Settings"
         />
       ),
       binding: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.binding"
-          defaultMessage="Account Binding"
-        />
+        <FormattedMessage id="accountSettings.menuMap.binding" defaultMessage="Account Binding" />
       ),
       notification: (
         <FormattedMessage
-          id="accountandsettings.menuMap.notification"
+          id="accountSettings.menuMap.notification"
           defaultMessage="New Message Notification"
         />
       ),
@@ -51,8 +46,9 @@ class Settings extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
-      type: 'accountAndsettings/fetchCurrent',
+      type: 'accountSettings/fetchCurrent',
     });
     window.addEventListener('resize', this.resize);
     this.resize();
@@ -112,14 +108,14 @@ class Settings extends Component {
       case 'base':
         return <BaseView />;
 
-      case 'security':
-        return <SecurityView />;
+      // case 'security':
+      //   return <SecurityView />;
 
-      case 'binding':
-        return <BindingView />;
+      // case 'binding':
+      //   return <BindingView />;
 
-      case 'notification':
-        return <NotificationView />;
+      // case 'notification':
+      //   return <NotificationView />;
 
       default:
         break;
@@ -131,7 +127,7 @@ class Settings extends Component {
   render() {
     const { currentUser } = this.props;
 
-    if (!currentUser.userid) {
+    if (!currentUser.id) {
       return '';
     }
 

@@ -1,14 +1,18 @@
 import request from '@/utils/request';
 
-export async function queryCurrent() {
-  return request('/api/currentUser');
+export async function updateAccount({ data }) {
+  return request('/api/user/', {
+    method: 'PATCH',
+    data,
+  });
 }
-export async function queryProvince() {
-  return request('/api/geographic/province');
-}
-export async function queryCity(province) {
-  return request(`/api/geographic/city/${province}`);
-}
-export async function query() {
-  return request('/api/users');
+
+export async function changeAvatar({ data }) {
+  return request('/api/user/', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data,
+  });
 }

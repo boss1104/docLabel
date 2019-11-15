@@ -5,17 +5,17 @@ import { List } from 'antd';
 const passwordStrength = {
   strong: (
     <span className="strong">
-      <FormattedMessage id="accountandsettings.security.strong" defaultMessage="Strong" />
+      <FormattedMessage id="accountSettings.security.strong" defaultMessage="Strong" />
     </span>
   ),
   medium: (
     <span className="medium">
-      <FormattedMessage id="accountandsettings.security.medium" defaultMessage="Medium" />
+      <FormattedMessage id="accountSettings.security.medium" defaultMessage="Medium" />
     </span>
   ),
   weak: (
     <span className="weak">
-      <FormattedMessage id="accountandsettings.security.weak" defaultMessage="Weak" />
+      <FormattedMessage id="accountSettings.security.weak" defaultMessage="Weak" />
       Weak
     </span>
   ),
@@ -26,97 +26,97 @@ class SecurityView extends Component {
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.security.password',
+          id: 'accountSettings.security.password',
         },
         {},
       ),
       description: (
         <Fragment>
           {formatMessage({
-            id: 'accountandsettings.security.password-description',
+            id: 'accountSettings.security.password-description',
           })}
           ：{passwordStrength.strong}
         </Fragment>
       ),
       actions: [
         <a key="Modify">
-          <FormattedMessage id="accountandsettings.security.modify" defaultMessage="Modify" />
+          <FormattedMessage id="accountSettings.security.modify" defaultMessage="Modify" />
         </a>,
       ],
     },
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.security.phone',
+          id: 'accountSettings.security.phone',
         },
         {},
       ),
       description: `${formatMessage(
         {
-          id: 'accountandsettings.security.phone-description',
+          id: 'accountSettings.security.phone-description',
         },
         {},
       )}：138****8293`,
       actions: [
         <a key="Modify">
-          <FormattedMessage id="accountandsettings.security.modify" defaultMessage="Modify" />
+          <FormattedMessage id="accountSettings.security.modify" defaultMessage="Modify" />
         </a>,
       ],
     },
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.security.question',
+          id: 'accountSettings.security.question',
         },
         {},
       ),
       description: formatMessage(
         {
-          id: 'accountandsettings.security.question-description',
+          id: 'accountSettings.security.question-description',
         },
         {},
       ),
       actions: [
         <a key="Set">
-          <FormattedMessage id="accountandsettings.security.set" defaultMessage="Set" />
+          <FormattedMessage id="accountSettings.security.set" defaultMessage="Set" />
         </a>,
       ],
     },
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.security.email',
+          id: 'accountSettings.security.email',
         },
         {},
       ),
       description: `${formatMessage(
         {
-          id: 'accountandsettings.security.email-description',
+          id: 'accountSettings.security.email-description',
         },
         {},
       )}：ant***sign.com`,
       actions: [
         <a key="Modify">
-          <FormattedMessage id="accountandsettings.security.modify" defaultMessage="Modify" />
+          <FormattedMessage id="accountSettings.security.modify" defaultMessage="Modify" />
         </a>,
       ],
     },
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.security.mfa',
+          id: 'accountSettings.security.mfa',
         },
         {},
       ),
       description: formatMessage(
         {
-          id: 'accountandsettings.security.mfa-description',
+          id: 'accountSettings.security.mfa-description',
         },
         {},
       ),
       actions: [
         <a key="bind">
-          <FormattedMessage id="accountandsettings.security.bind" defaultMessage="Bind" />
+          <FormattedMessage id="accountSettings.security.bind" defaultMessage="Bind" />
         </a>,
       ],
     },

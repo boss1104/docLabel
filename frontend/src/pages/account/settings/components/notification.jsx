@@ -7,10 +7,10 @@ class NotificationView extends Component {
     const Action = (
       <Switch
         checkedChildren={formatMessage({
-          id: 'accountandsettings.settings.open',
+          id: 'accountSettings.settings.open',
         })}
         unCheckedChildren={formatMessage({
-          id: 'accountandsettings.settings.close',
+          id: 'accountSettings.settings.close',
         })}
         defaultChecked
       />
@@ -19,13 +19,13 @@ class NotificationView extends Component {
       {
         title: formatMessage(
           {
-            id: 'accountandsettings.notification.password',
+            id: 'accountSettings.notification.password',
           },
           {},
         ),
         description: formatMessage(
           {
-            id: 'accountandsettings.notification.password-description',
+            id: 'accountSettings.notification.password-description',
           },
           {},
         ),
@@ -34,13 +34,13 @@ class NotificationView extends Component {
       {
         title: formatMessage(
           {
-            id: 'accountandsettings.notification.messages',
+            id: 'accountSettings.notification.messages',
           },
           {},
         ),
         description: formatMessage(
           {
-            id: 'accountandsettings.notification.messages-description',
+            id: 'accountSettings.notification.messages-description',
           },
           {},
         ),
@@ -49,13 +49,13 @@ class NotificationView extends Component {
       {
         title: formatMessage(
           {
-            id: 'accountandsettings.notification.todo',
+            id: 'accountSettings.notification.todo',
           },
           {},
         ),
         description: formatMessage(
           {
-            id: 'accountandsettings.notification.todo-description',
+            id: 'accountSettings.notification.todo-description',
           },
           {},
         ),

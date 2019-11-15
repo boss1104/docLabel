@@ -7,19 +7,19 @@ class BindingView extends Component {
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.binding.taobao',
+          id: 'accountSettings.binding.taobao',
         },
         {},
       ),
       description: formatMessage(
         {
-          id: 'accountandsettings.binding.taobao-description',
+          id: 'accountSettings.binding.taobao-description',
         },
         {},
       ),
       actions: [
         <a key="Bind">
-          <FormattedMessage id="accountandsettings.binding.bind" defaultMessage="Bind" />
+          <FormattedMessage id="accountSettings.binding.bind" defaultMessage="Bind" />
         </a>,
       ],
       avatar: <Icon type="taobao" className="taobao" />,
@@ -27,19 +27,19 @@ class BindingView extends Component {
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.binding.alipay',
+          id: 'accountSettings.binding.alipay',
         },
         {},
       ),
       description: formatMessage(
         {
-          id: 'accountandsettings.binding.alipay-description',
+          id: 'accountSettings.binding.alipay-description',
         },
         {},
       ),
       actions: [
         <a key="Bind">
-          <FormattedMessage id="accountandsettings.binding.bind" defaultMessage="Bind" />
+          <FormattedMessage id="accountSettings.binding.bind" defaultMessage="Bind" />
         </a>,
       ],
       avatar: <Icon type="alipay" className="alipay" />,
@@ -47,19 +47,19 @@ class BindingView extends Component {
     {
       title: formatMessage(
         {
-          id: 'accountandsettings.binding.dingding',
+          id: 'accountSettings.binding.dingding',
         },
         {},
       ),
       description: formatMessage(
         {
-          id: 'accountandsettings.binding.dingding-description',
+          id: 'accountSettings.binding.dingding-description',
         },
         {},
       ),
       actions: [
         <a key="Bind">
-          <FormattedMessage id="accountandsettings.binding.bind" defaultMessage="Bind" />
+          <FormattedMessage id="accountSettings.binding.bind" defaultMessage="Bind" />
         </a>,
       ],
       avatar: <Icon type="dingding" className="dingding" />,

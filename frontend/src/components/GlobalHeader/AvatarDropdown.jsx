@@ -25,6 +25,21 @@ class AvatarDropdown extends React.Component {
     router.push(`/account/${key}`);
   };
 
+  getAvatarURL = () => {
+    const { currentUser } = this.props;
+
+    if (currentUser) {
+      if (currentUser.avatar) {
+        return currentUser.avatar;
+      }
+
+      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
+      return url;
+    }
+
+    return '';
+  };
+
   render() {
     const {
       currentUser = {
@@ -58,7 +73,7 @@ class AvatarDropdown extends React.Component {
     return currentUser && currentUser.full_name ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
+          <Avatar size="small" className={styles.avatar} src={this.getAvatarURL()} alt="avatar" />
           <span className={styles.name}>{currentUser.full_name}</span>
         </span>
       </HeaderDropdown>

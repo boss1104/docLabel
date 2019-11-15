@@ -8,11 +8,6 @@ export interface GeographicItemType {
   id: string;
 }
 
-export interface GeographicType {
-  province: GeographicItemType;
-  city: GeographicItemType;
-}
-
 export interface NoticeType {
   id: string;
   title: string;
@@ -25,19 +20,14 @@ export interface NoticeType {
 }
 
 export interface CurrentUser {
-  name: string;
-  avatar: string;
-  userid: string;
-  notice: NoticeType[];
+  id: number;
   email: string;
-  signature: string;
-  title: string;
-  group: string;
+  full_name: string;
+  avatar: string;
+  username: string;
+  //
+  notice: NoticeType[];
   tags: TagType[];
   notifyCount: number;
   unreadCount: number;
-  country: string;
-  geographic: GeographicType;
-  address: string;
-  phone: string;
 }

@@ -1,74 +1,35 @@
-import { queryCity, queryCurrent, queryProvince, query as queryUsers } from './service';
+import { updateAccount, changeAvatar } from './service';
 
 const Model = {
-  namespace: 'accountAndsettings',
+  namespace: 'accountSettings',
   state: {
-    currentUser: {},
-    province: [],
-    city: [],
     isLoading: false,
   },
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
+    *updateAccount({ payload }, { call, put }) {
+      const res = yield call(updateAccount, { data: payload });
+      const ret = {
+        ...res,
+      };
       yield put({
-        type: 'save',
-        payload: response,
+        type: 'user/saveCurrentUser',
+        payload: ret,
       });
+      return ret;
     },
+    *changeAvatar({ payload }, { call, put }) {
+      console.log('[DEBUG]: *changeAvatar -> payload', payload);
+      const res = yield call(changeAvatar, { data: payload });
 
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
       yield put({
-        type: 'saveCurrentUser',
-        payload: response,
+        type: 'user/saveCurrentUser',
+        payload: res,
       });
-    },
 
-    *fetchProvince(_, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
-      const response = yield call(queryProvince);
-      yield put({
-        type: 'setProvince',
-        payload: response,
-      });
-    },
-
-    *fetchCity({ payload }, { call, put }) {
-      const response = yield call(queryCity, payload);
-      yield put({
-        type: 'setCity',
-        payload: response,
-      });
+      return res;
     },
   },
   reducers: {
-    saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload || {} };
-    },
-
-    changeNotifyCount(state = {}, action) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
-      };
-    },
-
-    setProvince(state, action) {
-      return { ...state, province: action.payload };
-    },
-
-    setCity(state, action) {
-      return { ...state, city: action.payload };
-    },
-
     changeLoading(state, action) {
       return { ...state, isLoading: action.payload };
     },

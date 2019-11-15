@@ -2,67 +2,74 @@ import { Button, Form, Input, Select, Upload, message } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import GeographicView from './GeographicView';
-import PhoneView from './PhoneView';
 import styles from './BaseView.less';
+import { useWhyDidYouUpdate } from '@/hooks';
 
 const FormItem = Form.Item;
-const { Option } = Select; // 头像组件 方便以后独立，增加裁剪之类的功能
+const { Option } = Select;
 
-const AvatarView = ({ avatar }) => (
-  <Fragment>
-    <div className={styles.avatar_title}>
-      <FormattedMessage id="accountandsettings.basic.avatar" defaultMessage="Avatar" />
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-    <Upload fileList={[]}>
-      <div className={styles.button_view}>
-        <Button icon="upload">
-          <FormattedMessage
-            id="accountandsettings.basic.change-avatar"
-            defaultMessage="Change avatar"
-          />
-        </Button>
+const AvatarView = React.memo(props => {
+  const { avatar, uploadProps, uploading } = props;
+  useWhyDidYouUpdate('AvatarView', props);
+  return (
+    <Fragment>
+      <div className={styles.avatar_title}>
+        <FormattedMessage id="accountSettings.basic.avatar" defaultMessage="Avatar" />
       </div>
-    </Upload>
-  </Fragment>
-);
+      <div className={styles.avatar}>
+        <img src={avatar} alt="avatar" />
+      </div>
+      <Upload {...uploadProps} showUploadList={false}>
+        <div className={styles.button_view}>
+          <Button icon="upload" loading={uploading}>
+            <FormattedMessage
+              id="accountSettings.basic.change-avatar"
+              defaultMessage="Change avatar"
+            />
+          </Button>
+        </div>
+      </Upload>
+    </Fragment>
+  );
+});
 
-const validatorGeographic = (_, value, callback) => {
-  const { province, city } = value;
-
-  if (!province.key) {
-    callback('Please input your province!');
-  }
-
-  if (!city.key) {
-    callback('Please input your city!');
-  }
-
-  callback();
-};
-
-const validatorPhone = (rule, value, callback) => {
-  const values = value.split('-');
-
-  if (!values[0]) {
-    callback('Please input your area code!');
-  }
-
-  if (!values[1]) {
-    callback('Please input your phone number!');
-  }
-
-  callback();
-};
-
-@connect(({ accountAndsettings }) => ({
-  currentUser: accountAndsettings.currentUser,
+@connect(({ user, loading }) => ({
+  currentUser: user.currentUser,
+  loading: loading.effects['accountSettings/updateAccount'],
 }))
 class BaseView extends Component {
   view = undefined;
+
+  state = {
+    uploading: false,
+  };
+
+  uploadProps = {
+    name: 'avatar',
+    action: '/api/user/',
+    method: 'PATCH',
+    headers: {
+      Authorization: `Token ${localStorage.getItem('antd-pro-authority')}`,
+    },
+    beforeUpload: () => {},
+    onChange: info => {
+      console.log('[DEBUG]: BaseView -> uploadProps -> info', info);
+      if (info.file.status === 'uploading') {
+        this.setState({ uploading: true });
+        return;
+      }
+      if (info.file.status === 'done') {
+        this.setState({ uploading: false });
+        this.props.dispatch({
+          type: 'user/saveCurrentUser',
+          payload: info.file.response,
+        });
+        message.success('Avatar changed successfully');
+      } else if (info.file.status === 'error') {
+        message.error('Avatar upload failed.');
+      }
+    },
+  };
 
   componentDidMount() {
     this.setBaseInfo();
@@ -101,14 +108,31 @@ class BaseView extends Component {
 
   handlerSubmit = event => {
     event.preventDefault();
-    const { form } = this.props;
-    form.validateFields(err => {
+    const { form, dispatch } = this.props;
+    form.validateFields(async (err, fieldsValue) => {
+      console.log('[DEBUG]: BaseView -> fieldsValue', fieldsValue);
       if (!err) {
-        message.success(
-          formatMessage({
-            id: 'accountandsettings.basic.update.success',
-          }),
-        );
+        try {
+          await dispatch({
+            type: 'accountSettings/updateAccount',
+            payload: {
+              ...fieldsValue,
+            },
+          });
+          message.success(
+            formatMessage({
+              id: 'accountSettings.basic.update.success',
+            }),
+          );
+        } catch (error) {
+          console.log('[DEBUG]: BaseView -> error', error.data);
+
+          message.error(
+            formatMessage({
+              id: 'accountSettings.basic.update.failed',
+            }),
+          );
+        }
       }
     });
   };
@@ -116,14 +140,35 @@ class BaseView extends Component {
   render() {
     const {
       form: { getFieldDecorator },
+      loading,
     } = this.props;
+    const { uploading } = this.state;
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
           <Form layout="vertical" hideRequiredMark>
             <FormItem
               label={formatMessage({
-                id: 'accountandsettings.basic.email',
+                id: 'accountSettings.basic.fullname',
+              })}
+            >
+              {getFieldDecorator('full_name', {
+                rules: [
+                  {
+                    required: true,
+                    message: formatMessage(
+                      {
+                        id: 'accountSettings.basic.fullname-message',
+                      },
+                      {},
+                    ),
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+            <FormItem
+              label={formatMessage({
+                id: 'accountSettings.basic.email',
               })}
             >
               {getFieldDecorator('email', {
@@ -132,7 +177,7 @@ class BaseView extends Component {
                     required: true,
                     message: formatMessage(
                       {
-                        id: 'accountandsettings.basic.email-message',
+                        id: 'accountSettings.basic.email-message',
                       },
                       {},
                     ),
@@ -140,151 +185,21 @@ class BaseView extends Component {
                 ],
               })(<Input />)}
             </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.nickname',
-              })}
-            >
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.nickname-message',
-                      },
-                      {},
-                    ),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.profile',
-              })}
-            >
-              {getFieldDecorator('profile', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.profile-message',
-                      },
-                      {},
-                    ),
-                  },
-                ],
-              })(
-                <Input.TextArea
-                  placeholder={formatMessage({
-                    id: 'accountandsettings.basic.profile-placeholder',
-                  })}
-                  rows={4}
-                />,
-              )}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.country',
-              })}
-            >
-              {getFieldDecorator('country', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.country-message',
-                      },
-                      {},
-                    ),
-                  },
-                ],
-              })(
-                <Select
-                  style={{
-                    maxWidth: 220,
-                  }}
-                >
-                  <Option value="China">中国</Option>
-                </Select>,
-              )}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.geographic',
-              })}
-            >
-              {getFieldDecorator('geographic', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.geographic-message',
-                      },
-                      {},
-                    ),
-                  },
-                  {
-                    validator: validatorGeographic,
-                  },
-                ],
-              })(<GeographicView />)}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.address',
-              })}
-            >
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.address-message',
-                      },
-                      {},
-                    ),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.phone',
-              })}
-            >
-              {getFieldDecorator('phone', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.phone-message',
-                      },
-                      {},
-                    ),
-                  },
-                  {
-                    validator: validatorPhone,
-                  },
-                ],
-              })(<PhoneView />)}
-            </FormItem>
-            <Button type="primary" onClick={this.handlerSubmit}>
+
+            <Button type="primary" onClick={this.handlerSubmit} loading={loading}>
               <FormattedMessage
-                id="accountandsettings.basic.update"
+                id="accountSettings.basic.update"
                 defaultMessage="Update Information"
               />
             </Button>
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
+          <AvatarView
+            avatar={this.getAvatarURL()}
+            uploadProps={this.uploadProps}
+            uploading={uploading}
+          />
         </div>
       </div>
     );
