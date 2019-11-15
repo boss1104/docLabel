@@ -9,7 +9,15 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
     avatar = serializers.ImageField(required=False, max_length=None, use_url=True)
 
     class Meta(UserDetailsSerializer.Meta):
-        fields = ("url", "id", "username", "email", "full_name", "avatar")
+        fields = (
+            "url",
+            "id",
+            "username",
+            "email",
+            "full_name",
+            "avatar",
+            "is_superuser",
+        )
 
 
 class CustomRegisterSerializer(RegisterSerializer):

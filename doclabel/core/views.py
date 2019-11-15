@@ -61,8 +61,6 @@ class Features(APIView):
 
 class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectPolymorphicSerializer
-    # pagination_class = None
-    # REVIEW: Any logged in user can create their projects
     permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get_queryset(self):

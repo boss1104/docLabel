@@ -130,7 +130,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only_fields = ("image", "updated_at", "project_type", "current_users_role")
 
 
-class TextClassificationProjectSerializer(serializers.ModelSerializer):
+class TextClassificationProjectSerializer(ProjectSerializer):
     class Meta:
         model = TextClassificationProject
         fields = (
@@ -153,7 +153,7 @@ class TextClassificationProjectSerializer(serializers.ModelSerializer):
         )
 
 
-class SequenceLabelingProjectSerializer(serializers.ModelSerializer):
+class SequenceLabelingProjectSerializer(ProjectSerializer):
     class Meta:
         model = SequenceLabelingProject
         fields = (
@@ -176,7 +176,7 @@ class SequenceLabelingProjectSerializer(serializers.ModelSerializer):
         )
 
 
-class Seq2seqProjectSerializer(serializers.ModelSerializer):
+class Seq2seqProjectSerializer(ProjectSerializer):
     class Meta:
         model = Seq2seqProject
         fields = (
