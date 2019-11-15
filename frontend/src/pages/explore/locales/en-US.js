@@ -9,7 +9,7 @@ export default {
   'projects-list.description.placeholder': 'Description',
 
   // Guideline
-  'projects-list.guideline.code': 'Please change guide-line later',
+  'projects-list.guideline.code': 'Please add guide-line later',
   'projects-list.guideline.placeholder': 'Annatation guide',
 
   // Project type

@@ -1,49 +1,50 @@
-import { Avatar, Card, Col, Divider, Icon, Input, Row, Tag } from 'antd';
+import { Avatar, Card, Col, Divider, Icon, Input, Row, Tag, Button } from 'antd';
 import React, { PureComponent } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
-import Link from 'umi/link';
 import { connect } from 'dva';
+import { router } from 'umi';
+import Approvals from './components/Approvals';
+import Contributions from './components/Contributions';
 import Projects from './components/Projects';
-import Articles from './components/Articles';
-import Applications from './components/Applications';
 import styles from './Center.less';
 
 const operationTabList = [
   {
-    key: 'articles',
-    tab: (
-      <span>
-        文章{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          (8)
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'applications',
-    tab: (
-      <span>
-        应用{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          (8)
-        </span>
-      </span>
-    ),
-  },
-  {
     key: 'projects',
     tab: (
       <span>
-        项目{' '}
+        Projects{' '}
+        <span
+          style={{
+            fontSize: 14,
+          }}
+        >
+          (8)
+        </span>
+      </span>
+    ),
+  },
+  {
+    key: 'contributions',
+    tab: (
+      <span>
+        Contributions{' '}
+        <span
+          style={{
+            fontSize: 14,
+          }}
+        >
+          (8)
+        </span>
+      </span>
+    ),
+  },
+
+  {
+    key: 'approvals',
+    tab: (
+      <span>
+        Approval{' '}
         <span
           style={{
             fontSize: 14,
@@ -56,42 +57,20 @@ const operationTabList = [
   },
 ];
 
-@connect(({ loading, accountAndcenter }) => ({
-  currentUser: accountAndcenter.currentUser,
-  currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],
+@connect(({ loading, user }) => ({
+  currentUser: user.currentUser,
+  currentUserLoading: loading.effects['user/fetchCurrent'],
 }))
 class Center extends PureComponent {
-  // static getDerivedStateFromProps(
-  //   props: accountAndcenterProps,
-  //   state: accountAndcenterState,
-  // ) {
-  //   const { match, location } = props;
-  //   const { tabKey } = state;
-  //   const path = match && match.path;
-  //   const urlTabKey = location.pathname.replace(`${path}/`, '');
-  //   if (urlTabKey && urlTabKey !== '/' && tabKey !== urlTabKey) {
-  //     return {
-  //       tabKey: urlTabKey,
-  //     };
-  //   }
-  //   return null;
-  // }
   state = {
-    newTags: [],
-    inputVisible: false,
-    inputValue: '',
-    tabKey: 'articles',
+    tabKey: 'projects',
   };
-
-  input = undefined;
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
-      type: 'accountAndcenter/fetchCurrent',
-    });
-    dispatch({
-      type: 'accountAndcenter/fetch',
+      type: 'accountCenter/fetchMyProject',
     });
   }
 
@@ -104,65 +83,24 @@ class Center extends PureComponent {
     });
   };
 
-  showInput = () => {
-    this.setState(
-      {
-        inputVisible: true,
-      },
-      () => this.input && this.input.focus(),
-    );
-  };
-
-  saveInputRef = input => {
-    this.input = input;
-  };
-
-  handleInputChange = e => {
-    this.setState({
-      inputValue: e.target.value,
-    });
-  };
-
-  handleInputConfirm = () => {
-    const { state } = this;
-    const { inputValue } = state;
-    let { newTags } = state;
-
-    if (inputValue && newTags.filter(tag => tag.label === inputValue).length === 0) {
-      newTags = [
-        ...newTags,
-        {
-          key: `new-${newTags.length}`,
-          label: inputValue,
-        },
-      ];
-    }
-
-    this.setState({
-      newTags,
-      inputVisible: false,
-      inputValue: '',
-    });
-  };
-
   renderChildrenByTabKey = tabKey => {
     if (tabKey === 'projects') {
       return <Projects />;
     }
 
-    if (tabKey === 'applications') {
-      return <Applications />;
+    if (tabKey === 'contributions') {
+      return <Contributions />;
     }
 
-    if (tabKey === 'articles') {
-      return <Articles />;
+    if (tabKey === 'approvals') {
+      return <Approvals />;
     }
 
     return null;
   };
 
   render() {
-    const { newTags, inputVisible, inputValue, tabKey } = this.state;
+    const { tabKey } = this.state;
     const { currentUser, currentUserLoading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     return (
@@ -180,55 +118,28 @@ class Center extends PureComponent {
                 <div>
                   <div className={styles.avatarHolder}>
                     <img alt="" src={currentUser.avatar} />
-                    <div className={styles.name}>{currentUser.name}</div>
-                    <div>{currentUser.signature}</div>
+                    <div className={styles.name}>{currentUser.full_name}</div>
+                    {/* <div>signature</div> */}
                   </div>
                   <div className={styles.detail}>
                     <p>
-                      <i className={styles.title} />
-                      {currentUser.title}
+                      <Icon type="mail" theme="twoTone" />
+                      {currentUser.email}
                     </p>
                     <p>
-                      <i className={styles.group} />
-                      {currentUser.group}
+                      <Icon type="smile" theme="twoTone" />
+                      {currentUser.username}
                     </p>
-                    <p>
-                      <i className={styles.address} />
-                      {currentUser.geographic.province.label}
-                      {currentUser.geographic.city.label}
-                    </p>
+                  </div>
+                  <div className={styles.buttonEdit}>
+                    <Button onClick={() => router.push('/account/settings')} type="primary" block>
+                      Edit profile
+                    </Button>
                   </div>
                   <Divider dashed />
                   <div className={styles.tags}>
-                    <div className={styles.tagsTitle}>标签</div>
-                    {currentUser.tags.concat(newTags).map(item => (
-                      <Tag key={item.key}>{item.label}</Tag>
-                    ))}
-                    {inputVisible && (
-                      <Input
-                        ref={ref => this.saveInputRef(ref)}
-                        type="text"
-                        size="small"
-                        style={{
-                          width: 78,
-                        }}
-                        value={inputValue}
-                        onChange={this.handleInputChange}
-                        onBlur={this.handleInputConfirm}
-                        onPressEnter={this.handleInputConfirm}
-                      />
-                    )}
-                    {!inputVisible && (
-                      <Tag
-                        onClick={this.showInput}
-                        style={{
-                          background: '#fff',
-                          borderStyle: 'dashed',
-                        }}
-                      >
-                        <Icon type="plus" />
-                      </Tag>
-                    )}
+                    <div className={styles.tagsTitle}>Other info</div>
+                    {/*  */}
                   </div>
                   <Divider
                     style={{
@@ -237,18 +148,8 @@ class Center extends PureComponent {
                     dashed
                   />
                   <div className={styles.team}>
-                    <div className={styles.teamTitle}>团队</div>
-                    <Row gutter={36}>
-                      {currentUser.notice &&
-                        currentUser.notice.map(item => (
-                          <Col key={item.id} lg={24} xl={12}>
-                            <Link to={item.href}>
-                              <Avatar size="small" src={item.logo} />
-                              {item.member}
-                            </Link>
-                          </Col>
-                        ))}
-                    </Row>
+                    <div className={styles.teamTitle}>Notice</div>
+                    <Row gutter={36}>{/*  */}</Row>
                   </div>
                 </div>
               ) : null}

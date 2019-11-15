@@ -12,11 +12,6 @@ from .models import TextClassificationProject, SequenceLabelingProject, Seq2seqP
 from .models import DocumentAnnotation, SequenceAnnotation, Seq2seqAnnotation
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = get_user_model()
-#         fields = ("id", "username", "full_name", "email", "is_superuser")
-
 
 class LabelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
@@ -126,6 +121,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "updated_at",
             "randomize_document_order",
             "collaborative_annotation",
+            "public",
         )
         read_only_fields = ("image", "updated_at", "project_type", "current_users_role")
 
@@ -144,6 +140,7 @@ class TextClassificationProjectSerializer(ProjectSerializer):
             "image",
             "updated_at",
             "randomize_document_order",
+            "public",
         )
         read_only_fields = (
             "image",
@@ -167,6 +164,7 @@ class SequenceLabelingProjectSerializer(ProjectSerializer):
             "image",
             "updated_at",
             "randomize_document_order",
+            "public",
         )
         read_only_fields = (
             "image",
@@ -190,6 +188,7 @@ class Seq2seqProjectSerializer(ProjectSerializer):
             "image",
             "updated_at",
             "randomize_document_order",
+            "public",
         )
         read_only_fields = (
             "image",

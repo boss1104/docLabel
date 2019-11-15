@@ -31,7 +31,6 @@ class Project(PolymorphicModel):
     guideline = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
     users = models.ManyToManyField(User, related_name="contribute_projects")
     project_type = models.CharField(max_length=30, choices=PROJECT_CHOICES, null=False)
     randomize_document_order = models.BooleanField(default=False)

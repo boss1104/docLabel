@@ -64,10 +64,12 @@ class ProjectList(generics.ListCreateAPIView):
     permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get_queryset(self):
-        # Projects belong to the request users
-        queryset = Project.objects.filter(
-            Q(users__id=self.request.user.id) | Q(public=True)
-        )
+        queryset = Project.objects.filter(public=True)
+
+        mine = self.request.GET.get("mine")
+        if (mine):
+            queryset = Project.objects.filter(users__id=self.request.user.id)
+
         project_types = self.request.GET.getlist("type")
         if len(project_types):
             return queryset.filter(project_type__in=project_types)

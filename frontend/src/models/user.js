@@ -23,7 +23,10 @@ const UserModel = {
           payload: response,
         });
       } catch (error) {
-        message.error(error.data.detail);
+        if (error.data) {
+          const { detail } = error.data;
+          message.error(detail);
+        }
         yield put({
           type: 'changeLoginStatus',
           payload: {

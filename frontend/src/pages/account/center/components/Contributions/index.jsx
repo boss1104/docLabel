@@ -1,13 +1,13 @@
 import { Icon, List, Tag } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import ArticleListContent from '../ArticleListContent';
+import ArticleListContent from './ArticleListContent';
 import styles from './index.less';
 
-@connect(({ accountAndcenter }) => ({
-  list: accountAndcenter.list,
+@connect(({ accountCenter }) => ({
+  list: accountCenter.list,
 }))
-class Articles extends Component {
+class Contributions extends Component {
   render() {
     const { list } = this.props;
 
@@ -61,4 +61,4 @@ class Articles extends Component {
   }
 }
 
-export default Articles;
+export default Contributions;

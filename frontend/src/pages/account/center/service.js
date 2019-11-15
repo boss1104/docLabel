@@ -1,10 +1,8 @@
 import request from '@/utils/request';
 
-export async function queryCurrent() {
-  return request('/api/currentUser');
-}
-export async function queryFakeList(params) {
-  return request('/api/fake_list', {
+export async function fetchMyProject(params) {
+  return request('/api/projects/', {
+    method: 'GET',
     params,
   });
 }

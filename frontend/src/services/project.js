@@ -5,3 +5,10 @@ export async function queryCurrent(id) {
     method: 'GET',
   });
 }
+
+export async function createProject(payload) {
+  return request('/api/projects/', {
+    method: 'POST',
+    data: payload,
+  });
+}

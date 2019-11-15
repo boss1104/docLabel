@@ -1,35 +1,40 @@
-import { queryCurrent, queryFakeList } from './service';
+import { fetchMyProject } from './service';
+import { getPageQuery } from '@/utils/utils';
 
 const Model = {
-  namespace: 'accountAndcenter',
+  namespace: 'accountCenter',
   state: {
-    currentUser: {},
-    list: [],
+    myProjects: {
+      list: [],
+      pagination: {},
+    },
   },
   effects: {
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
-    },
+    *fetchMyProject({ payload }, { call, put }) {
+      const res = yield call(fetchMyProject, { ...payload, mine: 1 });
 
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+      const ret = {
+        list: Array.isArray(res.results) ? res.results : [],
+        pagination: {
+          count: res.count,
+          next: res.next ? getPageQuery(res.next) : null,
+          prev: res.previous ? getPageQuery(res.previous) : null,
+        },
+      };
+
       yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
+        type: 'changeState',
+        payload: {
+          myProjects: ret,
+        },
       });
+
+      return ret;
     },
   },
   reducers: {
-    saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload || {} };
-    },
-
-    queryList(state, action) {
-      return { ...state, list: action.payload };
+    changeState(state, action) {
+      return { ...state, ...action.payload };
     },
   },
 };

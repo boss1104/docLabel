@@ -6,10 +6,3 @@ export async function queryProjectList(params) {
     params,
   });
 }
-
-export async function createProject(payload) {
-  return request('/api/projects/', {
-    method: 'POST',
-    data: payload,
-  });
-}

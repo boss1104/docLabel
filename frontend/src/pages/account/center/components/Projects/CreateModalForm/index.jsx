@@ -3,6 +3,8 @@ import { useModalForm } from 'sunflower-antd';
 import { Modal, Button, Form, Spin, message } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 
+import { connect } from 'dva';
+import { router } from 'umi';
 import { FormContext } from './FormContext';
 import NameInput from './FormItem/NameInput';
 import DescriptionInput from './FormItem/DescriptionInput';
@@ -10,22 +12,54 @@ import Guideline from './FormItem/Guideline';
 import ProjectTypeSelect from './FormItem/ProjectTypeSelect';
 import OptionsCheckBox from './FormItem/OptionsCheckBox';
 
-export default Form.create()(props => {
-  const { form, onSubmit, errors } = props;
+const messageID = {
+  'project with this name already exists.': 'projects-list.name.unique',
+};
+
+const CreateModalForm = connect(({ loading }) => ({
+  loading: loading.effects['project/createProject'],
+}))(props => {
+  const { form, dispatch, errors } = props;
   const { buttonText } = props;
-  const { modalProps, formProps, show, formLoading } = useModalForm({
+
+  const { modalProps, formProps, show, close, formLoading } = useModalForm({
     defaultVisible: false,
     autoSubmitClose: true,
+    autoResetForm: true,
     submit: async formValues => {
       const payload = { ...formValues };
       const { options } = formValues;
-      // TODO: make sync formLoading
       delete payload.options;
       options.forEach(val => {
         payload[val] = true;
       });
       payload.resourcetype = payload.project_type;
-      const res = await onSubmit(payload);
+      try {
+        const res = await dispatch({
+          type: 'project/createProject',
+          payload,
+        });
+
+        message.success(`Successfully created!${res.name}`);
+        router.push(`/projects/${res.id}/dashboard`);
+        form.resetFields();
+        // close();
+      } catch (error) {
+        const valueWithError = {};
+        if (error.data) {
+          Object.entries(error.data).forEach(([key, val]) => {
+            const msg = formatMessage({
+              id: messageID[val[0]],
+            });
+            valueWithError[key] = {
+              value: form.getFieldValue(key),
+              errors: [new Error(msg)],
+            };
+          });
+        }
+        form.setFields({ ...valueWithError });
+        message.error('Something wrong! Try again');
+      }
     },
     form,
   });
@@ -43,18 +77,10 @@ export default Form.create()(props => {
 
   return (
     <FormContext.Provider value={form}>
-      <Modal {...modalProps} title="Create new project" okText="Submit and Close" width={740}>
+      <Modal {...modalProps} title="Create new project" footer={null} width={740}>
         <Spin spinning={formLoading}>
           <Form {...formItemLayout} {...formProps} layout="horizontal">
-            <NameInput
-              {...(errors &&
-                errors.name && {
-                  help: formatMessage({
-                    id: 'projects-list.name.unique',
-                  }),
-                  validateStatus: 'error',
-                })}
-            />
+            <NameInput />
             <DescriptionInput />
             <Guideline />
             <ProjectTypeSelect />
@@ -67,7 +93,13 @@ export default Form.create()(props => {
           </Form>
         </Spin>
       </Modal>
-      <Button onClick={show}>{buttonText}</Button>
+      <div className={props.className}>
+        <Button onClick={show} size="large">
+          {buttonText}
+        </Button>
+      </div>
     </FormContext.Provider>
   );
 });
+
+export default Form.create()(CreateModalForm);

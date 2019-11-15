@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { queryProjectList, createProject } from './service';
+import { queryProjectList } from './service';
 
 const Model = {
   namespace: 'projects',
@@ -23,25 +23,6 @@ const Model = {
         payload: {
           ...response,
           list: response.results,
-        },
-      });
-    },
-    *createProject({ payload }, { call, put }) {
-      let res = yield call(createProject, payload);
-      console.log('TCL: *createProject -> res', res);
-      const { statusCode } = res;
-
-      if (statusCode) {
-        delete res.statusCode;
-      } else {
-        res = null;
-        message.success('Project has been created successfully !');
-      }
-      yield put({
-        type: 'changeProjects',
-        payload: {
-          errors: res,
-          status: !statusCode,
         },
       });
     },

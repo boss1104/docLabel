@@ -9,7 +9,6 @@ import { PROJECT_TYPE } from './components/constants';
 
 import AvatarList from './components/AvatarList';
 import StandardFormRow from './components/StandardFormRow';
-import ModalForm from './components/CreateModalForm';
 import TagSelect from './components/TagSelect';
 import styles from './style.less';
 
@@ -116,14 +115,6 @@ const Projects = ({
     },
   };
 
-  const handleCreateProject = formValue => {
-    console.log('TCL: formValue', formValue);
-    dispatch({
-      type: 'projects/createProject',
-      payload: formValue,
-    });
-  };
-
   return (
     <div className={styles.coverCardList}>
       <Card bordered={false}>
@@ -160,7 +151,10 @@ const Projects = ({
             <Row gutter={16}>
               <Col lg={8} md={10} sm={10} xs={24}>
                 <FormItem {...formItemLayout} label="Author">
-                  {getFieldDecorator('author', {})(
+                  {getFieldDecorator(
+                    'author',
+                    {},
+                  )(
                     <Select
                       placeholder="Unlimited"
                       style={{
@@ -175,7 +169,10 @@ const Projects = ({
               </Col>
               <Col lg={8} md={10} sm={10} xs={24}>
                 <FormItem {...formItemLayout} label="Popularity">
-                  {getFieldDecorator('rate', {})(
+                  {getFieldDecorator(
+                    'rate',
+                    {},
+                  )(
                     <Select
                       placeholder="Unlimited"
                       style={{
@@ -192,11 +189,6 @@ const Projects = ({
             </Row>
           </StandardFormRow>
         </Form>
-        <ModalForm
-          buttonText="Create project"
-          onSubmit={handleCreateProject}
-          errors={status ? null : errors}
-        />
       </Card>
       <div className={styles.cardList}>{cardList}</div>
     </div>
