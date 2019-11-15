@@ -14,7 +14,7 @@ class UserAdmin(auth_admin.UserAdmin):
     add_form = UserCreationForm
     fieldsets = (
         (old_fieldsets[0],)
-        + ((_("Personal info"), {"fields": ("full_name", "email")}),)
+        + ((_("Personal info"), {"fields": ("full_name", "email", "avatar")}),)
         + (old_fieldsets[2:])
     )
     list_display = ["username", "full_name", "is_superuser"]

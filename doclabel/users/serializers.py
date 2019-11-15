@@ -6,6 +6,7 @@ from rest_auth.registration.serializers import RegisterSerializer
 class CustomUserDetailsSerializer(UserDetailsSerializer):
 
     full_name = serializers.CharField(required=True)
+    avatar = serializers.ImageField(required=False, max_length=None, use_url=True)
 
     class Meta(UserDetailsSerializer.Meta):
         fields = ("url", "id", "username", "email", "full_name", "avatar")
