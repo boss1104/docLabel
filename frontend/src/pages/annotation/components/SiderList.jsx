@@ -34,6 +34,16 @@ const SiderList = connect(({ project, task, loading }) => ({
     console.log('TCL: value', value);
   };
 
+  /**
+   * Init variables
+   */
+
+  const hasData = currentProject && Object.keys(currentProject).length;
+
+  const dataLoading = projectLoading || !hasData;
+
+  const isProjectAdmin = hasData && currentProject.current_users_role.is_project_admin;
+
   return (
     <Sider
       // collapsible
@@ -54,14 +64,16 @@ const SiderList = connect(({ project, task, loading }) => ({
         left: 0,
       }}
     >
-      <Spin spinning={projectLoading} size="small">
+      <Spin spinning={dataLoading} size="small">
         <section>
           <div style={{ margin: '24px 24px 0' }}>
             <Descriptions title="Project Info" size="middle" column={1}>
               <Descriptions.Item label="Project Name">{currentProject.name}</Descriptions.Item>
-              <Descriptions.Item label="Settings">
-                <Link to={`/projects/${currentProject.id}/dashboard`}>Edit</Link>
-              </Descriptions.Item>
+              {isProjectAdmin && (
+                <Descriptions.Item label="Settings">
+                  <Link to={`/projects/${currentProject.id}/dashboard`}>Edit</Link>
+                </Descriptions.Item>
+              )}
             </Descriptions>
           </div>
         </section>

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { connect } from 'dva';
 import { Layout, Button, Row, Col, Progress, Card, Spin, Icon, Modal, Typography } from 'antd';
 import { router } from 'umi';
@@ -13,7 +13,6 @@ import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
 import Markdown from '@/components/Markdown';
 
 const { Content } = Layout;
-const pageSize = 4;
 
 const getSidebarTotal = (total, limit) => {
   if (total !== 0 && limit !== 0) {
@@ -25,7 +24,7 @@ const getSidebarTotal = (total, limit) => {
 const getSidebarPage = (offset, limit) => (limit !== 0 ? Math.ceil(offset / limit) + 1 : 0);
 
 const Annotation = connect(({ project, task, label, loading }) => ({
-  project,
+  currentProject: project.currentProject,
   task,
   taskLoading: loading.effects['task/fetch'],
   label,
@@ -34,7 +33,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
 }))(props => {
   const {
     dispatch,
-    project: { currentProject },
+    currentProject,
     task: { list: taskList, pagination },
     taskLoading,
     label: { list: labelList },
@@ -270,6 +269,11 @@ const Annotation = connect(({ project, task, label, loading }) => ({
    * Variables
    */
   const approved = true;
+  const hasData = currentProject && Object.keys(currentProject).length;
+  const isAnnotationApprover =
+    hasData &&
+    (currentProject.current_users_role.is_annotation_approver ||
+      currentProject.current_users_role.is_project_admin);
 
   return (
     <GridContent>
@@ -302,11 +306,12 @@ const Annotation = connect(({ project, task, label, loading }) => ({
                     <Col span={14}>
                       <Row type="flex" gutter={48} justify="end">
                         <Col>
-                          {/* isSuperUser */}
-                          <Button
-                            icon={approved ? 'check-circle' : 'question-circle'}
-                            size="large"
-                          />
+                          {isAnnotationApprover && (
+                            <Button
+                              icon={approved ? 'check-circle' : 'question-circle'}
+                              size="large"
+                            />
+                          )}
                         </Col>
                         <Col>
                           <Button
