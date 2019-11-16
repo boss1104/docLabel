@@ -11,5 +11,6 @@ class UserViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
 
+    pagination_class = None
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = CustomUserDetailsSerializer

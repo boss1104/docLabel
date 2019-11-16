@@ -65,14 +65,14 @@ urlpatterns = [
         name="doc_downloader",
     ),
     # New endpoints
-    path("roles", Roles.as_view(), name="roles"),
+    path("roles/", Roles.as_view(), name="roles"),
     path(
-        "projects/<int:project_id>/roles",
+        "projects/<int:project_id>/roles/",
         RoleMappingList.as_view(),
         name="rolemapping_list",
     ),
     path(
-        "projects/<int:project_id>/roles/<int:rolemapping_id>",
+        "projects/<int:project_id>/roles/<int:rolemapping_id>/",
         RoleMappingDetail.as_view(),
         name="rolemapping_detail",
     ),
