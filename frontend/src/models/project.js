@@ -1,3 +1,4 @@
+import pathToRegexp from 'path-to-regexp';
 import { queryCurrent, createProject } from '@/services/project';
 import { arrayToObject } from '@/utils/utils';
 
@@ -36,13 +37,11 @@ const UserModel = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        const str = '/projects/';
-        if (pathname.includes(str)) {
-          let id = pathname.substr(pathname.indexOf(str) + str.length);
-          id = id.substr(0, id.indexOf('/') === -1 ? id.length : id.indexOf('/'));
+        const match = pathToRegexp('/projects/:id/(.*)').exec(pathname);
+        if (match && history.action === 'POP') {
           dispatch({
             type: 'fetchProject',
-            payload: id,
+            payload: match[1],
           });
         }
       });

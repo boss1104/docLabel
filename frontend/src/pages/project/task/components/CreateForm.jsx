@@ -1,8 +1,9 @@
-import { Form, Icon, Modal, Typography, Radio, Table, Upload, Button, message } from 'antd';
+import { Form, Icon, Modal, Typography, Radio, Table, Upload, Button, message, Spin } from 'antd';
 import React from 'react';
+import { connect } from 'dva';
 import SyntaxHighlighter from 'react-syntax-highlighter';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import uuid from 'uuid';
-// eslint-disable-next-line import/no-unresolved
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { TextClassificationProject, SequenceLabelingProject, Seq2seqProject } from './constants';
 
@@ -58,8 +59,10 @@ const ExcelBlock = ({ data }) => {
   );
 };
 
-const CreateForm = props => {
-  const { modalVisible, setModalVisible, form, currentProject } = props;
+const CreateForm = connect(({ loading }) => ({
+  loading: loading.models.task,
+}))(({ dispatch, modalVisible, setModalVisible, form, currentProject, onAddCompleted }) => {
+  const [uploading, setUploading] = React.useState(false);
 
   const uploadProps = {
     name: 'file',
@@ -70,11 +73,14 @@ const CreateForm = props => {
     headers: {
       Authorization: `Token ${localStorage.getItem('antd-pro-authority')}`,
     },
-    onChange(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
+    onChange: async info => {
+      if (info.file.status === 'uploading') {
+        setUploading(true);
       }
       if (info.file.status === 'done') {
+        // refresh
+        await onAddCompleted();
+        setUploading(false);
         message.success(`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
@@ -93,70 +99,72 @@ const CreateForm = props => {
       width={600}
       onCancel={() => setModalVisible(false)}
     >
-      <Form layout="horizontal">
-        <Typography.Title level={4}>Upload a file to annotate text.</Typography.Title>
-        <FormItem
-          labelCol={{
-            span: 3,
-          }}
-          wrapperCol={{
-            span: 17,
-          }}
-          label="Format: "
-        >
-          {form.getFieldDecorator('format', {
-            initialValue: 'json',
-          })(
-            <Radio.Group buttonStyle="solid">
-              {projectType &&
-                Object.keys(PROJECT_TYPES[projectType]).map(key => (
-                  <Radio.Button key={key} value={key}>
-                    {PROJECT_TYPES[projectType][key].label}
-                  </Radio.Button>
-                ))}
-            </Radio.Group>,
-          )}
-        </FormItem>
-        <div style={{ margin: '24px 0' }}>
-          {format &&
-            (format === 'excel' ? (
-              <ExcelBlock data={projectType && PROJECT_TYPES[projectType][format].format} />
-            ) : (
-              <CodeBlock
-                value={projectType ? PROJECT_TYPES[projectType][format].format : ''}
-                language={format}
-              />
-            ))}
-        </div>
-        <FormItem
-          labelCol={{
-            span: 3,
-          }}
-          wrapperCol={{
-            span: 17,
-          }}
-          label="File"
-        >
-          {form.getFieldDecorator('file', {
-            valuePropName: 'file',
-            // getValueFromEvent: e => {
-            //   console.log('Upload event:', e);
-            //   if (Array.isArray(e)) {
-            //     return e;
-            //   }
-            //   return e && e.fileList;
-            // },
-          })(
-            <Upload {...uploadProps}>
-              <Button>
-                <Icon type="upload" /> Click to Upload
-              </Button>
-            </Upload>,
-          )}
-        </FormItem>
-      </Form>
+      <Spin spinning={!!uploading}>
+        <Form layout="horizontal">
+          <Typography.Title level={4}>Upload a file to annotate text.</Typography.Title>
+          <FormItem
+            labelCol={{
+              span: 3,
+            }}
+            wrapperCol={{
+              span: 17,
+            }}
+            label="Format: "
+          >
+            {form.getFieldDecorator('format', {
+              initialValue: 'json',
+            })(
+              <Radio.Group buttonStyle="solid">
+                {projectType &&
+                  Object.keys(PROJECT_TYPES[projectType]).map(key => (
+                    <Radio.Button key={key} value={key}>
+                      {PROJECT_TYPES[projectType][key].label}
+                    </Radio.Button>
+                  ))}
+              </Radio.Group>,
+            )}
+          </FormItem>
+          <div style={{ margin: '24px 0' }}>
+            {format &&
+              (format === 'excel' ? (
+                <ExcelBlock data={projectType && PROJECT_TYPES[projectType][format].format} />
+              ) : (
+                <CodeBlock
+                  value={projectType ? PROJECT_TYPES[projectType][format].format : ''}
+                  language={format}
+                />
+              ))}
+          </div>
+          <FormItem
+            labelCol={{
+              span: 3,
+            }}
+            wrapperCol={{
+              span: 17,
+            }}
+            label="File"
+          >
+            {form.getFieldDecorator('file', {
+              valuePropName: 'file',
+              // getValueFromEvent: e => {
+              //   console.log('Upload event:', e);
+              //   if (Array.isArray(e)) {
+              //     return e;
+              //   }
+              //   return e && e.fileList;
+              // },
+            })(
+              <Upload {...uploadProps}>
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>,
+            )}
+          </FormItem>
+        </Form>
+      </Spin>
     </Modal>
   );
-};
+});
 
 export default Form.create()(CreateForm);

@@ -10431,7 +10431,7 @@ loader-runner@^2.4.0:
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.4.0.tgz#ed47066bfe534d7e84c4c7b9998c2a75607d9357"
   integrity sha512-Jsmr89RcXGIwivFY21FcRrisYZfvLMTWx5kOLc+JTxtpBOG6xML0vzbc6SEQG2FO9/4Fc3wW4LVcB5DmGflaRw==
 
-loader-utils@1.2.3, loader-utils@^1.0.2, loader-utils@^1.1.0, loader-utils@^1.2.3:
+loader-utils@1.2.3, loader-utils@^1.0.0, loader-utils@^1.0.2, loader-utils@^1.1.0, loader-utils@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.2.3.tgz#1ff5dc6911c9f0a062531a4c04b609406108c2c7"
   integrity sha512-fkpz8ejdnEMG3s37wGL07iSBDg99O9D5yflE9RGNH3hRdx9SOwYfnGYdZOUIZitN8E+E2vkq3MUMYMvPYl5ZZA==
@@ -11403,6 +11403,11 @@ node-emoji@^1.4.1:
   dependencies:
     lodash.toarray "^4.4.0"
 
+node-ensure@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/node-ensure/-/node-ensure-0.0.0.tgz#ecae764150de99861ec5c810fd5d096b183932a7"
+  integrity sha1-7K52QVDemYYexcgQ/V0Jaxg5Mqc=
+
 node-eval@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/node-eval/-/node-eval-2.0.0.tgz#ae1d1299deb4c0e41352f9528c1af6401661d37f"
@@ -12267,6 +12272,14 @@ pbkdf2@^3.0.3:
     ripemd160 "^2.0.1"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
+
+pdfjs-dist@2.0.489:
+  version "2.0.489"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.0.489.tgz#63e54b292a86790a454697eb44d4347b8fbfad27"
+  integrity sha1-Y+VLKSqGeQpFRpfrRNQ0e4+/rSc=
+  dependencies:
+    node-ensure "^0.0.0"
+    worker-loader "^1.1.1"
 
 pend@~1.2.0:
   version "1.2.0"
@@ -13993,6 +14006,11 @@ rc@^1.2.7, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+re-resizable@4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-4.5.1.tgz#4688e8311ea4b70d558f7aebb3168a25926e62d9"
+  integrity sha512-amjlp4IuTSHs4XG1bP5WbAgBDIZitODKIsqcpZsNhEBYYEidol0dlP4S9zHiN3iu6Tff4WfYuruihLgN7RJeQw==
+
 react-codemirror2@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-6.0.0.tgz#180065df57a64026026cde569a9708fdf7656525"
@@ -14074,6 +14092,14 @@ react-dom@^16.10.2, react-dom@^16.11.0, react-dom@^16.3.0, react-dom@^16.8.6:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.17.0"
+
+react-draggable@^3.0.5:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.3.2.tgz#966ef1d90f2387af3c2d8bd3516f601ea42ca359"
+  integrity sha512-oaz8a6enjbPtx5qb0oDWxtDNuybOylvto1QLydsXgKmwT7e3GXC2eMVDwEMIUYJIFqVG72XpOv673UuuAq6LhA==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
 
 react-error-overlay@5.1.6, react-error-overlay@^5.1.6:
   version "5.1.6"
@@ -14171,6 +14197,21 @@ react-native-swipeout@^2.2.2:
     prop-types "^15.5.10"
     react-tween-state "^0.1.5"
 
+react-pdf-highlighter@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-pdf-highlighter/-/react-pdf-highlighter-2.2.0.tgz#2c4674a6719edfe71df18e3baea56ce2985da5a4"
+  integrity sha512-94Bf65Kjg1WC5gMEPpk1jXZONXvFnCN2sGFcCFX5rO8ddpWLgW6Vy6AvXWXhstGVzrHGmEm70uQciSiv7FPGBQ==
+  dependencies:
+    lodash "^4.17.10"
+    pdfjs-dist "2.0.489"
+    react-pointable "^1.1.1"
+    react-rnd "^7.1.5"
+
+react-pointable@^1.1.1:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-pointable/-/react-pointable-1.1.3.tgz#7895ace940a08e12ca620f6d191f1d3831484bfc"
+  integrity sha512-7skalWy38NLyKk1HcITmuloqCe2INPh69cFHbN7NcCn+Wfb0Ha4XGwGN0iVa4ZzqIHSqFRYOmV0loYNHrZ5/Sg==
+
 react-portal@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/react-portal/-/react-portal-4.2.0.tgz#5400831cdb0ae64dccb8128121cf076089ab1afd"
@@ -14211,6 +14252,14 @@ react-responsive@^8.0.1:
     matchmediaquery "^0.3.0"
     prop-types "^15.6.1"
     shallow-equal "^1.1.0"
+
+react-rnd@^7.1.5:
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/react-rnd/-/react-rnd-7.4.3.tgz#76adc591fd78f543a66cc63595d0002599d1d408"
+  integrity sha512-TLQ35nqXup7rC63qAETebbO6Znilr20CroTTeAdlYu8nvRSwB7BrmPKZhHB2GgeiSucOoeCyAA9pHPhbMpEd/Q==
+  dependencies:
+    re-resizable "4.5.1"
+    react-draggable "^3.0.5"
 
 react-router-config@5.1.1:
   version "5.1.1"
@@ -15300,7 +15349,7 @@ scheduler@^0.17.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-schema-utils@^0.4.5:
+schema-utils@^0.4.0, schema-utils@^0.4.5:
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-0.4.7.tgz#ba74f597d2be2ea880131746ee17d0a093c68187"
   integrity sha512-v/iwU6wvwGK8HbU9yi3/nhGzP0yGSuhQMzL6ySiec1FSrZZDkhm4noOSWzrNFo/jEc+SJY6jRTwuwbSXJPDUnQ==
@@ -18485,6 +18534,14 @@ worker-farm@^1.5.2, worker-farm@^1.7.0:
   integrity sha512-rvw3QTZc8lAxyVrqcSGVm5yP/IJ2UcB3U0graE3LCFoZ0Yn2x4EoVSqJKdB/T5M+FLcRPjz4TDacRf3OCfNUzw==
   dependencies:
     errno "~0.1.7"
+
+worker-loader@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/worker-loader/-/worker-loader-1.1.1.tgz#920d74ddac6816fc635392653ed8b4af1929fd92"
+  integrity sha512-qJZLVS/jMCBITDzPo/RuweYSIG8VJP5P67mP/71alGyTZRe1LYJFdwLjLalY3T5ifx0bMDRD3OB6P2p1escvlg==
+  dependencies:
+    loader-utils "^1.0.0"
+    schema-utils "^0.4.0"
 
 worker-rpc@^0.1.0:
   version "0.1.1"

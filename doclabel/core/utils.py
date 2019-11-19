@@ -84,7 +84,7 @@ class BaseStorage(object):
             background_color = Color(pick_for=label)
             text_color = Color('white') if background_color.get_luminance() < 0.5 else Color('black')
             serializer_label['background_color'] = background_color.hex
-            serializer_label['text_color'] = text_color.contrast_color.hex
+            serializer_label['text_color'] = text_color.hex
             serializer_label['project'] = project_id
 
             serializer_labels.append(serializer_label)

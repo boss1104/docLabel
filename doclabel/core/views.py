@@ -180,10 +180,11 @@ class DocumentList(generics.ListCreateAPIView):
 
         queryset = project.documents
 
-        if project.randomize_document_order:
-            queryset = queryset.annotate(
-                sort_id=F("id") % self.request.user.id
-            ).order_by("sort_id")
+        # TODO: Dont make random order if admin request
+        # if project.randomize_document_order:
+        #     queryset = queryset.annotate(
+        #         sort_id=F("id") % self.request.user.id
+        #     ).order_by("sort_id")
 
         return queryset
 

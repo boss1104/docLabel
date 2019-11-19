@@ -1,6 +1,7 @@
 import { Alert, Table } from 'antd';
 import React, { Component, Fragment } from 'react';
 import styles from './index.less';
+import { PAGE_SIZE } from '../../constants';
 
 function initTotalList(columns) {
   if (!columns) {
@@ -75,14 +76,15 @@ class StandardTable extends Component {
 
   render() {
     const { selectedRowKeys, needTotalList } = this.state;
-    const { data, rowKey, ...rest } = this.props;
+    const { data, rowKey, defaultCurrent, ...rest } = this.props;
 
     const { list = [], pagination = false } = data || {};
     const paginationProps = pagination
       ? {
           showQuickJumper: true,
           showTotal: (total, range) => `${range[0]}-${range[1]} of ${pagination.total} items`,
-          pageSize: 5,
+          pageSize: PAGE_SIZE,
+          defaultCurrent,
           ...pagination,
         }
       : false;

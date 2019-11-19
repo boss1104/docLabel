@@ -76,6 +76,7 @@
     "react-fittext": "^1.0.0",
     "react-hotkeys": "^2.0.0",
     "react-markdown": "^4.2.2",
+    "react-pdf-highlighter": "^2.2.0",
     "react-syntax-highlighter": "^11.0.2",
     "react-text-annotate": "^0.1.0",
     "redux": "^4.0.4",

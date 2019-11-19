@@ -1,28 +1,24 @@
 import request from '@/utils/request';
+import { PAGE_SIZE } from './constants';
 
-export async function queryTask({ projectId, params = { page: 1 } }) {
+export async function fetchTask({ projectId, params }) {
   return request(`/api/projects/${projectId}/docs/`, {
-    params,
+    params: {
+      ...params,
+      limit: PAGE_SIZE,
+    },
   });
 }
 
-// export async function addTask({ projectId, params }) {
-//   return request(`/api/projects/${projectId}/docs/`, {
-//     method: 'POST',
-//     data: params,
-//   });
-// }
-
-export async function removeTask({ projectId, params }) {
-  return request(`/api/projects/${projectId}/docs/`, {
+export async function removeTask({ projectId, taskId }) {
+  return request(`/api/projects/${projectId}/docs/${taskId}/`, {
     method: 'DELETE',
-    data: params,
   });
 }
 
-export async function updateTask({ projectId, params }) {
-  return request(`/api/projects/${projectId}/docs/`, {
+export async function updateTask({ projectId, taskId, data }) {
+  return request(`/api/projects/${projectId}/docs/${taskId}`, {
     method: 'PATCH',
-    data: params,
+    data,
   });
 }
