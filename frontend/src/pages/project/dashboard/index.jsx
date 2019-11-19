@@ -3,9 +3,25 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
-import { Avatar, Card, Col, Skeleton, Row, Statistic, Button } from 'antd';
+import { Avatar, Card, Col, Skeleton, Row, Statistic, Button, Icon, Tag } from 'antd';
+
 import styles from './index.less';
 import Pie from './components/Pie';
+
+export const PROJECT_TYPE = {
+  TextClassificationProject: {
+    icon: <Icon type="smile" theme="twoTone" />,
+    label: <Tag color="purple">Document Classification</Tag>,
+  },
+  SequenceLabelingProject: {
+    icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,
+    label: <Tag color="magenta">Sequence Labeling</Tag>,
+  },
+  Seq2seqProject: {
+    icon: <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />,
+    label: <Tag color="cyan">Sequence to Sequence</Tag>,
+  },
+};
 
 const PageHeaderContent = ({ currentProject }) => {
   const loading = currentProject && Object.keys(currentProject).length;
@@ -29,17 +45,16 @@ const PageHeaderContent = ({ currentProject }) => {
       </div>
       <div className={styles.content}>
         <div className={styles.contentTitle}>{currentProject.name}</div>
-        <div className={styles.contentTitle}>currentProject.project_type</div>
-        <div>
-          {currentProject.title} |{currentProject.group}
-        </div>
+        <div className={styles.contentTitle}>{PROJECT_TYPE[currentProject.project_type].label}</div>
+        <div>{currentProject.title}</div>
       </div>
     </div>
   );
 };
 const ExtraContent = ({ currentProject }) => (
   <div className={styles.extraContent}>
-    {currentProject.isPublish ? (
+    {console.log('[DEBUG]: currentProject', currentProject)}
+    {currentProject.public ? (
       <div>
         <div className={styles.statItem}>
           <Statistic title="Number of items" value={56} />
@@ -57,14 +72,11 @@ const ExtraContent = ({ currentProject }) => (
   </div>
 );
 
-const Dashboard = props => {
-  const currentProject = {
-    name: 'Hello world',
-    title: 'title',
-    avatar: 'avatar',
-    group: 'group',
-    isPublish: false,
-  };
+const Dashboard = connect(({ project, dashboard, loading }) => ({
+  currentProject: project.currentProject,
+  dashboard,
+  statisticsLoading: loading.effects['dashboard/fetchStatistics'],
+}))(props => {
   const {
     dispatch,
     dashboard: {
@@ -72,6 +84,7 @@ const Dashboard = props => {
     },
     loading,
     statisticsLoading,
+    currentProject,
   } = props;
 
   /**
@@ -171,10 +184,6 @@ const Dashboard = props => {
       </PageHeaderWrapper>
     </div>
   );
-};
+});
 
-export default connect(({ dashboard, loading }) => ({
-  dashboard,
-  loading: loading.models.dashboard,
-  statisticsLoading: loading.effects['dashboard/fetchStatistics'],
-}))(Dashboard);
+export default Dashboard;
