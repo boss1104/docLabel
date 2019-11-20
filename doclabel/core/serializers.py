@@ -83,8 +83,8 @@ class DocumentSerializer(serializers.ModelSerializer):
     def get_file_url(self, instance):
         request = self.context.get("request")
         fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/")
-        if fs.exists(os.path.basename(instance.text)):
-            return request.build_absolute_uri(instance.text)
+        if fs.exists(instance.text):
+            return request.build_absolute_uri("/media/pdf_documents/" + instance.text)
         return None
 
     def get_annotations(self, instance):

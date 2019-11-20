@@ -361,7 +361,7 @@ def delete_linked_project(sender, instance, using, **kwargs):
 
 @receiver(post_delete, sender=Document)
 def delete_file_on_remove(sender, instance, **kwargs):
-    file = os.path.basename(instance.text)
+    file = instance.text
     fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/")
     if fs.exists(file):
         fs.delete(file)

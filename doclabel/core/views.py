@@ -268,14 +268,11 @@ class TextUploadAPI(APIView):
             file = request.data["file"]
             fs = FileSystemStorage(
                 location=settings.MEDIA_ROOT + "/pdf_documents/",
-                base_url=settings.MEDIA_URL + "/pdf_documents/",
             )
             filename = fs.save(file.name, file)
-            uploaded_file_url = fs.url(filename)
-
             # save document
             data = {
-                "text": uploaded_file_url,
+                "text": filename,
             }
             serializer = DocumentSerializer(data=data)
             serializer.is_valid(raise_exception=True)
