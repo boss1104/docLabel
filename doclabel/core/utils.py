@@ -218,6 +218,39 @@ class Seq2seqStorage(BaseStorage):
         return annotations
 
 
+class PdfLabelingStorage(BaseStorage):
+    
+    @transaction.atomic
+    def save(self, user):
+        saved_labels = {label.text: label for label in self.project.labels.all()}
+        for data in self.data:
+            docs = self.save_doc(data)
+            labels = self.extract_label(data)
+            unique_labels = self.extract_unique_labels(labels)
+            unique_labels = self.exclude_created_labels(unique_labels, saved_labels)
+            unique_labels = self.to_serializer_format(unique_labels, saved_labels, self.project.id)
+            new_labels = self.save_label(unique_labels)
+            saved_labels = self.update_saved_labels(saved_labels, new_labels)
+            annotations = self.make_annotations(docs, labels, saved_labels)
+            self.save_annotation(annotations, user)
+
+    @classmethod
+    def extract_unique_labels(cls, labels):
+        return set([label for _, _, label in itertools.chain(*labels)])
+
+    @classmethod
+    def make_annotations(cls, docs, labels, saved_labels):
+        annotations = []
+        for doc, spans in zip(docs, labels):
+            for span in spans:
+                data, name = span
+                label = saved_labels[name]
+                annotations.append({'document': doc.id,
+                                    'label': label.id,
+                                    'data': data})
+        return annotations
+
+
 class FileParser(object):
 
     def parse(self, file):

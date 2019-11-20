@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Count, F, Q
 from libcloud.base import DriverType, get_driver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
+from django.core.files.storage import FileSystemStorage
 from rest_framework import generics, filters, status
 from rest_framework.exceptions import ParseError, ValidationError
 from rest_framework.response import Response
@@ -67,7 +68,7 @@ class ProjectList(generics.ListCreateAPIView):
         queryset = Project.objects.filter(public=True)
 
         mine = self.request.GET.get("mine")
-        if (mine):
+        if mine:
             queryset = Project.objects.filter(users__id=self.request.user.id)
 
         project_types = self.request.GET.getlist("type")
@@ -93,12 +94,22 @@ class StatisticsAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         p = get_object_or_404(Project, pk=self.kwargs["project_id"])
-        label_count, user_count = self.label_per_data(p)
-        progress = self.progress(project=p)
-        response = dict()
-        response["label"] = label_count
-        response["user"] = user_count
-        response.update(progress)
+        include = set(request.GET.getlist("include"))
+        response = {}
+
+        if not include or "label" in include or "user" in include:
+            label_count, user_count = self.label_per_data(p)
+            response["label"] = label_count
+            response["user"] = user_count
+
+        if not include or "total" in include or "remaining" in include:
+            progress = self.progress(project=p)
+            response.update(progress)
+
+        if include:
+            response = {
+                key: value for (key, value) in response.items() if key in include
+            }
         return Response(response)
 
     def progress(self, project):
@@ -224,8 +235,7 @@ class AnnotationList(generics.ListCreateAPIView):
         return super().create(request, args, kwargs)
 
     def perform_create(self, serializer):
-        doc = get_object_or_404(Document, pk=self.kwargs["doc_id"])
-        serializer.save(document=doc, user=self.request.user)
+        serializer.save(document_id=self.kwargs["doc_id"], user=self.request.user)
 
 
 class AnnotationDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -254,12 +264,33 @@ class TextUploadAPI(APIView):
         if "file" not in request.data:
             raise ParseError("Empty content")
 
-        self.save_file(
-            user=request.user,
-            file=request.data["file"],
-            file_format=request.data["format"],
-            project_id=kwargs["project_id"],
-        )
+        if request.data["format"] == "pdf":
+            file = request.data["file"]
+            fs = FileSystemStorage(
+                location=settings.MEDIA_ROOT + "/pdf_documents/",
+                base_url=settings.MEDIA_URL + "/pdf_documents/",
+            )
+            filename = fs.save(file.name, file)
+            uploaded_file_url = fs.url(filename)
+
+            # save document
+            data = {
+                "text": uploaded_file_url,
+            }
+            serializer = DocumentSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            project = get_object_or_404(Project, pk=kwargs["project_id"])
+            doc = serializer.save(project=project)
+            ret_data = DocumentSerializer(doc, context={"request": request}).data
+            return Response(data=ret_data, status=status.HTTP_201_CREATED)
+        else:
+            # save doccument + create existence label
+            self.save_file(
+                user=request.user,
+                file=request.data["file"],
+                file_format=request.data["format"],
+                project_id=kwargs["project_id"],
+            )
 
         return Response(status=status.HTTP_201_CREATED)
 

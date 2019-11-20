@@ -1,11 +1,14 @@
 import string
+import os
 
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, post_delete
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import JSONField
+from django.core.files.storage import FileSystemStorage
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ValidationError
 from polymorphic.models import PolymorphicModel
@@ -17,10 +20,12 @@ User = get_user_model()
 DOCUMENT_CLASSIFICATION = "TextClassificationProject"
 SEQUENCE_LABELING = "SequenceLabelingProject"
 SEQ2SEQ = "Seq2seqProject"
+PDF_LABELING = "PdfLabelingProject"
 PROJECT_CHOICES = (
     (DOCUMENT_CLASSIFICATION, "Document Classification"),
     (SEQUENCE_LABELING, "Sequence Labeling"),
     (SEQ2SEQ, "Sequence to Sequence"),
+    (PDF_LABELING, "PDF Labeling Project"),
 )
 
 
@@ -45,15 +50,6 @@ class Project(PolymorphicModel):
     def image(self):
         raise NotImplementedError()
 
-    def get_bundle_name(self):
-        raise NotImplementedError()
-
-    def get_bundle_name_upload(self):
-        raise NotImplementedError()
-
-    def get_bundle_name_download(self):
-        raise NotImplementedError()
-
     def get_annotation_serializer(self):
         raise NotImplementedError()
 
@@ -71,15 +67,6 @@ class TextClassificationProject(Project):
     @property
     def image(self):
         return staticfiles_storage.url("images/cats/text_classification.jpg")
-
-    def get_bundle_name(self):
-        return "document_classification"
-
-    def get_bundle_name_upload(self):
-        return "upload_text_classification"
-
-    def get_bundle_name_download(self):
-        return "download_text_classification"
 
     def get_annotation_serializer(self):
         from doclabel.core.serializers import DocumentAnnotationSerializer
@@ -100,15 +87,6 @@ class SequenceLabelingProject(Project):
     def image(self):
         return staticfiles_storage.url("images/cats/sequence_labeling.jpg")
 
-    def get_bundle_name(self):
-        return "sequence_labeling"
-
-    def get_bundle_name_upload(self):
-        return "upload_sequence_labeling"
-
-    def get_bundle_name_download(self):
-        return "download_sequence_labeling"
-
     def get_annotation_serializer(self):
         from .serializers import SequenceAnnotationSerializer
 
@@ -128,15 +106,6 @@ class Seq2seqProject(Project):
     def image(self):
         return staticfiles_storage.url("images/cats/seq2seq.jpg")
 
-    def get_bundle_name(self):
-        return "seq2seq"
-
-    def get_bundle_name_upload(self):
-        return "upload_seq2seq"
-
-    def get_bundle_name_download(self):
-        return "download_seq2seq"
-
     def get_annotation_serializer(self):
         from .serializers import Seq2seqAnnotationSerializer
 
@@ -151,9 +120,26 @@ class Seq2seqProject(Project):
         return Seq2seqStorage(data, self)
 
 
+class PdfLabelingProject(Project):
+    @property
+    def image(self):
+        return staticfiles_storage.url("images/cats/pdf_labeling.jpg")
+
+    def get_annotation_serializer(self):
+        from .serializers import PdfAnnotationSerializer
+
+        return PdfAnnotationSerializer
+
+    def get_annotation_class(self):
+        return PdfAnnotation
+
+    def get_storage(self, data):
+        from .utils import PdfLabelingStorage
+
+        return PdfLabelingStorage(data, self)
+
+
 # Label
-
-
 class Label(models.Model):
     PREFIX_KEYS = (("ctrl", "ctrl"), ("shift", "shift"), ("ctrl shift", "ctrl shift"))
     SUFFIX_KEYS = tuple((c, c) for c in string.ascii_lowercase)
@@ -199,6 +185,7 @@ class Label(models.Model):
 
 # Dataset
 class Document(models.Model):
+    # text content or pdf content
     text = models.TextField()
     project = models.ForeignKey(
         Project, related_name="documents", on_delete=models.CASCADE
@@ -265,6 +252,17 @@ class Seq2seqAnnotation(Annotation):
 
     class Meta:
         unique_together = ("document", "user", "text")
+
+
+class PdfAnnotation(Annotation):
+    document = models.ForeignKey(
+        Document, related_name="pdf_annotations", on_delete=models.CASCADE
+    )
+    label = models.ForeignKey(Label, on_delete=models.CASCADE)
+    data = JSONField()
+
+    class Meta:
+        unique_together = ("document", "user", "label")
 
 
 class Role(models.Model):
@@ -359,3 +357,11 @@ def delete_linked_project(sender, instance, using, **kwargs):
         project = Project.objects.get(pk=projectInstance.pk)
         user.projects.remove(project)
         user.save()
+
+
+@receiver(post_delete, sender=Document)
+def delete_file_on_remove(sender, instance, **kwargs):
+    file = os.path.basename(instance.text)
+    fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/")
+    if fs.exists(file):
+        fs.delete(file)

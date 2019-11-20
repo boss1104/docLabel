@@ -1,16 +1,27 @@
 # from django.contrib.auth import get_user_model
+import os
 from django.conf import settings
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 from rest_polymorphic.serializers import PolymorphicSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueTogetherValidator
+from django.core.files.storage import FileSystemStorage
 
 
 from .models import Label, Project, Document, RoleMapping, Role
-from .models import TextClassificationProject, SequenceLabelingProject, Seq2seqProject
-from .models import DocumentAnnotation, SequenceAnnotation, Seq2seqAnnotation
-
+from .models import (
+    TextClassificationProject,
+    SequenceLabelingProject,
+    Seq2seqProject,
+    PdfLabelingProject,
+)
+from .models import (
+    DocumentAnnotation,
+    SequenceAnnotation,
+    Seq2seqAnnotation,
+    PdfAnnotation,
+)
 
 
 class LabelSerializer(serializers.ModelSerializer):
@@ -67,6 +78,14 @@ class LabelSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
     annotations = serializers.SerializerMethodField()
     annotation_approver = serializers.SerializerMethodField()
+    file_url = serializers.SerializerMethodField()
+
+    def get_file_url(self, instance):
+        request = self.context.get("request")
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/")
+        if fs.exists(os.path.basename(instance.text)):
+            return request.build_absolute_uri(instance.text)
+        return None
 
     def get_annotations(self, instance):
         request = self.context.get("request")
@@ -86,7 +105,14 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Document
-        fields = ("id", "text", "annotations", "meta", "annotation_approver")
+        fields = (
+            "id",
+            "text",
+            "annotations",
+            "meta",
+            "annotation_approver",
+            "file_url",
+        )
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -198,6 +224,30 @@ class Seq2seqProjectSerializer(ProjectSerializer):
         )
 
 
+class PdfLabelingProjectSerializer(ProjectSerializer):
+    class Meta:
+        model = PdfLabelingProject
+        fields = (
+            "id",
+            "name",
+            "description",
+            "guideline",
+            "users",
+            "current_users_role",
+            "project_type",
+            "image",
+            "updated_at",
+            "randomize_document_order",
+            "public",
+        )
+        read_only_fields = (
+            "image",
+            "updated_at",
+            "users",
+            "current_users_role",
+        )
+
+
 class ProjectPolymorphicSerializer(PolymorphicSerializer):
     #  It's the same now
     model_serializer_mapping = {
@@ -205,6 +255,7 @@ class ProjectPolymorphicSerializer(PolymorphicSerializer):
         TextClassificationProject: TextClassificationProjectSerializer,
         SequenceLabelingProject: SequenceLabelingProjectSerializer,
         Seq2seqProject: Seq2seqProjectSerializer,
+        PdfLabelingProject: PdfLabelingProjectSerializer,
     }
 
 
@@ -254,6 +305,24 @@ class Seq2seqAnnotationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seq2seqAnnotation
         fields = ("id", "text", "user", "document", "prob")
+        read_only_fields = ("user",)
+
+
+class PdfAnnotationSerializer(serializers.ModelSerializer):
+    label = serializers.PrimaryKeyRelatedField(queryset=Label.objects.all())
+    document = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all())
+    data = serializers.JSONField()
+
+    class Meta:
+        model = PdfAnnotation
+        fields = (
+            "id",
+            "prob",
+            "label",
+            "data",
+            "user",
+            "document",
+        )
         read_only_fields = ("user",)
 
 
