@@ -259,10 +259,11 @@ class PdfAnnotation(Annotation):
         Document, related_name="pdf_annotations", on_delete=models.CASCADE
     )
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
-    data = JSONField()
+    content = JSONField()
+    position = JSONField()
 
     class Meta:
-        unique_together = ("document", "user", "label", "data")
+        unique_together = ("document", "user", "label", "content", "position")
 
 
 class Role(models.Model):

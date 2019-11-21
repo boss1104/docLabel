@@ -311,7 +311,8 @@ class Seq2seqAnnotationSerializer(serializers.ModelSerializer):
 class PdfAnnotationSerializer(serializers.ModelSerializer):
     label = serializers.PrimaryKeyRelatedField(queryset=Label.objects.all())
     document = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all())
-    data = serializers.JSONField()
+    content = serializers.JSONField()
+    position = serializers.JSONField()
 
     class Meta:
         model = PdfAnnotation
@@ -319,7 +320,8 @@ class PdfAnnotationSerializer(serializers.ModelSerializer):
             "id",
             "prob",
             "label",
-            "data",
+            "content",
+            "position",
             "user",
             "document",
         )
