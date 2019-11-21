@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { router, Link } from 'umi';
 
-import { PROJECT_TYPE } from './components/constants';
+import { PROJECT_TYPE } from '@/pages/constants';
 
 import AvatarList from './components/AvatarList';
 import StandardFormRow from './components/StandardFormRow';

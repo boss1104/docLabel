@@ -111,14 +111,23 @@ export default [
         ],
       },
       {
-        path: '/',
+        path: '/annotation/:id',
         component: '../layouts/BasicLayout',
         authority: ['admin', 'user'],
         routes: [
           {
-            path: '/',
-            redirect: '/home',
+            name: 'annotation',
+            hideInMenu: true,
+            path: '/annotation/:id',
+            component: './annotation',
           },
+        ],
+      },
+      {
+        path: '/',
+        component: '../layouts/BasicLayout',
+        authority: ['admin', 'user'],
+        routes: [
           {
             path: '/home',
             name: 'home',
@@ -144,10 +153,8 @@ export default [
             component: './account/settings',
           },
           {
-            name: 'annotation',
-            hideInMenu: true,
-            path: '/annotation/projects/:id',
-            component: './annotation',
+            path: '/',
+            redirect: '/home',
           },
         ],
       },

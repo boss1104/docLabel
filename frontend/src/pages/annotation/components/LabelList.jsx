@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 
 import { GlobalHotKeys } from 'react-hotkeys';
 import LabelPreview from './LabelPreview';
@@ -13,8 +13,6 @@ const shortcutKey = shortcut => {
 };
 
 function LabelList({ labelList, handleChooseLabel }) {
-  const [state, setState] = React.useState();
-
   const memoHotkey = React.useMemo(() => {
     const keyMap = { ...labelList };
     const handlers = { ...labelList };
@@ -27,25 +25,18 @@ function LabelList({ labelList, handleChooseLabel }) {
 
   return (
     <GlobalHotKeys allowChanges keyMap={memoHotkey.keyMap} handlers={memoHotkey.handlers}>
-      <Card>
-        <Row type="flex">
-          <Col span={2}>Labels: </Col>
-          <Col span={22}>
-            <Row type="flex" gutter={[24, 16]}>
-              {labelList &&
-                Object.keys(labelList).map(key => (
-                  <Col key={key}>
-                    <LabelPreview
-                      key={key}
-                      label={labelList[key]}
-                      onClick={() => handleChooseLabel(key)}
-                    />
-                  </Col>
-                ))}
-            </Row>
-          </Col>
-        </Row>
-      </Card>
+      <Row type="flex" gutter={[24, 16]}>
+        {labelList &&
+          Object.keys(labelList).map(key => (
+            <Col key={key}>
+              <LabelPreview
+                key={key}
+                label={labelList[key]}
+                onClick={() => handleChooseLabel(key)}
+              />
+            </Col>
+          ))}
+      </Row>
     </GlobalHotKeys>
   );
 }

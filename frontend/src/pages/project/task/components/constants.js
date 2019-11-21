@@ -58,3 +58,14 @@ export const Seq2seqProject = {
     format: uploadSeq2seqXlsx,
   },
 };
+
+export const PdfLabelingProject = {
+  pdf: {
+    label: 'PDF',
+    format: 'Upload new PDF for annotation',
+  },
+  json: {
+    label: 'JSONL',
+    format: 'Import JSON contains PDF url and annotations',
+  },
+};

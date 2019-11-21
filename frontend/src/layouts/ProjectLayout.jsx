@@ -9,7 +9,6 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
-import withRouter from 'umi/withRouter';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -105,9 +104,10 @@ const ProjectLayout = props => {
 
   useEffect(() => {
     if (dispatch) {
-      // dispatch({
-      //   type: 'user/fetchCurrent',
-      // });
+      dispatch({
+        type: 'project/fetchProject',
+        payload: match.params.id,
+      });
       dispatch({
         type: 'settings/getSetting',
       });
@@ -177,4 +177,4 @@ const ProjectLayout = props => {
 export default connect(({ global, settings }) => ({
   collapsed: global.collapsed,
   settings,
-}))(withRouter(ProjectLayout));
+}))(ProjectLayout);

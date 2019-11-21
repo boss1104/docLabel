@@ -1,0 +1,78 @@
+.arrow {
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  display: block;
+  background: transparent;
+  border-style: solid;
+  border-width: 4px;
+  border-top-color: transparent;
+  border-right-color: #3d464d;
+  border-bottom-color: #3d464d;
+  border-left-color: transparent;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.content {
+  position: relative;
+  width: 70vw;
+
+  .tip {
+    .compact {
+      padding: 5px 10px;
+      color: white;
+      background-color: #3d464d;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .compactArrow {
+      .arrow;
+    }
+  }
+
+  .popup {
+    .highlightPopup {
+      max-width: 300px;
+      max-height: 100px;
+      padding: 0.5rem 1rem;
+      overflow-y: auto;
+      color: white;
+      background-color: #3d464d;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 3px;
+    }
+    .compactArrow {
+      .arrow;
+    }
+  }
+}
+
+.sidebar {
+  overflow: auto;
+
+  .sidebarItem {
+    border-bottom: 1px solid whitesmoke;
+
+    .dataImage {
+      max-width: 352px;
+      overflow: hidden;
+      border: 1px dashed;
+    }
+
+    .contentMark {
+      font-size: 18px;
+      mark {
+        display: block;
+      }
+    }
+
+    .labelPage {
+      display: block;
+      font-size: 18px;
+      line-height: 32px;
+      text-align: right;
+    }
+  }
+}

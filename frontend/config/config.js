@@ -101,6 +101,7 @@ export default {
   },
   disableRedirectHoist: true,
   cssLoaderOptions: {
+    url: false,
     modules: true,
     getLocalIdent: (context, _, localName) => {
       if (

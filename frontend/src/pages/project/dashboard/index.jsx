@@ -7,21 +7,7 @@ import { Avatar, Card, Col, Skeleton, Row, Statistic, Button, Icon, Tag } from '
 
 import styles from './index.less';
 import Pie from './components/Pie';
-
-export const PROJECT_TYPE = {
-  TextClassificationProject: {
-    icon: <Icon type="smile" theme="twoTone" />,
-    label: <Tag color="purple">Document Classification</Tag>,
-  },
-  SequenceLabelingProject: {
-    icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,
-    label: <Tag color="magenta">Sequence Labeling</Tag>,
-  },
-  Seq2seqProject: {
-    icon: <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />,
-    label: <Tag color="cyan">Sequence to Sequence</Tag>,
-  },
-};
+import { PROJECT_TYPE } from '@/pages/constants';
 
 const PageHeaderContent = ({ currentProject }) => {
   const loading = currentProject && Object.keys(currentProject).length;
@@ -45,7 +31,7 @@ const PageHeaderContent = ({ currentProject }) => {
       </div>
       <div className={styles.content}>
         <div className={styles.contentTitle}>{currentProject.name}</div>
-        <div className={styles.contentTitle}>{PROJECT_TYPE[currentProject.project_type].label}</div>
+        <div className={styles.contentTitle}>{PROJECT_TYPE[currentProject.project_type].tag}</div>
         <div>{currentProject.title}</div>
       </div>
     </div>

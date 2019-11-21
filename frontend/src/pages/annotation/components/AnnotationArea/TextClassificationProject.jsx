@@ -23,7 +23,14 @@ function TextClassificationProject({
   };
   return (
     <React.Fragment>
-      <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
+      <Card>
+        <Row type="flex">
+          <Col span={2}>Labels: </Col>
+          <Col span={22}>
+            <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
+          </Col>
+        </Row>
+      </Card>
       <Card>
         <Row type="flex">
           <Col span={2}>Classification: </Col>

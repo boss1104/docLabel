@@ -7,10 +7,11 @@ import { GridContent } from '@ant-design/pro-layout';
 import styles from './index.less';
 import SiderList from './components/SiderList';
 import TaskPagination from './components/TaskPagination';
+import ProgressBar from './components/ProgressBar';
 import TextClassificationProject from './components/AnnotationArea/TextClassificationProject';
 import SequenceLabelingProject from './components/AnnotationArea/SequenceLabelingProject';
 import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
-import Markdown from '@/components/Markdown';
+import PdfLabelingProject from './components/AnnotationArea/PdfLabelingProject';
 
 const { Content } = Layout;
 
@@ -58,8 +59,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   const [totalTask, setTotalTask] = React.useState(0);
   const [remaining, setRemaining] = React.useState(0);
 
-  // Modal
-  const [visible, setVisible] = React.useState(false);
   /**
    * Handler
    */
@@ -264,16 +263,20 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         handleEditLabel={handleEditLabel}
       />
     ),
+    PdfLabelingProject: (
+      <PdfLabelingProject
+        labelList={labelList}
+        annoList={annotations[taskId]}
+        loading={annoLoading}
+        task={taskId ? taskList[taskId] : null}
+        handleRemoveLabel={handleRemoveLabel}
+        handleAddLabel={handleAddLabel}
+      />
+    ),
   };
   /**
    * Variables
    */
-  const approved = true;
-  const hasData = currentProject && Object.keys(currentProject).length;
-  const isAnnotationApprover =
-    hasData &&
-    (currentProject.current_users_role.is_annotation_approver ||
-      currentProject.current_users_role.is_project_admin);
 
   return (
     <GridContent>
@@ -291,92 +294,21 @@ const Annotation = connect(({ project, task, label, loading }) => ({
           <Layout style={{ marginLeft: 320 }}>
             <Spin spinning={labelLoading || taskLoading} size="small">
               <Content className={styles.content}>
-                <Card>
-                  <Row type="flex" gutter={24}>
-                    <Col span={2}>Progress:</Col>
-                    <Col span={8}>
-                      <Progress
-                        percent={Math.floor(((totalTask - remaining) / totalTask) * 100)}
-                        format={() => `${totalTask - remaining}/${totalTask}`}
-                        status="active"
-                        strokeColor="#00a854"
-                        strokeWidth={15}
-                      />
-                    </Col>
-                    <Col span={14}>
-                      <Row type="flex" gutter={48} justify="end">
-                        <Col>
-                          {isAnnotationApprover && (
-                            <Button
-                              icon={approved ? 'check-circle' : 'question-circle'}
-                              size="large"
-                            />
-                          )}
-                        </Col>
-                        <Col>
-                          <Button
-                            icon="deployment-unit"
-                            size="large"
-                            onClick={() => setVisible(true)}
-                          />
-                          <Modal
-                            width={700}
-                            title={
-                              <Typography.Title level={4}>Annotation Guideline</Typography.Title>
-                            }
-                            visible={visible}
-                            footer={null}
-                            onCancel={() => setVisible(false)}
-                          >
-                            <div style={{ margin: '0 24px', overflow: 'auto' }}>
-                              <Markdown markdownSrc={currentProject.guideline} />
-                            </div>
-                          </Modal>
-                        </Col>
-                        <Col>
-                          <Button icon="inbox" size="large" />
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                </Card>
+                <ProgressBar
+                  totalTask={totalTask}
+                  remaining={remaining}
+                  currentProject={currentProject}
+                />
                 {currentProject && AnnotationArea[currentProject.project_type]}
-                <Card>
-                  <Row type="flex" justify="center">
-                    <Col>
-                      <Button
-                        title="Previous Page"
-                        size="large"
-                        type="default"
-                        style={{ margin: '0 16px' }}
-                        disabled={!pagination.previous}
-                        onClick={handlePrevPagination}
-                      >
-                        <Icon type="double-left" />
-                      </Button>
-                    </Col>
-                    <Col>
-                      <TaskPagination
-                        onNextPage={handleNextPage}
-                        onPrevPage={handlePrevPage}
-                        total={pagination.total}
-                        current={offset + pageNumber + 1}
-                      />
-                    </Col>
-                    <Col>
-                      <Button
-                        title="Next Page"
-                        size="large"
-                        type="default"
-                        style={{ margin: '0 16px' }}
-                        disabled={!pagination.next}
-                        onClick={handleNextPagination}
-                      >
-                        <Icon type="double-right" />
-                      </Button>
-                    </Col>
-                  </Row>
-                </Card>
+                <TaskPagination
+                  onNextPage={handleNextPage}
+                  onPrevPage={handlePrevPage}
+                  total={pagination.total}
+                  current={offset + pageNumber + 1}
+                  onPrevPagination={handlePrevPagination}
+                  onNextPagination={handleNextPagination}
+                  pagination={pagination}
+                />
               </Content>
             </Spin>
           </Layout>

@@ -2,7 +2,7 @@ import React from 'react';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { Form, Typography } from 'antd';
 import { useFormContext } from '../FormContext';
-import { PROJECT_TYPE } from '../../constants';
+import { PROJECT_TYPE } from '@/pages/constants';
 
 export default () => {
   const { currentProject } = useFormContext();

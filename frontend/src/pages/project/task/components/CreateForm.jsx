@@ -5,12 +5,18 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import uuid from 'uuid';
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { TextClassificationProject, SequenceLabelingProject, Seq2seqProject } from './constants';
+import {
+  TextClassificationProject,
+  SequenceLabelingProject,
+  Seq2seqProject,
+  PdfLabelingProject,
+} from './constants';
 
 const PROJECT_TYPES = {
   TextClassificationProject,
   SequenceLabelingProject,
   Seq2seqProject,
+  PdfLabelingProject,
 };
 
 const FormItem = Form.Item;
@@ -61,7 +67,7 @@ const ExcelBlock = ({ data }) => {
 
 const CreateForm = connect(({ loading }) => ({
   loading: loading.models.task,
-}))(({ dispatch, modalVisible, setModalVisible, form, currentProject, onAddCompleted }) => {
+}))(({ modalVisible, setModalVisible, form, currentProject, onAddCompleted }) => {
   const [uploading, setUploading] = React.useState(false);
 
   const uploadProps = {

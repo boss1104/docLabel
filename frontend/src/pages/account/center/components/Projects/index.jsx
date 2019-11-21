@@ -5,7 +5,7 @@ import moment from 'moment';
 import { router } from 'umi';
 import styles from './index.less';
 import CreateModalForm from './CreateModalForm';
-import { PROJECT_TYPE } from './constants';
+import { PROJECT_TYPE } from '@/pages/constants';
 
 const Projects = connect(({ user, accountCenter, loading }) => ({
   currentUser: user.currentUser,
@@ -65,7 +65,7 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
                   <Row gutter={16} type="flex" justify="space-between">
                     <Col>
                       <Typography.Text strong>
-                        {PROJECT_TYPE[item.project_type].label}
+                        {PROJECT_TYPE[item.project_type].tag}
                       </Typography.Text>
                     </Col>
                     <Col>Published ?</Col>

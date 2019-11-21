@@ -34,18 +34,18 @@ const UserModel = {
       return { ...state, ...action.payload };
     },
   },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen(({ pathname, query }) => {
-        const match = pathToRegexp('/projects/:id/(.*)').exec(pathname);
-        if (match && history.action === 'POP') {
-          dispatch({
-            type: 'fetchProject',
-            payload: match[1],
-          });
-        }
-      });
-    },
-  },
+  // subscriptions: {
+  //   setup({ dispatch, history }) {
+  //     return history.listen(({ pathname, query }) => {
+  //       const match = pathToRegexp('/projects/:id/(.*)').exec(pathname);
+  //       if (match && history.action === 'POP') {
+  //         dispatch({
+  //           type: 'fetchProject',
+  //           payload: match[1],
+  //         });
+  //       }
+  //     });
+  //   },
+  // },
 };
 export default UserModel;

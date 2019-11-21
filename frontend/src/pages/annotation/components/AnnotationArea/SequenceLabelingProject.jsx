@@ -1,18 +1,12 @@
 import React from 'react';
 import { Row, Col, Tooltip, Spin, Card, Icon } from 'antd';
-import { TextAnnotator, TokenAnnotator } from 'react-text-annotate';
+import { TokenAnnotator } from 'react-text-annotate';
 import LabelList from '../LabelList';
 import LabelPreview from '../LabelPreview';
-
-// entityPositions: {
-//   type: Array, // [{'startOffset': 10, 'endOffset': 15, 'label_id': 1}]
-//   default: () => [],
-// },
 
 function SequenceLabelingProject({
   annoList = [],
   labelList = [],
-  onClose,
   loading,
   task,
   handleRemoveLabel,
@@ -59,7 +53,14 @@ function SequenceLabelingProject({
 
   return (
     <React.Fragment>
-      <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
+      <Card>
+        <Row type="flex">
+          <Col span={2}>Labels: </Col>
+          <Col span={22}>
+            <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
+          </Col>
+        </Row>
+      </Card>
       <Card>
         <Row type="flex">
           <Col span={2}>Choosen label: </Col>

@@ -51,10 +51,10 @@ const SiderList = connect(({ project, task, loading }) => ({
       breakpoint="lg"
       collapsedWidth="0"
       onBreakpoint={broken => {
-        console.log(broken);
+        // console.log(broken);
       }}
       onCollapse={(collapsed, type) => {
-        console.log(collapsed, type);
+        // console.log(collapsed, type);
       }}
       width={320}
       style={{
