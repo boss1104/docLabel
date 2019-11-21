@@ -262,7 +262,7 @@ class PdfAnnotation(Annotation):
     data = JSONField()
 
     class Meta:
-        unique_together = ("document", "user", "label")
+        unique_together = ("document", "user", "label", "data")
 
 
 class Role(models.Model):
