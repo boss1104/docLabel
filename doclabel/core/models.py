@@ -366,3 +366,15 @@ def delete_file_on_remove(sender, instance, **kwargs):
     fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/")
     if fs.exists(file):
         fs.delete(file)
+
+
+@receiver(post_delete, sender=PdfAnnotation)
+def delete_anno_on_remove(sender, instance, **kwargs):
+    content = instance.content
+    if "image" in content:
+        doc = instance.document
+        fs = FileSystemStorage(
+            location=settings.MEDIA_ROOT + "/pdf_annotations/doc_" + str(doc.id) + "/"
+        )
+        if fs.exists(content["image"]):
+            fs.delete(content["image"])

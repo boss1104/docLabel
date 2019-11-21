@@ -5,6 +5,12 @@ import json
 import re
 from random import Random
 
+import uuid
+import base64
+import sys
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.exceptions import SuspiciousOperation
+
 import conllu
 from chardet import UniversalDetector
 from django.db import transaction
@@ -537,3 +543,29 @@ class EncodedIO(io.RawIOBase):
         output, self._buffer = chunk[:l], chunk[l:]
         b[:len(output)] = output
         return len(output)
+
+
+def to_file(file_from_POST):
+    """base64 encoded file to Django InMemoryUploadedFile that can be placed into request.FILES."""
+    # 'data:image/png;base64,<base64 encoded string>'
+    try:
+        idx = file_from_POST[:50].find(',')  # comma should be pretty early on
+
+        if not idx or not file_from_POST.startswith('data:image/'):
+            raise Exception()
+
+        base64file = file_from_POST[idx+1:]
+        attributes = file_from_POST[:idx]
+        content_type = attributes[len('data:'):attributes.find(';')]
+        ext = "." + content_type[content_type.find('/') + 1:]
+    except Exception as e:
+        raise SuspiciousOperation("Invalid picture")
+
+    f = io.BytesIO(base64.b64decode(base64file))
+    image = InMemoryUploadedFile(f,
+        field_name='file',
+        name=str(uuid.uuid4()) + ext,  # use UUIDv4 or something
+        content_type=content_type,
+        size=sys.getsizeof(f),
+        charset=None)
+    return image

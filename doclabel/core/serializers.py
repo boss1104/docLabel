@@ -1,5 +1,4 @@
 # from django.contrib.auth import get_user_model
-import os
 from django.conf import settings
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
@@ -313,6 +312,20 @@ class PdfAnnotationSerializer(serializers.ModelSerializer):
     document = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all())
     content = serializers.JSONField()
     position = serializers.JSONField()
+    image_url = serializers.SerializerMethodField()
+
+    def get_image_url(self, instance):
+        request = self.context.get("request")
+        content = instance.content
+        if "image" in content:
+            doc = instance.document
+            directory = "/pdf_annotations/doc_" + str(doc.id) + "/"
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT + directory)
+            if fs.exists(content["image"]):
+                return request.build_absolute_uri(
+                    "/media" + directory + content["image"]
+                )
+        return None
 
     class Meta:
         model = PdfAnnotation
@@ -321,6 +334,7 @@ class PdfAnnotationSerializer(serializers.ModelSerializer):
             "prob",
             "label",
             "content",
+            "image_url",
             "position",
             "user",
             "document",
