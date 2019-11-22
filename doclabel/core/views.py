@@ -66,15 +66,19 @@ class ProjectList(generics.ListCreateAPIView):
     permission_classes = [IsInProjectReadOnlyOrAdmin]
 
     def get_queryset(self):
+        # Filter public only (published project)
         queryset = Project.objects.filter(public=True)
 
+        # Filter user's project
         mine = self.request.GET.get("mine")
         if mine:
             queryset = Project.objects.filter(users__id=self.request.user.id)
 
+        # Filter project types
         project_types = self.request.GET.getlist("type")
         if len(project_types):
-            return queryset.filter(project_type__in=project_types)
+            queryset = queryset.filter(project_type__in=project_types)
+
         return queryset
 
     def perform_create(self, serializer):
@@ -87,6 +91,20 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
     lookup_url_kwarg = "project_id"
     permission_classes = [IsInProjectReadOnlyOrAdmin]
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        public = request.data["public"]
+
+        if public:
+            labels = instance.labels.count()
+            documents = instance.documents.count()
+            if not labels or not documents:
+                return Response(
+                    data={"public": "Unable to publish project! Missing label data or task data"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        return super().update(request, *args, **kwargs)
 
 
 class StatisticsAPI(APIView):
@@ -237,7 +255,10 @@ class AnnotationList(generics.ListCreateAPIView):
         if "image" in content:
             image = to_file(content["image"])
             fs = FileSystemStorage(
-                location=settings.MEDIA_ROOT + "/pdf_annotations/doc_" + str(self.kwargs["doc_id"]) + "/",
+                location=settings.MEDIA_ROOT
+                + "/pdf_annotations/doc_"
+                + str(self.kwargs["doc_id"])
+                + "/",
             )
             filename = fs.save(image.name, image)
             content["image"] = filename
@@ -276,9 +297,7 @@ class TextUploadAPI(APIView):
 
         if request.data["format"] == "pdf":
             file = request.data["file"]
-            fs = FileSystemStorage(
-                location=settings.MEDIA_ROOT + "/pdf_documents/",
-            )
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/",)
             filename = fs.save(file.name, file)
             # save document
             data = {
