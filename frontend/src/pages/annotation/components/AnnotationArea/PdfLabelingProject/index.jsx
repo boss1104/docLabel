@@ -48,6 +48,12 @@ function PdfLabelingProject({
   handleRemoveLabel,
   handleAddLabel,
 }) {
+  const [activeKey, setActiveKey] = React.useState('');
+
+  React.useEffect(() => {
+    setActiveKey(Object.keys(labelList)[0]);
+  }, [labelList]);
+
   const [highlights, setHighlights] = React.useState(
     testHighlights[url] ? [...testHighlights[url]] : [],
   );
@@ -65,6 +71,7 @@ function PdfLabelingProject({
     };
     // console.log('[DEBUG]: addHighlight -> payload', JSON.stringify(payload, null, 2));
     handleAddLabel(payload);
+    setActiveKey(label.id);
   };
 
   const updateHighlight = (highlightId, position, content) => {
@@ -178,7 +185,13 @@ function PdfLabelingProject({
             </PdfLoader>
           )}
         </Layout.Content>
-        <Sidebar annoList={annoList} labelList={labelList} handleRemoveLabel={handleRemoveLabel} />
+        <Sidebar
+          annoList={annoList}
+          labelList={labelList}
+          handleRemoveLabel={handleRemoveLabel}
+          activeKey={activeKey}
+          setActiveKey={setActiveKey}
+        />
       </Layout>
     </Card>
   );
