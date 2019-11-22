@@ -1,13 +1,15 @@
 import React from 'react';
-import { Layout, Button, List, Row, Col, Typography, Tag, Popconfirm, Icon, Collapse } from 'antd';
+import { Layout, List, Row, Col, Typography, Tag, Popconfirm, Icon, Collapse } from 'antd';
 import styles from './style.less';
 
-// const updateHash = highlight => {
-//   location.hash = `highlight-${highlight.id}`;
-// };
-
-function Sidebar({ annoList = [], labelList, handleRemoveLabel, setActiveKey, activeKey }) {
-  // console.log('[DEBUG]: Sidebar -> activeKey', activeKey);
+function Sidebar({
+  annoList = [],
+  labelList,
+  handleRemoveLabel,
+  setActiveKey,
+  activeKey,
+  setCurrentAnno,
+}) {
   const handleDeleteAnno = annoId => {
     if (annoId) {
       handleRemoveLabel(annoId);
@@ -19,7 +21,6 @@ function Sidebar({ annoList = [], labelList, handleRemoveLabel, setActiveKey, ac
   };
 
   Object.keys(labelList).forEach(key => {
-    // console.log('[DEBUG]: Sidebar -> key', key);
     dataObjectList[key] = {
       ...dataObjectList[key],
       array: annoList.filter(val => val.label === Number(key)),
@@ -29,8 +30,8 @@ function Sidebar({ annoList = [], labelList, handleRemoveLabel, setActiveKey, ac
 
   return (
     <Layout.Sider width={400} className={styles.sidebar}>
-      <div>
-        <h2 style={{ marginBottom: '24px' }}>Annotation Label</h2>
+      <div className={styles.title}>
+        <Typography.Title level={3}>Annotation Label</Typography.Title>
       </div>
       <Collapse
         accordion
@@ -66,7 +67,7 @@ function Sidebar({ annoList = [], labelList, handleRemoveLabel, setActiveKey, ac
                 renderItem={({ content, position, label, id, image_url: url }) => (
                   <List.Item
                     onClick={() => {
-                      // updateHash(highlight);
+                      setCurrentAnno(id);
                     }}
                     className={styles.sidebarItem}
                   >

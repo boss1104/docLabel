@@ -9,18 +9,10 @@ import {
   AreaHighlight,
 } from 'react-pdf-highlighter';
 
-import testHighlights from './testHighlights';
+// import testHighlights from './testHighlights';
 import Sidebar from './Sidebar';
 import styles from './style.less';
 import Tip from './Tip';
-
-const getNextId = () => String(Math.random()).slice(2);
-
-// const parseIdFromHash = () => location.hash.slice('#highlight-'.length);
-
-// const resetHash = () => {
-//   location.hash = '';
-// };
 
 const HighlightPopup = ({ label }) => {
   // console.log('[DEBUG]: HighlightPopup -> label', label);
@@ -38,7 +30,6 @@ const HighlightPopup = ({ label }) => {
 };
 
 const DEFAULT_URL = 'https://arxiv.org/pdf/1708.08021.pdf';
-const url = DEFAULT_URL;
 
 function PdfLabelingProject({
   labelList,
@@ -49,16 +40,11 @@ function PdfLabelingProject({
   handleAddLabel,
 }) {
   const [activeKey, setActiveKey] = React.useState('');
+  const [currentAnno, setCurrentAnno] = React.useState(null);
 
   React.useEffect(() => {
     setActiveKey(Object.keys(labelList)[0]);
   }, [labelList]);
-
-  const [highlights, setHighlights] = React.useState(
-    testHighlights[url] ? [...testHighlights[url]] : [],
-  );
-
-  const scrollViewerTo = React.useRef(highlight => {});
 
   /**
    * Handlers
@@ -77,32 +63,38 @@ function PdfLabelingProject({
   const updateHighlight = (highlightId, position, content) => {
     console.log('Updating highlight', highlightId, position, content);
 
-    setHighlights(
-      highlights.map(h => {
-        if (h.id === highlightId) {
-          return {
-            ...h,
-            position: { ...h.position, ...position },
-            content: { ...h.content, ...content },
-          };
-        }
-        return h;
-      }),
-    );
+    // setHighlights(
+    //   highlights.map(h => {
+    //     if (h.id === highlightId) {
+    //       return {
+    //         ...h,
+    //         position: { ...h.position, ...position },
+    //         content: { ...h.content, ...content },
+    //       };
+    //     }
+    //     return h;
+    //   }),
+    // );
   };
 
-  const getHighlightById = id => highlights.find(highlight => highlight.id === id);
+  const scrollViewerTo = React.useRef(null);
+
+  const resetCurrent = () => {
+    setCurrentAnno(null);
+  };
 
   const scrollToHighlightFromHash = () => {
-    // const highlight = getHighlightById(parseIdFromHash());
-    // if (highlight) {
-    //   scrollViewerTo.current(highlight);
-    // }
+    const anno = annoList.find(val => val.id === currentAnno);
+    if (anno) {
+      scrollViewerTo.current(anno);
+    }
   };
 
   React.useEffect(() => {
-    window.addEventListener('hashchange', scrollToHighlightFromHash, false);
-  }, []);
+    if (currentAnno) {
+      scrollToHighlightFromHash();
+    }
+  }, [currentAnno]);
 
   return (
     <Card>
@@ -114,7 +106,7 @@ function PdfLabelingProject({
                 <PdfHighlighter
                   pdfDocument={pdfDocument}
                   enableAreaSelection={event => event.altKey}
-                  // onScrollChange={resetHash}
+                  onScrollChange={resetCurrent}
                   scrollRef={scrollTo => {
                     scrollViewerTo.current = scrollTo;
 
@@ -191,6 +183,7 @@ function PdfLabelingProject({
           handleRemoveLabel={handleRemoveLabel}
           activeKey={activeKey}
           setActiveKey={setActiveKey}
+          setCurrentAnno={setCurrentAnno}
         />
       </Layout>
     </Card>
