@@ -3,36 +3,16 @@ import { deleteProject, updateProject } from './service';
 
 const Model = {
   namespace: 'setting',
-  state: {
-    hasError: false,
-    errors: [],
-  },
+  state: {},
   effects: {
     *updateProject({ payload }, { call, put, select }) {
-      // const { id, values } = payload;
-      const response = yield call(updateProject, payload);
+      const projectId = yield select(state => state.project.currentProject.id);
+      const response = yield call(updateProject, { id: projectId, data: payload });
 
-      if (response.statusCode) {
-        yield put({
-          type: 'changeState',
-          payload: {
-            hasError: true,
-            errors: response,
-          },
-        });
-      } else {
-        yield put({
-          type: 'changeState',
-          payload: {
-            hasError: false,
-            errors: [],
-          },
-        });
-        yield put({
-          type: 'project/saveCurrentProject',
-          payload: response,
-        });
-      }
+      yield put({
+        type: 'project/saveCurrentProject',
+        payload: response,
+      });
     },
     *deleteProject({ payload: id }, { call, put }) {
       yield call(deleteProject, id);

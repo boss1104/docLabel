@@ -1,7 +1,7 @@
 from django.db.models import Count, Q
 from django_filters import rest_framework as filters
 
-from .models import Document
+from .models import Document, PROJECT_CHOICES, Project
 
 
 class DocumentFilter(filters.FilterSet):
@@ -44,3 +44,11 @@ class DocumentFilter(filters.FilterSet):
             "seq_annotations__isnull",
             "seq2seq_annotations__isnull",
         )
+
+
+class ProjectFilter(filters.FilterSet):
+    project_type = filters.MultipleChoiceFilter(choices=PROJECT_CHOICES)
+
+    class Meta:
+        model = Project
+        fields = ("project_type",)

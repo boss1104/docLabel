@@ -3,7 +3,20 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
-import { Avatar, Card, Col, Skeleton, Row, Statistic, Button, Icon, Tag } from 'antd';
+import {
+  Avatar,
+  Card,
+  Col,
+  Skeleton,
+  Row,
+  Statistic,
+  Button,
+  Icon,
+  Tag,
+  Popconfirm,
+  Modal,
+  message,
+} from 'antd';
 
 import styles from './index.less';
 import Pie from './components/Pie';
@@ -37,9 +50,8 @@ const PageHeaderContent = ({ currentProject }) => {
     </div>
   );
 };
-const ExtraContent = ({ currentProject }) => (
+const ExtraContent = ({ currentProject, showConfirm }) => (
   <div className={styles.extraContent}>
-    {console.log('[DEBUG]: currentProject', currentProject)}
     {currentProject.public ? (
       <div>
         <div className={styles.statItem}>
@@ -53,7 +65,11 @@ const ExtraContent = ({ currentProject }) => (
         </div>
       </div>
     ) : (
-      <Button>Publish project</Button>
+      <div className={styles.publishButton}>
+        <Button type="primary" size="large" onClick={showConfirm}>
+          Publish project
+        </Button>
+      </div>
     )}
   </div>
 );
@@ -84,11 +100,39 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
       type: 'dashboard/fetchStatistics',
     });
   }, []);
+
+  /**
+   * Handlers
+   */
+
+  const changePublished = async () => {
+    try {
+      await dispatch({
+        type: 'setting/updateProject',
+        payload: {
+          public: true,
+        },
+      });
+      message.success('Successfully published project!');
+    } catch (error) {
+      message.error('Can not publish this project. Missing data');
+    }
+  };
+
+  function showConfirm() {
+    Modal.confirm({
+      title: 'Do you want to publish this project?',
+      content: 'Please make sure import tasks and create labels before publishing',
+      onOk: changePublished,
+      onCancel() {},
+    });
+  }
+
   return (
     <div className={styles.main}>
       <PageHeaderWrapper
         content={<PageHeaderContent currentProject={currentProject} />}
-        extraContent={<ExtraContent currentProject={currentProject} />}
+        extraContent={<ExtraContent currentProject={currentProject} showConfirm={showConfirm} />}
         // support ant tab
       >
         <Row gutter={24}>
@@ -162,7 +206,7 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
         </Row>
         Annotation Progress | User stats | Label stats
         {/* It's tab content */}
-        {currentProject.isPublish ? (
+        {currentProject.public ? (
           <div>Link to add tasks, add labels</div>
         ) : (
           <div>Daily graph | Weekly graph</div>

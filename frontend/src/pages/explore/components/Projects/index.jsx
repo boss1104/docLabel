@@ -4,41 +4,50 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { router } from 'umi';
 import styles from './index.less';
-import CreateModalForm from './CreateModalForm';
 import { PROJECT_TYPE } from '@/pages/constants';
 
-const Projects = connect(({ user, accountCenter, loading }) => ({
-  currentUser: user.currentUser,
-  myProjects: accountCenter.myProjects,
-  accountCenterLoading: loading.effects['accountCenter/fetchMyProject'],
+const Projects = connect(({ loading, projects }) => ({
+  projects,
+  loading: loading.models.projects,
 }))(props => {
   const {
-    currentUser,
-    myProjects: { list, pagination },
-    accountCenterLoading,
+    dispatch,
+    projects: { list, pagination },
+    loading,
   } = props;
 
-  const dataLoading = accountCenterLoading || !(list && list.length);
-
-  const isSuperUser = currentUser && Object.keys(currentUser).length && currentUser.is_superuser;
+  // const paginationProps = {
+  //   current: Number(query.page),
+  //   pageSize: 4,
+  //   total: count,
+  //   showQuickJumper: true,
+  //   showTotal: total => `Total ${total} projects`,
+  //   onChange: newPage =>
+  //     router.push({
+  //       pathname: path,
+  //       query: {
+  //         ...query,
+  //         page: newPage,
+  //       },
+  //     }),
+  // };
 
   return (
-    <React.Fragment>
-      {isSuperUser && <CreateModalForm buttonText="New Project" className={styles.createModal} />}
+    <Card title="Explore">
       <List
         rowKey="id"
         className={styles.filterCardList}
         grid={{
           gutter: 24,
-          xxl: 2,
-          xl: 2,
-          lg: 2,
+          xxl: 3,
+          xl: 3,
+          lg: 3,
           md: 2,
           sm: 2,
           xs: 1,
         }}
-        loading={dataLoading}
-        dataSource={list}
+        loading={loading}
+        dataSource={Object.values(list)}
         renderItem={item => (
           <List.Item key={item.id}>
             <Card
@@ -47,11 +56,8 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
                 paddingBottom: 20,
               }}
               actions={[
-                <Tooltip title="Edit" key="edit">
-                  <Icon type="edit" onClick={() => router.push(`/projects/${item.id}/dashboard`)} />
-                </Tooltip>,
-                <Tooltip title="Download" key="download">
-                  <Icon type="download" />
+                <Tooltip title="Contribute" key="contribute">
+                  <Icon type="highlight" onClick={() => router.push(`/annotation/${item.id}`)} />
                 </Tooltip>,
                 <Tooltip title="Share" key="share">
                   <Icon type="share-alt" />
@@ -59,7 +65,7 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
               ]}
             >
               <Card.Meta
-                avatar={<Avatar src={item.image} />}
+                avatar={<Avatar src={item.image} size="large" />}
                 title={item.name}
                 description={
                   <Row gutter={16} type="flex" justify="space-between">
@@ -68,7 +74,6 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
                         {PROJECT_TYPE[item.project_type].tag}
                       </Typography.Text>
                     </Col>
-                    <Col>{item.public ? 'Published' : 'Unpublished'}</Col>
                   </Row>
                 }
               />
@@ -91,8 +96,8 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
           </List.Item>
         )}
       />
-    </React.Fragment>
+    </Card>
   );
 });
 
-export default Projects;
+export default React.memo(Projects);

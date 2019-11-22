@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework_csv.renderers import CSVRenderer
 
-from .filters import DocumentFilter
+from .filters import DocumentFilter, ProjectFilter
 from .models import Project, Label, Document, RoleMapping, Role
 from .permissions import (
     IsProjectAdmin,
@@ -64,20 +64,29 @@ class Features(APIView):
 class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectPolymorphicSerializer
     permission_classes = [IsInProjectReadOnlyOrAdmin]
+    filter_backends = (
+        DjangoFilterBackend,    # importance
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
+    search_fields = ("name", "description",)
+    # ordering_fields = (
+    #     "created_at",
+    #     "updated_at",
+    #     "doc_annotations__updated_at",
+    #     "seq_annotations__updated_at",
+    #     "seq2seq_annotations__updated_at",
+    # )
+    filter_class = ProjectFilter
 
     def get_queryset(self):
         # Filter public only (published project)
         queryset = Project.objects.filter(public=True)
 
-        # Filter user's project
+        # # Filter user's project
         mine = self.request.GET.get("mine")
         if mine:
             queryset = Project.objects.filter(users__id=self.request.user.id)
-
-        # Filter project types
-        project_types = self.request.GET.getlist("type")
-        if len(project_types):
-            queryset = queryset.filter(project_type__in=project_types)
 
         return queryset
 

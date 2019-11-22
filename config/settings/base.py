@@ -343,6 +343,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": env.int("DOCCANO_PAGE_SIZE", default=6),
     "SEARCH_PARAM": "q",
+    "ORDERING_PARAM": "o",
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     #
     "COERCE_DECIMAL_TO_STRING": False,
