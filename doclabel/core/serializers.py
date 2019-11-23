@@ -1,12 +1,12 @@
-# from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from rest_framework import serializers
-from django.shortcuts import get_object_or_404
 from rest_polymorphic.serializers import PolymorphicSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueTogetherValidator
 from django.core.files.storage import FileSystemStorage
-
+from doclabel.users.serializers import CustomUserDetailsSerializer
+from notifications.models import Notification
 
 from .models import Label, Project, Document, RoleMapping, Role
 from .models import (
@@ -21,6 +21,8 @@ from .models import (
     Seq2seqAnnotation,
     PdfAnnotation,
 )
+
+UserModel = get_user_model()
 
 
 class LabelSerializer(serializers.ModelSerializer):
@@ -122,14 +124,21 @@ class ProjectSerializer(serializers.ModelSerializer):
             "is_project_admin": settings.ROLE_PROJECT_ADMIN,
             "is_annotator": settings.ROLE_ANNOTATOR,
             "is_annotation_approver": settings.ROLE_ANNOTATION_APPROVER,
+            "is_guest": settings.ROLE_GUEST,
         }
         queryset = RoleMapping.objects.values("role_id__name")
         if queryset:
-            users_role = get_object_or_404(
-                queryset, project=instance.id, user=self.context.get("request").user.id
-            )
-            for key, val in role_abstractor.items():
-                role_abstractor[key] = users_role["role_id__name"] == val
+            try:
+                users_role = queryset.get(
+                    project=instance.id, user=self.context.get("request").user.id
+                )
+                for key, val in role_abstractor.items():
+                    role_abstractor[key] = users_role["role_id__name"] == val
+            except RoleMapping.DoesNotExist:
+                for key, val in role_abstractor.items():
+                    role_abstractor[key] = False
+                role_abstractor["is_guest"] = True
+
         return role_abstractor
 
     class Meta:
@@ -362,6 +371,40 @@ class RoleMappingSerializer(serializers.ModelSerializer):
         role = instance.role
         return role.name if role else None
 
+    def validate(self, attrs):
+        project_id = self.context["request"].parser_context["kwargs"]["project_id"]
+        user = attrs.get("user")
+        try:
+            RoleMapping.objects.get(user=user, project=project_id)
+            raise serializers.ValidationError(
+                "This user is already assigned to a role in this project."
+            )
+        except RoleMapping.DoesNotExist:
+            return attrs
+
     class Meta:
         model = RoleMapping
         fields = ("id", "user", "role", "username", "rolename")
+
+
+class GenericNotificationRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        request = self.context.get("request")
+        serializer = ProjectPolymorphicSerializer(value, context={"request": request})
+        if isinstance(value, Project):
+            serializer = ProjectPolymorphicSerializer(
+                value, context={"request": request}
+            )
+        if isinstance(value, Role):
+            serializer = RoleSerializer(value, context={"request": request})
+        return serializer.data
+
+
+class NotificationSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    actor = CustomUserDetailsSerializer(read_only=True)
+    recipient = CustomUserDetailsSerializer(read_only=True)
+    unread = serializers.BooleanField(read_only=True)
+    target = GenericNotificationRelatedField(read_only=True)
+    verb = serializers.CharField()
+    action_object = GenericNotificationRelatedField(read_only=True)

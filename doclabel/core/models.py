@@ -222,7 +222,7 @@ class DocumentAnnotation(Annotation):
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ("document", "user", "label")
+        unique_together = (("document", "user", "label"),)
 
 
 class SequenceAnnotation(Annotation):
@@ -238,7 +238,7 @@ class SequenceAnnotation(Annotation):
             raise ValidationError("start_offset is after end_offset")
 
     class Meta:
-        unique_together = ("document", "user", "label", "start_offset", "end_offset")
+        unique_together = (("document", "user", "label", "start_offset", "end_offset"),)
 
 
 class Seq2seqAnnotation(Annotation):
@@ -251,7 +251,7 @@ class Seq2seqAnnotation(Annotation):
     text = models.CharField(max_length=500)
 
     class Meta:
-        unique_together = ("document", "user", "text")
+        unique_together = (("document", "user", "text"),)
 
 
 class PdfAnnotation(Annotation):
@@ -263,7 +263,7 @@ class PdfAnnotation(Annotation):
     position = JSONField()
 
     class Meta:
-        unique_together = ("document", "user", "label", "content", "position")
+        unique_together = (("document", "user", "label", "content", "position"),)
 
 
 class Role(models.Model):

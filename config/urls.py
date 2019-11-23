@@ -1,3 +1,4 @@
+import notifications.urls
 from django.conf import settings
 from django.urls import include, path, re_path, get_resolver, NoReverseMatch
 from django.conf.urls.static import static
@@ -70,6 +71,9 @@ urlpatterns = [
         "graphql/",
         csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True, pretty=True)),
     ),
+    # path(
+    #     "inbox/notifications/", include(notifications.urls, namespace="notifications")
+    # ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Your stuff: custom urls includes go here

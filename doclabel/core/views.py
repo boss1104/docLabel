@@ -1,17 +1,21 @@
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Count, F, Q
 from libcloud.base import DriverType, get_driver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
 from django.core.files.storage import FileSystemStorage
-from rest_framework import generics, filters, status
+from rest_framework import generics, filters, status, viewsets
 from rest_framework.exceptions import ParseError, ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework_csv.renderers import CSVRenderer
+from rest_framework import serializers
+
+from notifications.models import Notification
+from notifications.signals import notify
 
 from .filters import DocumentFilter, ProjectFilter
 from .models import Project, Label, Document, RoleMapping, Role
@@ -29,6 +33,7 @@ from .serializers import (
     LabelSerializer,
     DocumentSerializer,
     # UserSerializer,
+    NotificationSerializer,
 )
 from .serializers import (
     ProjectPolymorphicSerializer,
@@ -48,6 +53,8 @@ from .utils import (
 from .utils import JSONLRenderer
 from .utils import JSONPainter, CSVPainter
 
+User = get_user_model()
+
 IsInProjectReadOnlyOrAdmin = (
     IsAnnotatorAndReadOnly | IsAnnotationApproverAndReadOnly | IsProjectAdmin
 )
@@ -65,11 +72,14 @@ class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectPolymorphicSerializer
     permission_classes = [IsInProjectReadOnlyOrAdmin]
     filter_backends = (
-        DjangoFilterBackend,    # importance
+        DjangoFilterBackend,  # importance
         filters.SearchFilter,
         filters.OrderingFilter,
     )
-    search_fields = ("name", "description",)
+    search_fields = (
+        "name",
+        "description",
+    )
     # ordering_fields = (
     #     "created_at",
     #     "updated_at",
@@ -110,7 +120,9 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
             documents = instance.documents.count()
             if not labels or not documents:
                 return Response(
-                    data={"public": "Unable to publish project! Missing label data or task data"},
+                    data={
+                        "public": "Unable to publish project! Missing label data or task data"
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         return super().update(request, *args, **kwargs)
@@ -419,7 +431,7 @@ class TextDownloadAPI(APIView):
         painter = self.select_painter(format)
         # json1 format prints text labels while json format prints annotations with label ids
         # json1 format - "labels": [[0, 15, "PERSON"], ..]
-        # json format - "annotations": [{"label": 5, "start_offset": 0, "end_offset": 2, "user": 1},..]
+        # json format-"annotations":[{"label": 5,"start_offset": 0, "end_offset": 2, "user": 1},..]
         if format == "json1":
             labels = project.labels.all()
             data = JSONPainter.paint_labels(documents, labels)
@@ -454,6 +466,7 @@ class RoleMappingList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
+        # Perform unique role per user in one project
         serializer.save(project=project)
 
 
@@ -462,3 +475,96 @@ class RoleMappingDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RoleMappingSerializer
     lookup_url_kwarg = "rolemapping_id"
     permission_classes = [IsProjectAdmin]
+
+
+class NotificationList(APIView):
+    permission_classes = [IsProjectAdmin]
+
+    def get(self, request, *args, **kwargs):
+        queryset = request.user.notifications.unread().filter(
+            target_object_id=kwargs["project_id"]
+        )
+        serializer = NotificationSerializer(
+            queryset, many=True, context={"request": request}
+        )
+        return Response(serializer.data)
+
+
+class RequestJoinProject(APIView):
+    def post(self, request, *args, **kwargs):
+        # If user in project then throw exception 400
+        request_user = request.user
+        project = Project.objects.get(pk=kwargs["project_id"])
+
+        try:
+            RoleMapping.objects.get(user=request_user, project=project)
+
+            return Response(
+                data={"You are already joined in this project."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except RoleMapping.DoesNotExist:
+            qs = Notification.objects.filter(
+                actor_object_id=request_user.id,
+                target_object_id=project.id,
+                unread=True,
+            )
+            if qs.count() != 0:
+                return Response(
+                    data={"You are already requested to join this project."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                role_admin = Role.objects.get(name=settings.ROLE_PROJECT_ADMIN)
+                project_admins = User.objects.filter(
+                    role_mappings__project=kwargs["project_id"],
+                    role_mappings__role=role_admin,
+                )
+                requestRole = Role.objects.get(name=request.data["role"])
+                notify.send(
+                    request_user,
+                    recipient=project_admins,
+                    verb="request to join project as",
+                    action_object=requestRole,
+                    target=project,
+                    public=False,
+                )
+                return Response(status=status.HTTP_201_CREATED)
+
+
+class NotificationDetail(APIView):
+    permission_classes = [IsProjectAdmin]
+
+    def delete(self, request, *args, **kwargs):
+        # mark all "notify" sent by "actor" user to target "project" related to notification id
+        notify = get_object_or_404(Notification, pk=kwargs["notify_id"])
+        qs = Notification.objects.filter(
+            actor_object_id=notify.actor.id, target_object_id=kwargs["project_id"]
+        )
+        qs.mark_all_as_read()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserNotifications(APIView):
+    # authenticated user
+    def get(self, request, *args, **kwargs):
+        request_user = request.user
+        queryset = request_user.notifications.all()
+        return Response(
+            data=NotificationSerializer(
+                queryset, many=True, context={"request": request}
+            ).data
+        )
+
+
+class NotificationViewSet(viewsets.ViewSet):
+    serializer_class = NotificationSerializer
+
+    def list(self, request):
+        queryset = Notification.objects.unread()
+        return Response(
+            NotificationSerializer(
+                queryset, many=True, context={"request": request}
+            ).data
+        )
+

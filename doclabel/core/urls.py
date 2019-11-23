@@ -12,6 +12,8 @@ from .views import TextUploadAPI, TextDownloadAPI, CloudUploadAPI
 from .views import StatisticsAPI
 
 from .views import RoleMappingList, RoleMappingDetail, Roles
+from .views import NotificationViewSet, UserNotifications
+from .views import NotificationList, NotificationDetail, RequestJoinProject
 
 
 urlpatterns = [
@@ -25,6 +27,21 @@ urlpatterns = [
         "projects/<int:project_id>/statistics/",
         StatisticsAPI.as_view(),
         name="statistics",
+    ),
+    path(
+        "projects/<int:project_id>/notifications/",
+        NotificationList.as_view(),
+        name="notification_list",
+    ),
+    path(
+        "projects/<int:project_id>/join/",
+        RequestJoinProject.as_view(),
+        name="request_join_project",
+    ),
+    path(
+        "projects/<int:project_id>/notifications/<int:notify_id>/",
+        NotificationDetail.as_view(),
+        name="notifications_details",
     ),
     path("projects/<int:project_id>/labels/", LabelList.as_view(), name="label_list"),
     path(
@@ -75,6 +92,14 @@ urlpatterns = [
         "projects/<int:project_id>/roles/<int:rolemapping_id>/",
         RoleMappingDetail.as_view(),
         name="rolemapping_detail",
+    ),
+    path(
+        "user/notifications/", UserNotifications.as_view(), name="user_notifications",
+    ),
+    path(
+        "notifications/",
+        NotificationViewSet.as_view({"get": "list"}),
+        name="notifications",
     ),
 ]
 

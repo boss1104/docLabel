@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     "graphene_django",
     "polymorphic",
     "django_filters",
+    "notifications",
 ]
 
 LOCAL_APPS = [
@@ -371,7 +372,7 @@ GRAPHENE_RECURSION_LIMIT = env.int("GRAPHENE_RECURSION_LIMIT", default=3500)
 # on the import phase
 IMPORT_BATCH_SIZE = env.int("IMPORT_BATCH_SIZE", 500)
 
-
+ROLE_GUEST = env("ROLE_GUEST", default="guest")
 ROLE_PROJECT_ADMIN = env("ROLE_PROJECT_ADMIN", default="project_admin")
 ROLE_ANNOTATOR = env("ROLE_ANNOTATOR", default="annotator")
 ROLE_ANNOTATION_APPROVER = env(
