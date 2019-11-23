@@ -24,3 +24,15 @@ export const PROJECT_TYPE = {
     tag: <Tag color="blue">PDF Labeling</Tag>,
   },
 };
+
+export const ROLE_COLORS = {
+  1: 'red',
+  2: 'volcano',
+  3: 'orange',
+};
+
+export const ROLE_LABELS = {
+  project_admin: 'Project Admin',
+  annotator: 'Annotator',
+  annotation_approver: 'Annotation Approver',
+};

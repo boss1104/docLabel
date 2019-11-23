@@ -1,7 +1,7 @@
 import { Form, Icon, Modal, Typography, Radio, message, Select, AutoComplete, Button } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
-import { roleLabel } from '../index';
+import { ROLE_LABELS } from '@/pages/constants';
 
 const { Option } = Select;
 
@@ -47,8 +47,7 @@ const CreateForm = connect(({ loading }) => ({
           setModalVisible(false);
         } catch (error) {
           const { data } = error;
-          console.log('[DEBUG]: data', data);
-          message.error('');
+          message.error('Something wrong! Try again!');
         }
       }
     });
@@ -88,7 +87,7 @@ const CreateForm = connect(({ loading }) => ({
                 roles.length !== 0 &&
                 roles.map(item => (
                   <Option key={item.id} value={item.id}>
-                    {roleLabel[item.name]}
+                    {ROLE_LABELS[item.name]}
                   </Option>
                 ))}
             </Select>,

@@ -18,7 +18,7 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
     accountCenterLoading,
   } = props;
 
-  const dataLoading = accountCenterLoading || !(list && list.length);
+  const dataLoading = accountCenterLoading || !list;
 
   const isSuperUser = currentUser && Object.keys(currentUser).length && currentUser.is_superuser;
 

@@ -5,18 +5,8 @@ import { Button, Card, Dropdown, Icon, Menu, Popconfirm, Tag, message } from 'an
 import styles from './index.less';
 import StandardTable from './components/StandardTable';
 import CreateForm from './components/CreateForm';
-
-const roleColors = {
-  1: 'red',
-  2: 'volcano',
-  3: 'orange',
-};
-
-export const roleLabel = {
-  project_admin: 'Project Admin',
-  annotator: 'Annotator',
-  annotation_approver: 'Annotation Approver',
-};
+import UserRequestList from './components/UserRequestList';
+import { ROLE_COLORS, ROLE_LABELS } from '@/pages/constants';
 
 const getOtherUsers = (allUsers, roleMappings) => {
   const currentUserIds = new Set(roleMappings.map(roleMapping => roleMapping.user));
@@ -29,7 +19,7 @@ const Contributor = connect(({ contributor, loading, project }) => ({
   currentProject: project.currentProject,
 }))(props => {
   const { dispatch, contributor, loading, currentProject } = props;
-  const { roles, users, projectRoles } = contributor;
+  const { roles, users, projectRoles, notifications } = contributor;
   // States
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedRows, setSelectedRows] = React.useState([]);
@@ -98,6 +88,36 @@ const Contributor = connect(({ contributor, loading, project }) => ({
     return others;
   };
 
+  const markAsReadNotification = async id => {
+    await dispatch({
+      type: 'contributor/markAsReadNotification',
+      payload: id,
+    });
+  };
+
+  const handleReject = ({ id }) => {
+    console.log('[DEBUG]: handleReject -> id', id);
+    markAsReadNotification(id);
+    // mark noti as read
+  };
+  const handleResolve = async ({ id, actor, action_object: role }) => {
+    // mark noti as read and add role for user
+    try {
+      await markAsReadNotification(id);
+      await dispatch({
+        type: 'contributor/addRole',
+        payload: {
+          user: actor.id,
+          role: role.id,
+        },
+      });
+      message.success('Successfully add user to project');
+    } catch (error) {
+      const { data } = error;
+      message.error('Something wrong! Try again!');
+    }
+  };
+
   const columns = [
     {
       title: 'ID',
@@ -117,7 +137,7 @@ const Contributor = connect(({ contributor, loading, project }) => ({
             {others.length !== 0 &&
               others.map(item => (
                 <Menu.Item key={item.id} onClick={() => switchRole(record.user, item.id)}>
-                  <Tag color={roleColors[item.id]}>{roleLabel[item.name]}</Tag>
+                  <Tag color={ROLE_COLORS[item.id]}>{ROLE_LABELS[item.name]}</Tag>
                 </Menu.Item>
               ))}
           </Menu>
@@ -125,7 +145,7 @@ const Contributor = connect(({ contributor, loading, project }) => ({
         return (
           <Dropdown overlay={menu} trigger={['click']}>
             <a href="#">
-              <Tag color={roleColors[record.role]}>{roleLabel[record.rolename]}</Tag>
+              <Tag color={ROLE_COLORS[record.role]}>{ROLE_LABELS[record.rolename]}</Tag>
               <Icon type="down" />
             </a>
           </Dropdown>
@@ -188,11 +208,19 @@ const Contributor = connect(({ contributor, loading, project }) => ({
           />
         </div>
       </Card>
+
       <CreateForm
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         otherUsers={otherUsers}
         roles={roles}
+      />
+
+      <UserRequestList
+        list={notifications}
+        onResolve={handleResolve}
+        onReject={handleReject}
+        loading={loading}
       />
     </PageHeaderWrapper>
   );

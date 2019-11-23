@@ -1,4 +1,4 @@
-import { queryProjectList } from './service';
+import { queryProjectList, requestJoinProject } from './service';
 import { arrayToObject, getPageQuery } from '@/utils/utils';
 
 const Model = {
@@ -23,6 +23,11 @@ const Model = {
         payload: ret,
       });
       return ret;
+    },
+    *requestJoinProject({ payload }, { call }) {
+      const res = yield call(requestJoinProject, payload);
+
+      return res;
     },
   },
   reducers: {

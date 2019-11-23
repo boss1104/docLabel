@@ -103,6 +103,7 @@ class Center extends PureComponent {
     const { tabKey } = this.state;
     const { currentUser, currentUserLoading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
+    const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
     return (
       <GridContent>
         <Row gutter={24}>
@@ -117,7 +118,7 @@ class Center extends PureComponent {
               {!dataLoading ? (
                 <div>
                   <div className={styles.avatarHolder}>
-                    <img alt="" src={currentUser.avatar} />
+                    <img alt="avatar" src={currentUser.avatar || url} />
                     <div className={styles.name}>{currentUser.full_name}</div>
                     {/* <div>signature</div> */}
                   </div>

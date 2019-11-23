@@ -6,3 +6,10 @@ export async function queryProjectList(params) {
     params,
   });
 }
+
+export async function requestJoinProject({ projectId, role }) {
+  return request(`/api/projects/${projectId}/join/`, {
+    method: 'POST',
+    data: { role },
+  });
+}

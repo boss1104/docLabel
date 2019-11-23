@@ -18,6 +18,12 @@ export async function fetchUsers() {
   });
 }
 
+export async function fetchProjectNotification({ projectId }) {
+  return request(`/api/projects/${projectId}/notifications/`, {
+    method: 'GET',
+  });
+}
+
 export async function addRole({ projectId, data }) {
   return request(`/api/projects/${projectId}/roles/`, {
     method: 'POST',
@@ -35,5 +41,11 @@ export async function switchRole({ projectId, roleId, data }) {
   return request(`/api/projects/${projectId}/roles/${roleId}/`, {
     method: 'PATCH',
     data,
+  });
+}
+
+export async function markAsReadNotification({ projectId, notifyId }) {
+  return request(`/api/projects/${projectId}/notifications/${notifyId}/`, {
+    method: 'DELETE',
   });
 }

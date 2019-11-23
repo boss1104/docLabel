@@ -5,6 +5,8 @@ import {
   switchRole,
   addRole,
   deleteRole,
+  fetchProjectNotification,
+  markAsReadNotification,
 } from './service';
 
 const Model = {
@@ -13,6 +15,7 @@ const Model = {
     roles: [],
     users: [],
     projectRoles: [],
+    notifications: [],
   },
   effects: {
     *fetchContributor(_, { call, put, select, all, take }) {
@@ -21,12 +24,13 @@ const Model = {
         const action = yield take('project/saveCurrentProject');
         projectId = action.payload.id;
       }
-      const { roles, users, projectRoles } = yield all({
+      const { roles, users, projectRoles, notifications } = yield all({
         roles: call(fetchRoles),
         users: call(fetchUsers),
         projectRoles: call(fetchProjectRoles, projectId),
+        notifications: yield call(fetchProjectNotification, { projectId }),
       });
-      const ret = { roles, users, projectRoles };
+      const ret = { roles, users, projectRoles, notifications };
       yield put({
         type: 'changeState',
         payload: {
@@ -81,6 +85,20 @@ const Model = {
         type: 'changeState',
         payload: {
           projectRoles: projectRoles.filter(item => item.id !== payload),
+        },
+      });
+    },
+    *markAsReadNotification({ payload }, { call, put, select }) {
+      const projectId = yield select(state => state.project.currentProject.id);
+
+      yield call(markAsReadNotification, { projectId, notifyId: payload });
+
+      const notifications = yield select(state => state.contributor.notifications);
+
+      yield put({
+        type: 'changeState',
+        payload: {
+          notifications: notifications.filter(item => item.id !== payload),
         },
       });
     },

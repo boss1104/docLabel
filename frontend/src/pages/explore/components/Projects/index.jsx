@@ -1,10 +1,23 @@
-import { Avatar, Card, Icon, List, Tooltip, Row, Col, Typography } from 'antd';
+import {
+  Avatar,
+  Card,
+  Icon,
+  List,
+  Tooltip,
+  Row,
+  Col,
+  Typography,
+  Modal,
+  Select,
+  Tag,
+  message,
+} from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { router } from 'umi';
 import styles from './index.less';
-import { PROJECT_TYPE } from '@/pages/constants';
+import { PROJECT_TYPE, ROLE_LABELS } from '@/pages/constants';
 
 const Projects = connect(({ loading, projects }) => ({
   projects,
@@ -15,6 +28,9 @@ const Projects = connect(({ loading, projects }) => ({
     projects: { list, pagination },
     loading,
   } = props;
+  const [visible, setVisible] = React.useState(false);
+  const [selectedRole, setSelectedRole] = React.useState('annotator');
+  const [selectedProject, setSelectedProject] = React.useState({});
 
   // const paginationProps = {
   //   current: Number(query.page),
@@ -32,8 +48,54 @@ const Projects = connect(({ loading, projects }) => ({
   //     }),
   // };
 
+  const handleSentRequest = async projectId => {
+    try {
+      await dispatch({
+        type: 'projects/requestJoinProject',
+        payload: {
+          projectId,
+          role: selectedRole,
+        },
+      });
+      message.success('Successfully sent request!');
+      setVisible(false);
+    } catch ({ data }) {
+      console.log('[DEBUG]: data', data);
+      message.error(data[0]);
+    }
+  };
+
+  const isProjectGuest = project => project.current_users_role.is_guest;
+
   return (
     <Card title="Explore">
+      <Modal
+        title={`Request to join project "${selectedProject.name}"`}
+        visible={visible}
+        onOk={() => handleSentRequest(selectedProject.id)}
+        onCancel={() => setVisible(false)}
+        centered
+      >
+        <Row gutter={16} type="flex" justify="space-between">
+          <Col span={4} style={{ lineHeight: '38px', fontSize: '16px' }}>
+            Role:
+          </Col>
+          <Col span={20}>
+            <Select
+              size="large"
+              style={{ width: '240px' }}
+              value={selectedRole}
+              onChange={value => setSelectedRole(value)}
+            >
+              <Select.Option value="annotator">{ROLE_LABELS.annotator}</Select.Option>
+              <Select.Option value="annotation_approver">
+                {ROLE_LABELS.annotation_approver}
+              </Select.Option>
+            </Select>
+          </Col>
+        </Row>
+      </Modal>
+
       <List
         rowKey="id"
         className={styles.filterCardList}
@@ -56,9 +118,28 @@ const Projects = connect(({ loading, projects }) => ({
                 paddingBottom: 20,
               }}
               actions={[
-                <Tooltip title="Contribute" key="contribute">
-                  <Icon type="highlight" onClick={() => router.push(`/annotation/${item.id}`)} />
-                </Tooltip>,
+                <React.Fragment>
+                  {!isProjectGuest(item) ? (
+                    <Tooltip title="Contribute" key="contribute">
+                      <Icon
+                        type="highlight"
+                        theme="twoTone"
+                        onClick={() => router.push(`/annotation/${item.id}`)}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Contribute" key="contribute">
+                      <Icon
+                        type="notification"
+                        theme="twoTone"
+                        onClick={() => {
+                          setVisible(true);
+                          setSelectedProject(item);
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+                </React.Fragment>,
                 <Tooltip title="Share" key="share">
                   <Icon type="share-alt" />
                 </Tooltip>,
