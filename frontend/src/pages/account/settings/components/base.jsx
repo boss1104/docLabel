@@ -4,6 +4,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import styles from './BaseView.less';
 import { useWhyDidYouUpdate } from '@/hooks';
+import { getAuthorization } from '@/utils/authority';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -49,7 +50,7 @@ class BaseView extends Component {
     action: '/api/user/',
     method: 'PATCH',
     headers: {
-      Authorization: `Token ${localStorage.getItem('antd-pro-authority')}`,
+      Authorization: `Token ${getAuthorization()}`,
     },
     beforeUpload: () => {},
     onChange: info => {

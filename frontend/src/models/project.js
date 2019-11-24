@@ -15,6 +15,7 @@ const UserModel = {
       const response = yield call(queryCurrent, payload);
       // console.log('TCL: *fetchProject -> response', response);
       yield put({ type: 'saveCurrentProject', payload: response });
+      return response;
     },
     *createProject({ payload }, { call, put }) {
       const res = yield call(createProject, payload);

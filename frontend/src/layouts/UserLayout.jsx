@@ -8,7 +8,7 @@ import { router } from 'umi';
 import SelectLang from '@/components/SelectLang';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
-import { getAuthority } from '@/utils/authority';
+import { getAuthorization } from '@/utils/authority';
 
 const UserLayout = props => {
   const {
@@ -25,10 +25,10 @@ const UserLayout = props => {
   } = props;
   const { breadcrumb } = getMenuData(routes);
 
-  const isLogin = getAuthority() !== 'undefined' && getAuthority() !== null;
+  const isLogin = getAuthorization() !== 'undefined' && getAuthorization() !== null;
 
   if (isLogin) {
-    router.push('/app');
+    router.push('/');
   }
 
   return (

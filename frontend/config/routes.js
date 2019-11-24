@@ -60,7 +60,6 @@ export default [
       {
         path: '/projects/:id',
         component: '../layouts/ProjectLayout',
-        authority: ['admin', 'user'],
         routes: [
           {
             path: '/projects/:id',
@@ -113,7 +112,6 @@ export default [
       {
         path: '/annotation/:id',
         component: '../layouts/BasicLayout',
-        authority: ['admin', 'user'],
         routes: [
           {
             name: 'annotation',
@@ -126,7 +124,6 @@ export default [
       {
         path: '/',
         component: '../layouts/BasicLayout',
-        authority: ['admin', 'user'],
         routes: [
           {
             path: '/home',

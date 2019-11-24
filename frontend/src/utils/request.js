@@ -6,6 +6,7 @@
 import { extend } from 'umi-request';
 import { message } from 'antd';
 import router from 'umi/router';
+import { getAuthorization } from '@/utils/authority';
 
 /**
  * Exception handler
@@ -40,12 +41,12 @@ const request = extend({
   // Default error handling
   credentials: 'include', // Whether the default request is taken cookie
   headers: {
-    Authorization: `Token ${localStorage.getItem('antd-pro-authority')}`,
+    Authorization: `Token ${getAuthorization()}`,
   },
 });
 
 request.interceptors.request.use((url, options) => {
-  const token = localStorage.getItem('antd-pro-authority');
+  const token = getAuthorization();
   const { headers } = options;
   let newHeader;
   if (token === 'undefined' || token === null) {
@@ -71,7 +72,7 @@ request.interceptors.request.use((url, options) => {
 //       ...options,
 //       headers: {
 //         ...options.headers,
-//         Authorization: `Bearer ${localStorage.getItem('antd-pro-authority')}`,
+//         Authorization: `Bearer ${getAuthorization()}`,
 //       },
 //     },
 //   }));

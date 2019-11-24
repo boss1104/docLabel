@@ -9,10 +9,12 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
+import { router } from 'umi';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+import PageLoading from '@/components/PageLoading';
 /**
  * use Authorized check all menu item
  */
@@ -97,21 +99,31 @@ const ProjectLayout = props => {
     location = {
       pathname: '/app',
     },
+    loading,
   } = props;
   /**
    * constructor
    */
+  const [isReady, setIsReady] = React.useState(false);
+
+  const fetchCurrentProject = async () => {
+    const res = await dispatch({
+      type: 'project/fetchProject',
+      payload: match.params.id,
+    });
+    if (!res.current_users_role.is_project_admin) {
+      router.push('/exception/403');
+    }
+  };
 
   useEffect(() => {
     if (dispatch) {
-      dispatch({
-        type: 'project/fetchProject',
-        payload: match.params.id,
-      });
+      fetchCurrentProject();
       dispatch({
         type: 'settings/getSetting',
       });
     }
+    setIsReady(true);
   }, []);
   /**
    * init variables
@@ -125,6 +137,7 @@ const ProjectLayout = props => {
       });
     }
   };
+
   // get children authority
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
@@ -167,14 +180,16 @@ const ProjectLayout = props => {
       {...settings}
       layout="sidemenu"
     >
-      <Authorized authority={authorized.authority} noMatch={noMatch}>
-        {children}
-      </Authorized>
+      {loading || !isReady ? <PageLoading /> : children}
+      {/* <Authorized authority={authorized.authority} noMatch={noMatch}> */}
+
+      {/* </Authorized> */}
     </ProLayout>
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({ global, settings, loading }) => ({
   collapsed: global.collapsed,
   settings,
+  loading: loading.effects['project/fetchProject'],
 }))(ProjectLayout);

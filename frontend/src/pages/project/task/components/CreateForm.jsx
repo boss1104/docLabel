@@ -11,6 +11,7 @@ import {
   Seq2seqProject,
   PdfLabelingProject,
 } from './constants';
+import { getAuthorization } from '@/utils/authority';
 
 const PROJECT_TYPES = {
   TextClassificationProject,
@@ -77,7 +78,7 @@ const CreateForm = connect(({ loading }) => ({
       format: form.getFieldValue('format'),
     },
     headers: {
-      Authorization: `Token ${localStorage.getItem('antd-pro-authority')}`,
+      Authorization: `Token ${getAuthorization()}`,
     },
     onChange: async info => {
       if (info.file.status === 'uploading') {

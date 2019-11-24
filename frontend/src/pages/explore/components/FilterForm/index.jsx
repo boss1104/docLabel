@@ -49,14 +49,7 @@ const FilterForm = connect(({ projects, loading }) => ({
 
   return (
     <Card bordered={false}>
-      <div
-        style={{
-          textAlign: 'center',
-          marginBottom: '24px',
-          paddingBottom: '24px',
-          borderBottom: '1px dashed #17171f',
-        }}
-      >
+      <div className={styles.searchBox}>
         <Input.Search
           placeholder="Input project name or description"
           enterButton="Search"
