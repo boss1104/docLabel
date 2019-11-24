@@ -272,18 +272,19 @@ class AnnotationList(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         request.data["document"] = self.kwargs["doc_id"]
-        content = request.data["content"]
-        if "image" in content:
-            image = to_file(content["image"])
-            fs = FileSystemStorage(
-                location=settings.MEDIA_ROOT
-                + "/pdf_annotations/doc_"
-                + str(self.kwargs["doc_id"])
-                + "/",
-            )
-            filename = fs.save(image.name, image)
-            content["image"] = filename
-            request.data["content"] = content
+        if request.data.get('content'):
+            content = request.data['content']
+            if content.get('image'):
+                image = to_file(content["image"])
+                fs = FileSystemStorage(
+                    location=settings.MEDIA_ROOT
+                    + "/pdf_annotations/doc_"
+                    + str(self.kwargs["doc_id"])
+                    + "/",
+                )
+                filename = fs.save(image.name, image)
+                content["image"] = filename
+                request.data["content"] = content
         return super().create(request, args, kwargs)
 
     def perform_create(self, serializer):
