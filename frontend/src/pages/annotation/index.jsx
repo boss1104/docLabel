@@ -13,8 +13,6 @@ import SequenceLabelingProject from './components/AnnotationArea/SequenceLabelin
 import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
 import PdfLabelingProject from './components/AnnotationArea/PdfLabelingProject';
 
-const { Content } = Layout;
-
 const getSidebarTotal = (total, limit) => {
   if (total !== 0 && limit !== 0) {
     return Math.ceil(total / limit);
@@ -82,10 +80,11 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       });
       // console.log('[DEBUG]: queryTask -> anno', anno);
       // Then
-      const { offset: queryOffset = 0, limit } = query;
+      const { offset: queryOffset = 0 } = query;
       const { next, previous, total } = res.pagination;
+      console.log('[DEBUG]: queryTask -> next', next);
 
-      const limitCount = next || limit ? query.limit : total;
+      const limitCount = next ? next.limit : total;
 
       setSidebarTotal(getSidebarTotal(total, limitCount));
       setSidebarPage(getSidebarPage(queryOffset, limitCount));
@@ -293,7 +292,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
           />
           <Layout style={{ marginLeft: 320 }}>
             <Spin spinning={labelLoading || taskLoading} size="small">
-              <Content className={styles.content}>
+              <Layout.Content className={styles.content}>
                 <ProgressBar
                   totalTask={totalTask}
                   remaining={remaining}
@@ -309,7 +308,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
                   onNextPagination={handleNextPagination}
                   pagination={pagination}
                 />
-              </Content>
+              </Layout.Content>
             </Spin>
           </Layout>
         </Layout>

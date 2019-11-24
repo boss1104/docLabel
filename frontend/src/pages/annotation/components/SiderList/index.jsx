@@ -1,7 +1,10 @@
 import React from 'react';
-import { Button, Menu, Icon, Layout, Input, Spin, Row, Col, Typography, Descriptions } from 'antd';
+import { Menu, Icon, Layout, Input, Spin, Row, Col, Typography, Descriptions } from 'antd';
 import { connect } from 'dva';
-import { router, Link } from 'umi';
+import { Link } from 'umi';
+import className from 'classnames';
+import styles from './index.less';
+import { PROJECT_TYPE } from '@/pages/constants';
 
 const { Sider } = Layout;
 const { Search } = Input;
@@ -57,32 +60,32 @@ const SiderList = connect(({ project, task, loading }) => ({
         // console.log(collapsed, type);
       }}
       width={320}
-      style={{
-        overflow: 'auto',
-        height: '100vh',
-        position: 'fixed',
-        left: 0,
-      }}
+      className={className(styles.siderList, styles.dark)}
     >
       <Spin spinning={dataLoading} size="small">
-        <section>
-          <div style={{ margin: '24px 24px 0' }}>
-            <Descriptions title="Project Info" size="middle" column={1}>
-              <Descriptions.Item label="Project Name">{currentProject.name}</Descriptions.Item>
-              {isProjectAdmin && (
-                <Descriptions.Item label="Settings">
-                  <Link to={`/projects/${currentProject.id}/dashboard`}>Edit</Link>
+        {hasData && (
+          <section className={styles.info}>
+            <div style={{ margin: '24px 24px 0' }}>
+              <Descriptions title="Project Info" size="middle" column={1}>
+                <Descriptions.Item label="Name">{currentProject.name}</Descriptions.Item>
+                <Descriptions.Item label="Type">
+                  {PROJECT_TYPE[currentProject.project_type].tag}
                 </Descriptions.Item>
-              )}
-            </Descriptions>
-          </div>
-        </section>
+                {isProjectAdmin && (
+                  <Descriptions.Item label="Settings">
+                    <Link to={`/projects/${currentProject.id}/dashboard`}>Edit</Link>
+                  </Descriptions.Item>
+                )}
+              </Descriptions>
+            </div>
+          </section>
+        )}
       </Spin>
 
       <Spin spinning={taskLoading} size="small">
         <section>
           <div style={{ padding: '16px' }}>
-            <Search size="large" placeholder="Search task" onSearch={handleOnSearch} />
+            {/* <Search size="large" placeholder="Search task" onSearch={handleOnSearch} /> */}
           </div>
           <div style={{ textAlign: 'center' }}>
             {`About ${pagination.total} tasks. (page ${page} of ${pageSize})`}
