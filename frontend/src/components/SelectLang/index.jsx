@@ -9,7 +9,7 @@ const SelectLang = props => {
   const { className } = props;
   const selectedLang = getLocale();
 
-  const changeLang = ({ key }) => setLocale(key, false);
+  const changeLang = ({ key }) => setLocale(key);
 
   const locales = ['zh-CN', 'en-US'];
   const languageLabels = {

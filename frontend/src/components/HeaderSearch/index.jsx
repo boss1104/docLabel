@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import debounce from 'lodash/debounce';
 import styles from './index.less';
+
 export default class HeaderSearch extends Component {
   static defaultProps = {
     defaultActiveFirstOption: false,
@@ -32,7 +33,7 @@ export default class HeaderSearch extends Component {
     super(props);
     this.state = {
       searchMode: props.defaultOpen,
-      value: '',
+      value: props.defaultValue,
     };
     this.debouncePressEnter = debounce(this.debouncePressEnter, 500, {
       leading: true,
@@ -45,6 +46,7 @@ export default class HeaderSearch extends Component {
       this.debouncePressEnter();
     }
   };
+
   onChange = value => {
     if (typeof value === 'string') {
       const { onSearch, onChange } = this.props;
@@ -61,6 +63,7 @@ export default class HeaderSearch extends Component {
       }
     }
   };
+
   enterSearchMode = () => {
     const { onVisibleChange } = this.props;
     onVisibleChange(true);
@@ -77,20 +80,21 @@ export default class HeaderSearch extends Component {
       },
     );
   };
+
   leaveSearchMode = () => {
     this.setState({
       searchMode: false,
-      value: '',
     });
   };
+
   debouncePressEnter = () => {
     const { onPressEnter } = this.props;
     const { value } = this.state;
-    onPressEnter(value);
+    onPressEnter(value || '');
   };
 
   render() {
-    const { className, placeholder, open, ...restProps } = this.props;
+    const { className, defaultValue, placeholder, open, ...restProps } = this.props;
     const { searchMode, value } = this.state;
     delete restProps.defaultOpen; // for rc-select not affected
 
@@ -120,6 +124,7 @@ export default class HeaderSearch extends Component {
             ref={node => {
               this.inputRef = node;
             }}
+            defaultValue={defaultValue}
             aria-label={placeholder}
             placeholder={placeholder}
             onKeyDown={this.onKeyDown}

@@ -6,15 +6,21 @@ import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
-import NoticeIconView from './NoticeIconView';
 
 const GlobalHeaderRight = props => {
-  const { theme, layout } = props;
+  const { theme, layout, dispatch } = props;
   let className = styles.right;
 
   if (theme === 'dark' && layout === 'topmenu') {
     className = `${styles.right}  ${styles.dark}`;
   }
+
+  const handleSwitchTheme = () => {
+    dispatch({
+      type: 'settings/changeTheme',
+      payload: theme === 'dark' ? 'light' : 'dark',
+    });
+  };
 
   return (
     <div className={className}>
@@ -35,28 +41,22 @@ const GlobalHeaderRight = props => {
             id: 'component.globalHeader.search.example3',
           }),
         ]}
-        // onSearch={value => {
-        //   console.log('input', value);
-        // }}
-        // onPressEnter={value => {
-        //   console.log('enter', value);
-        // }}
+        onSearch={value => {
+          console.log('input', value);
+        }}
+        onPressEnter={value => {
+          console.log('enter', value);
+        }}
       />
       <Tooltip
         title={formatMessage({
-          id: 'component.globalHeader.help',
+          id: 'component.globalHeader.theme',
         })}
       >
-        <a
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
-          rel="noopener noreferrer"
-          className={styles.action}
-        >
-          <Icon type="question-circle-o" />
+        <a href="#" className={styles.action} onClick={handleSwitchTheme}>
+          {theme === 'dark' ? <Icon type="bulb" theme="filled" /> : <Icon type="bulb" />}
         </a>
       </Tooltip>
-      {/* <NoticeIconView /> */}
       <Avatar menu />
       <SelectLang className={styles.action} />
     </div>

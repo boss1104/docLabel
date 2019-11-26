@@ -90,7 +90,11 @@ const footerRender = () => {
   );
 };
 
-const ProjectLayout = props => {
+const ProjectLayout = connect(({ global, settings, loading }) => ({
+  collapsed: global.collapsed,
+  settings,
+  loading: loading.effects['project/fetchProject'],
+}))(props => {
   const {
     dispatch,
     children,
@@ -182,14 +186,9 @@ const ProjectLayout = props => {
     >
       {loading || !isReady ? <PageLoading /> : children}
       {/* <Authorized authority={authorized.authority} noMatch={noMatch}> */}
-
       {/* </Authorized> */}
     </ProLayout>
   );
-};
+});
 
-export default connect(({ global, settings, loading }) => ({
-  collapsed: global.collapsed,
-  settings,
-  loading: loading.effects['project/fetchProject'],
-}))(ProjectLayout);
+export default ProjectLayout;

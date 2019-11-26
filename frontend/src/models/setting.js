@@ -1,14 +1,6 @@
 import { message } from 'antd';
+import { formatMessage } from 'umi-plugin-react/locale';
 import defaultSettings from '../../config/defaultSettings';
-import themeColorClient from '../components/SettingDrawer/themeColorClient';
-
-const updateTheme = newPrimaryColor => {
-  if (newPrimaryColor) {
-    const timeOut = 0;
-    const hideMessage = message.loading('Switching theme!', timeOut);
-    themeColorClient.changeColor(newPrimaryColor).finally(() => hideMessage());
-  }
-};
 
 const updateColorWeak = colorWeak => {
   const root = document.getElementById('root');
@@ -28,54 +20,79 @@ const SettingModel = {
       Object.keys(state).forEach(key => {
         if (urlParams.searchParams.has(key)) {
           const value = urlParams.searchParams.get(key);
-          setting[key] = value === '1' ? true : value;
+          setting[key] = value;
         }
       });
-      const { primaryColor, colorWeak } = setting;
-
-      if (primaryColor && state.primaryColor !== primaryColor) {
-        updateTheme(primaryColor);
-      }
-
+      const { colorWeak } = setting;
       updateColorWeak(!!colorWeak);
       return { ...state, ...setting };
     },
 
     changeSetting(state = defaultSettings, { payload }) {
-      const urlParams = new URL(window.location.href);
-      Object.keys(defaultSettings).forEach(key => {
-        if (urlParams.searchParams.has(key)) {
-          urlParams.searchParams.delete(key);
-        }
-      });
-      Object.keys(payload).forEach(key => {
-        if (key === 'collapse') {
-          return;
-        }
-
-        let value = payload[key];
-
-        if (value === true) {
-          value = 1;
-        }
-
-        if (defaultSettings[key] !== value) {
-          urlParams.searchParams.set(key, value);
-        }
-      });
-      const { primaryColor, colorWeak, contentWidth } = payload;
-
-      if (primaryColor && state.primaryColor !== primaryColor) {
-        updateTheme(primaryColor);
-      }
+      const { colorWeak, contentWidth } = payload;
 
       if (state.contentWidth !== contentWidth && window.dispatchEvent) {
         window.dispatchEvent(new Event('resize'));
       }
 
       updateColorWeak(!!colorWeak);
-      window.history.replaceState(null, 'setting', urlParams.href);
       return { ...state, ...payload };
+    },
+
+    changeTheme(state = defaultSettings, { payload }) {
+      let newTheme;
+      if (payload && Object.keys(payload)) {
+        newTheme = payload;
+      } else {
+        const themeCache = localStorage.getItem('site-theme');
+        newTheme = themeCache || state.navTheme;
+      }
+      const dark = newTheme === 'dark';
+      if (typeof window === 'undefined') {
+        return { ...state };
+      }
+      const hide = message.loading(
+        formatMessage({
+          id: 'app.setting.loading',
+          defaultMessage: 'Loading theme.',
+        }),
+        0.5,
+      );
+      const href = dark ? '/theme/dark' : '/theme/';
+
+      const dom = document.getElementById('theme-style');
+
+      if (!href) {
+        if (dom) {
+          dom.remove();
+          localStorage.removeItem('site-theme');
+        }
+        return { ...state };
+      }
+
+      const url = `${href}.css`;
+      if (dom) {
+        dom.onload = () => {
+          window.setTimeout(() => {});
+        };
+        dom.href = url;
+      } else {
+        const style = document.createElement('link');
+        style.type = 'text/css';
+        style.rel = 'stylesheet';
+        style.id = 'theme-style';
+        style.onload = () => {
+          window.setTimeout(() => {
+            hide();
+          });
+        };
+        style.href = url;
+        document.body.append(style);
+      }
+
+      localStorage.setItem('site-theme', dark ? 'dark' : 'light');
+
+      return { ...state, navTheme: dark ? 'dark' : 'light' };
     },
   },
 };

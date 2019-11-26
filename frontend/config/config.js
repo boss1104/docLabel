@@ -1,15 +1,15 @@
 import slash from 'slash2';
-import themes from './themes';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
+
+import themePluginConfig from './themePluginConfig'; // import darkTheme from '@ant-design/dark-theme';
 
 import webpackPlugin from './plugin.config';
 import routes from './routes';
 
-const { pwa, themeName, primaryColor } = defaultSettings;
+const { pwa, primaryColor } = defaultSettings;
 // preview.pro.ant.design only do not use in your production ;
-// preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
-const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
+const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, TEST } = process.env;
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
 const plugins = [
   [
@@ -55,7 +55,7 @@ const plugins = [
       autoAddMenu: true,
     },
   ],
-]; // 针对 preview.pro.ant.design 的 GA 统计代码
+];
 
 if (isAntDesignProPreview) {
   plugins.push([
@@ -68,6 +68,45 @@ if (isAntDesignProPreview) {
     'umi-plugin-pro',
     {
       serverUrl: 'https://ant-design-pro.netlify.com',
+    },
+  ]);
+  plugins.push(['umi-plugin-antd-theme', themePluginConfig]);
+}
+
+if (!TEST && !isAntDesignProPreview) {
+  plugins.push([
+    'umi-plugin-antd-theme',
+    {
+      theme: [
+        {
+          key: 'dark',
+          fileName: 'dark.css',
+          theme: 'dark',
+        },
+        {
+          key: 'dust',
+          fileName: 'dust.css',
+          modifyVars: {
+            '@primary-color': '#F5222D',
+          },
+        },
+        {
+          key: 'dust',
+          theme: 'dark',
+          fileName: 'dark-dust.css',
+          modifyVars: {
+            '@primary-color': '#F5222D',
+          },
+        },
+        {
+          key: 'volcano',
+          theme: 'dark',
+          fileName: 'dark-volcano.css',
+          modifyVars: {
+            '@primary-color': '#FA541C',
+          },
+        },
+      ],
     },
   ]);
 }
@@ -88,8 +127,7 @@ export default {
   routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
-    ...themes[themeName],
-    '@primary-color': primaryColor,
+    'primary-color': primaryColor,
   },
   define: {
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:

@@ -51,7 +51,7 @@ function Tip({ onOpen, onConfirm, labelList }) {
           >
             Add label
           </div>
-          <div className={styles.compactArrow} />
+          <div className={styles.arrow} />
         </div>
       )}
       <Modal

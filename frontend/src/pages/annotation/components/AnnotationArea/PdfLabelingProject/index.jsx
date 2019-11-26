@@ -22,7 +22,7 @@ const HighlightPopup = ({ label }) => {
         <div className={styles.highlightPopup} style={{ color: label.background_color }}>
           <Typography.Text strong>{label.text}</Typography.Text>
         </div>
-        <div className={styles.compactArrow} />
+        <div className={styles.arrow} />
       </div>
     );
   }
