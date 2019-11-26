@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Modal, Input, Typography, message, Spin } from 'antd';
 import { connect } from 'dva';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PageHeaderWrapper, GridContent } from '@ant-design/pro-layout';
 import styles from './index.less';
 import ProjectInfoForm from './components/ProjectInfoForm';
 import TaskSettings from './components/TaskSettings';

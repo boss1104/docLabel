@@ -124,6 +124,15 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+
+        if request.data.get("project_type"):
+            return Response(
+                data={
+                    "project_type": "Unable to change the project category"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         return super().update(request, *args, **kwargs)
 
 

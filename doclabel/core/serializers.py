@@ -162,7 +162,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             "image",
             "updated_at",
             "users",
-            "project_type",
             "current_users_role",
         )
 
@@ -188,7 +187,6 @@ class PdfLabelingProjectSerializer(ProjectSerializer):
 
 
 class ProjectPolymorphicSerializer(PolymorphicSerializer):
-    #  It's the same now
     model_serializer_mapping = {
         Project: ProjectSerializer,
         TextClassificationProject: TextClassificationProjectSerializer,

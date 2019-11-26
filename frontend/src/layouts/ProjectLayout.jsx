@@ -150,11 +150,10 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
   return (
     <ProLayout
       logo={logo}
-      fixSiderbar
       onCollapse={handleMenuCollapse}
       menuDataRender={menuDataRender}
       menuItemRender={(menuItemProps, defaultDom) => {
-        if (menuItemProps.isUrl) {
+        if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
         }
         let { path } = menuItemProps;
@@ -183,10 +182,11 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
       {...props}
       {...settings}
       layout="sidemenu"
+      // fixSiderbar
     >
-      {loading || !isReady ? <PageLoading /> : children}
-      {/* <Authorized authority={authorized.authority} noMatch={noMatch}> */}
-      {/* </Authorized> */}
+      <Authorized authority={authorized.authority} noMatch={noMatch}>
+        {loading || !isReady ? <PageLoading /> : children}
+      </Authorized>
     </ProLayout>
   );
 });

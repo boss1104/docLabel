@@ -34,16 +34,16 @@ const CreateModalForm = connect(({ loading }) => ({
         payload[val] = true;
       });
       payload.resourcetype = payload.project_type;
+      console.log('[DEBUG]: payload', payload);
       try {
         const res = await dispatch({
           type: 'project/createProject',
           payload,
         });
-
         message.success(`Successfully created!${res.name}`);
         router.push(`/projects/${res.id}/dashboard`);
         form.resetFields();
-        // close();
+        close();
       } catch (error) {
         const valueWithError = {};
         if (error.data) {

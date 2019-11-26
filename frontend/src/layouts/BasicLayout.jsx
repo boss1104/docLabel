@@ -138,6 +138,7 @@ const BasicLayout = props => {
     <ProLayout
       logo={logo}
       onCollapse={handleMenuCollapse}
+      menuDataRender={menuDataRender}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
@@ -164,7 +165,6 @@ const BasicLayout = props => {
         );
       }}
       // footerRender={footerRender}
-      menuDataRender={menuDataRender}
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
       {...props}
