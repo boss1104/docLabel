@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Row, Col, Progress, Modal, Typography } from 'antd';
+import { Button, Card, Row, Col, Progress, Modal, Typography, Tooltip } from 'antd';
 import Markdown from '@/components/Markdown';
 
 function ProgressBar({ totalTask, remaining, currentProject }) {
@@ -14,26 +14,14 @@ function ProgressBar({ totalTask, remaining, currentProject }) {
       currentProject.current_users_role.is_project_admin);
   return (
     <Card>
-      <Row type="flex" gutter={24}>
-        <Col span={2}>Progress:</Col>
-        <Col span={8}>
-          <Progress
-            percent={Math.floor(((totalTask - remaining) / totalTask) * 100)}
-            format={() => `${totalTask - remaining}/${totalTask}`}
-            status="active"
-            strokeColor="#00a854"
-            strokeWidth={15}
-          />
-        </Col>
-        <Col span={14}>
-          <Row type="flex" gutter={48} justify="end">
+      <Row type="flex" gutter={[0, 24]} justify="space-between" align="middle">
+        <Col md={{ span: 12 }} xs={{ span: 24 }}>
+          <Row type="flex" gutter={24}>
             <Col>
-              {isAnnotationApprover && (
-                <Button icon={approved ? 'check-circle' : 'question-circle'} size="large" />
-              )}
-            </Col>
-            <Col>
-              <Button icon="deployment-unit" size="large" onClick={() => setVisible(true)} />
+              <Tooltip title="Guide line">
+                <Button icon="deployment-unit" size="large" onClick={() => setVisible(true)} />
+              </Tooltip>
+
               <Modal
                 width={700}
                 title={<Typography.Title level={4}>Annotation Guideline</Typography.Title>}
@@ -47,9 +35,31 @@ function ProgressBar({ totalTask, remaining, currentProject }) {
               </Modal>
             </Col>
             <Col>
-              <Button icon="inbox" size="large" />
+              <Tooltip title="Document Meta">
+                <Button icon="inbox" size="large" />
+              </Tooltip>
             </Col>
+            {isAnnotationApprover && (
+              <Col>
+                <Tooltip title="Approved">
+                  <Button icon={approved ? 'check-circle' : 'question-circle'} size="large" />
+                </Tooltip>
+              </Col>
+            )}
           </Row>
+        </Col>
+        <Col md={{ span: 12 }} xs={{ span: 24 }}>
+          <div style={{ maxWidth: '350px' }}>
+            <Tooltip title="Progress" placement="topRight">
+              <Progress
+                percent={Math.floor(((totalTask - remaining) / totalTask) * 100)}
+                format={() => `${totalTask - remaining}/${totalTask}`}
+                status="active"
+                strokeColor="#00a854"
+                strokeWidth={15}
+              />
+            </Tooltip>
+          </div>
         </Col>
       </Row>
     </Card>

@@ -91,7 +91,6 @@ const BasicLayout = props => {
   const {
     dispatch,
     children,
-    match,
     settings,
     location = {
       pathname: '/app',
@@ -101,16 +100,8 @@ const BasicLayout = props => {
    * constructor
    */
 
-  const { id: projectId } = match.params;
-
   useEffect(() => {
     if (dispatch) {
-      if (projectId) {
-        dispatch({
-          type: 'project/fetchProject',
-          payload: projectId,
-        });
-      }
       dispatch({
         type: 'settings/getSetting',
       });

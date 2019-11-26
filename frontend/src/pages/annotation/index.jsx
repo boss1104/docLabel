@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'dva';
 import { Layout, Button, Row, Col, Progress, Card, Spin, Icon, Modal, Typography } from 'antd';
 import { router } from 'umi';
-import { GridContent } from '@ant-design/pro-layout';
 
 import styles from './index.less';
 import SiderList from './components/SiderList';
@@ -45,7 +44,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
    * States
    */
 
-  const [collapsed, setCollapsed] = React.useState(false);
   const [annotations, setAnnotations] = React.useState({});
   const [sidebarTotal, setSidebarTotal] = React.useState(0);
   const [sidebarPage, setSidebarPage] = React.useState(0);
@@ -278,42 +276,36 @@ const Annotation = connect(({ project, task, label, loading }) => ({
    */
 
   return (
-    <GridContent>
-      <div className={styles.main}>
-        <Layout>
-          <SiderList
-            // collapsed={collapsed}
-            onChangeKey={handleChangeKey}
-            onSearchChange={handleChangeSearch}
-            pageSize={sidebarTotal}
-            page={sidebarPage}
-            pageNumber={pageNumber}
-            annotations={annotations}
+    <Layout hasSider className={styles.main}>
+      <Layout.Content className={styles.content}>
+        <Spin spinning={labelLoading || taskLoading} size="small">
+          <ProgressBar
+            totalTask={totalTask}
+            remaining={remaining}
+            currentProject={currentProject}
           />
-          <Layout style={{ marginLeft: 320 }}>
-            <Spin spinning={labelLoading || taskLoading} size="small">
-              <Layout.Content className={styles.content}>
-                <ProgressBar
-                  totalTask={totalTask}
-                  remaining={remaining}
-                  currentProject={currentProject}
-                />
-                {currentProject && AnnotationArea[currentProject.project_type]}
-                <TaskPagination
-                  onNextPage={handleNextPage}
-                  onPrevPage={handlePrevPage}
-                  total={pagination.total}
-                  current={offset + pageNumber + 1}
-                  onPrevPagination={handlePrevPagination}
-                  onNextPagination={handleNextPagination}
-                  pagination={pagination}
-                />
-              </Layout.Content>
-            </Spin>
-          </Layout>
-        </Layout>
-      </div>
-    </GridContent>
+
+          {currentProject && AnnotationArea[currentProject.project_type]}
+          <TaskPagination
+            onNextPage={handleNextPage}
+            onPrevPage={handlePrevPage}
+            total={pagination.total}
+            current={offset + pageNumber + 1}
+            onPrevPagination={handlePrevPagination}
+            onNextPagination={handleNextPagination}
+            pagination={pagination}
+          />
+        </Spin>
+      </Layout.Content>
+      <SiderList
+        onChangeKey={handleChangeKey}
+        onSearchChange={handleChangeSearch}
+        pageSize={sidebarTotal}
+        page={sidebarPage}
+        pageNumber={pageNumber}
+        annotations={annotations}
+      />
+    </Layout>
   );
 });
 

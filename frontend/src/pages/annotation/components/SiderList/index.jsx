@@ -9,11 +9,12 @@ import { PROJECT_TYPE } from '@/pages/constants';
 const { Sider } = Layout;
 const { Search } = Input;
 
-const SiderList = connect(({ project, task, loading }) => ({
+const SiderList = connect(({ project, task, loading, settings }) => ({
   project,
   task,
   projectLoading: loading.effects['project/fetchProject'],
   taskLoading: loading.effects['task/fetch'],
+  dark: settings.navTheme === 'dark',
 }))(props => {
   const {
     project: { currentProject },
@@ -26,8 +27,10 @@ const SiderList = connect(({ project, task, loading }) => ({
     page,
     pageNumber,
     annotations = [],
+    dark,
   } = props;
-  // console.log('SiderList render');
+  console.log('[DEBUG]: dark', dark);
+  const [collapsed, setCollapsed] = React.useState(false);
 
   const annoList = Object.values(annotations) || [];
   /**
@@ -47,20 +50,24 @@ const SiderList = connect(({ project, task, loading }) => ({
 
   const isProjectAdmin = hasData && currentProject.current_users_role.is_project_admin;
 
+  const onCollapse = (newCollapsed, type) => {
+    console.log('[DEBUG]: onCollapse -> type', type);
+    setCollapsed(newCollapsed);
+  };
+
   return (
     <Sider
-      // collapsible
-      // collapsed={collapsed}
-      breakpoint="lg"
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      reverseArrow
+      breakpoint="xl"
       collapsedWidth="0"
-      onBreakpoint={broken => {
-        // console.log(broken);
-      }}
-      onCollapse={(collapsed, type) => {
-        // console.log(collapsed, type);
-      }}
+      // onBreakpoint={broken => {
+      //   console.log(broken);
+      // }}
       width={320}
-      className={className(styles.siderList, styles.dark)}
+      className={className(styles.siderList, { [styles.dark]: dark })}
     >
       <Spin spinning={dataLoading} size="small">
         {hasData && (
@@ -84,14 +91,14 @@ const SiderList = connect(({ project, task, loading }) => ({
 
       <Spin spinning={taskLoading} size="small">
         <section>
-          <div style={{ padding: '16px' }}>
+          <div className={styles.search}>
             {/* <Search size="large" placeholder="Search task" onSearch={handleOnSearch} /> */}
           </div>
-          <div style={{ textAlign: 'center' }}>
+          <div className={styles.about}>
             {`About ${pagination.total} tasks. (page ${page} of ${pageSize})`}
           </div>
           <Menu
-            theme="dark"
+            theme={dark ? 'dark' : 'light'}
             mode="inline"
             selectedKeys={[`${pageNumber}`]}
             onClick={({ key }) => {

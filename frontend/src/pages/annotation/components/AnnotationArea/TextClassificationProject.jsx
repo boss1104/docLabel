@@ -24,19 +24,23 @@ function TextClassificationProject({
   return (
     <React.Fragment>
       <Card>
-        <Row type="flex">
-          <Col span={2}>Labels: </Col>
-          <Col span={22}>
+        <Row gutter={[0, 16]}>
+          <Col>
+            <Typography.Text strong>Labels</Typography.Text>
+          </Col>
+          <Col>
             <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
           </Col>
         </Row>
       </Card>
       <Card>
-        <Row type="flex">
-          <Col span={2}>Classification: </Col>
-          <Col span={24}>
+        <Row gutter={[0, 16]}>
+          <Col>
+            <Typography.Text strong>Classification</Typography.Text>
+          </Col>
+          <Col>
             <Spin spinning={!!loading}>
-              <Row type="flex" gutter={[0, 16]} justify="center">
+              <Row type="flex" gutter={[16, 16]} justify="center">
                 {annoList.length > 0 &&
                   Object.values(annoList).map(({ label, id }) => (
                     <Col key={id}>
@@ -56,9 +60,9 @@ function TextClassificationProject({
                   <Col>
                     <Empty
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      description="No label"
+                      description={false}
                       imageStyle={{
-                        height: 15,
+                        height: 24,
                       }}
                     />
                   </Col>

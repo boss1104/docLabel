@@ -5,8 +5,8 @@ import { Icon, Tag } from 'antd';
 export const PROJECT_TYPE = {
   TextClassificationProject: {
     icon: <Icon type="smile" theme="twoTone" />,
-    label: 'Document Classification',
-    tag: <Tag color="purple">Document Classification</Tag>,
+    label: 'Sentiment Analysis',
+    tag: <Tag color="purple">Sentiment Analysis</Tag>,
   },
   SequenceLabelingProject: {
     icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,

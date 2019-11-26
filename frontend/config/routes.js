@@ -111,7 +111,7 @@ export default [
       },
       {
         path: '/annotation/:id',
-        component: '../layouts/BasicLayout',
+        component: '../layouts/AnnotationLayout',
         routes: [
           {
             name: 'annotation',

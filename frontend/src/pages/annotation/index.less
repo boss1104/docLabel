@@ -1,53 +1,59 @@
 @import '~antd/es/style/themes/default.less';
 
 .main {
+  display: flex;
+  justify-content: center;
+  min-height: ~'calc(100vh - 64px)' !important;
   margin: -24px;
 
-  :global(.ant-menu-inline > .ant-menu-item) {
-    height: 48px;
-    line-height: 48px;
-  }
   .content {
-    // padding: 40px;
-    margin: 24px 24px 0;
+    max-width: 1400px;
+    padding: 24px;
     overflow: initial;
-
-    :global(.ant-tag) {
-      margin-right: 24px;
-      padding: 0 15px;
-      font-size: 14px;
-      line-height: 32px;
-
-      span {
-        margin-right: 7px;
-      }
-      :global(.anticon-close) {
+    :global {
+      .ant-tag {
+        padding: 0 15px;
         font-size: 14px;
-      }
-    }
-    :global(.ant-pagination-simple-pager) {
-      height: 40px;
-      input {
-        pointer-events: none;
-      }
-    }
-    :global(.ant-empty-normal) {
-      margin: 8px 0;
-    }
-
-    :global(.ant-input) {
-      font-size: 24px;
-    }
-    :global(.ant-list-item) {
-      cursor: pointer;
-      button {
-        display: none;
-      }
-      &:hover {
-        button {
-          display: block;
+        line-height: 30px;
+        span {
+          margin-right: 7px;
+        }
+        .anticon-close {
+          font-size: 14px;
         }
       }
+
+      .ant-pagination-simple-pager {
+        height: 40px;
+        input {
+          pointer-events: none;
+        }
+      }
+
+      .ant-empty-normal {
+        margin: 0;
+      }
+
+      .ant-input {
+        font-size: 24px;
+      }
+
+      .ant-list-item {
+        cursor: pointer;
+        button {
+          display: none;
+        }
+        &:hover {
+          button {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+  @media screen and (min-width: @screen-xl) {
+    .content {
+      margin-left: 320px;
     }
   }
 }

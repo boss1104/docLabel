@@ -9,15 +9,10 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
-import { router } from 'umi';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
-import PageLoading from '@/components/PageLoading';
-/**
- * use Authorized check all menu item
- */
 
 const noMatch = (
   <Result
@@ -31,7 +26,9 @@ const noMatch = (
     }
   />
 );
-
+/**
+ * use Authorized check all menu item
+ */
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
@@ -40,7 +37,7 @@ const menuDataRender = menuList =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 ICT"
+    copyright="2019 蚂蚁金服体验技术部出品"
     links={[
       {
         key: 'Ant Design Pro',
@@ -90,44 +87,37 @@ const footerRender = () => {
   );
 };
 
-const ProjectLayout = connect(({ global, settings, loading }) => ({
+const AnnotationLayout = connect(({ global, settings }) => ({
   collapsed: global.collapsed,
   settings,
-  loading: loading.effects['project/fetchProject'],
 }))(props => {
   const {
     dispatch,
     children,
-    settings,
     match,
+    settings,
     location = {
       pathname: '/app',
     },
-    loading,
   } = props;
   /**
    * constructor
    */
-  const [isReady, setIsReady] = React.useState(false);
 
-  const fetchCurrentProject = async () => {
-    const res = await dispatch({
-      type: 'project/fetchProject',
-      payload: match.params.id,
-    });
-    if (!res.current_users_role.is_project_admin) {
-      router.push('/exception/403');
-    }
-  };
+  const { id: projectId } = match.params;
 
   useEffect(() => {
     if (dispatch) {
-      fetchCurrentProject();
+      if (projectId) {
+        dispatch({
+          type: 'project/fetchProject',
+          payload: projectId,
+        });
+      }
       dispatch({
         type: 'settings/getSetting',
       });
     }
-    setIsReady(true);
   }, []);
   /**
    * init variables
@@ -156,18 +146,10 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
         }
-        let { path } = menuItemProps;
-        if (match.path !== match.url) {
-          // Compute the right path
-          Object.keys(match.params).forEach(key => {
-            path = path.replace(`:${key}`, match.params[key]);
-          });
-        }
 
-        return <Link to={path}>{defaultDom}</Link>;
+        return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [...routers]}
-      // Antd Breadcrumb
       itemRender={(route, params, routes, paths) => {
         const first = routes.indexOf(route) === 0;
         return first ? (
@@ -176,18 +158,18 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
           <span>{route.breadcrumbName}</span>
         );
       }}
-      footerRender={footerRender}
+      // footerRender={footerRender}
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
       {...props}
       {...settings}
-      layout="sidemenu"
+      disableMobile
     >
       <Authorized authority={authorized.authority} noMatch={noMatch}>
-        {loading || !isReady ? <PageLoading /> : children}
+        {children}
       </Authorized>
     </ProLayout>
   );
 });
 
-export default ProjectLayout;
+export default AnnotationLayout;
