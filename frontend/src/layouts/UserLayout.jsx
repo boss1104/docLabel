@@ -18,12 +18,21 @@ const UserLayout = props => {
   } = props;
   const { routes = [] } = route;
   const {
+    dispatch,
     children,
     location = {
       pathname: '',
     },
   } = props;
   const { breadcrumb } = getMenuData(routes);
+
+  React.useEffect(() => {
+    if (dispatch) {
+      dispatch({
+        type: 'settings/changeTheme',
+      });
+    }
+  }, []);
 
   const isLogin = getAuthorization() !== 'undefined' && getAuthorization() !== null;
 

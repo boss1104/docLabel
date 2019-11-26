@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Redirect } from 'umi';
 import { stringify } from 'querystring';
 import PageLoading from '@/components/PageLoading';
-import { getAuthorization, setAuthority } from '@/utils/authority';
+import { getAuthorization } from '@/utils/authority';
 
 @connect(({ user, loading, settings }) => ({
   currentUser: user.currentUser,
@@ -33,10 +33,11 @@ class SecurityLayout extends React.Component {
 
   render() {
     const { isReady } = this.state;
-    const { children, loading } = this.props;
+    const { children, loading, currentUser } = this.props;
 
     // You can replace it to your authentication rule (such as check token exists)
     const isLogin = getAuthorization() !== 'undefined' && getAuthorization() !== null;
+    // const isLogin = currentUser && currentUser.id;
     const queryString = stringify({
       redirect: window.location.href,
     });

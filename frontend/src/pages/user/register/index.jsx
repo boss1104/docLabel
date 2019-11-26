@@ -234,7 +234,7 @@ class Register extends Component {
   };
 
   render() {
-    const { form, submitting, userRegister } = this.props;
+    const { form, submitting } = this.props;
     const { getFieldDecorator } = form;
     const { help, visible, confirmBirth, ageHelp, error } = this.state;
     return (
@@ -242,7 +242,6 @@ class Register extends Component {
         <h2>
           <FormattedMessage id="user-register.register.register" />
         </h2>
-        <Button onClick={() => this.handleRegister({})}>Call</Button>
         <div>
           {confirmBirth ? (
             <Form onSubmit={this.handleSubmit}>
