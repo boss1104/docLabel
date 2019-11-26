@@ -4,23 +4,15 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 import ProjectInfoForm from './components/ProjectInfoForm';
+import TaskSettings from './components/TaskSettings';
 
-const Setting = connect(({ setting, loading, project }) => ({
-  project,
-  setting,
+const Setting = connect(({ loading, project }) => ({
+  currentProject: project.currentProject,
   loading: loading.effects['project/fetchProject'],
-  loadingUpdateProject: loading.effects['setting/updateProject'],
 }))(props => {
-  const {
-    dispatch,
-    project: { currentProject },
-    loading,
-    loadingUpdateProject,
-    setting: { hasError, errors },
-  } = props;
+  const { dispatch, currentProject, loading } = props;
 
   const inputRef = React.useRef(null);
-  const formRef = React.useRef(null);
 
   const confirmDelete = () => {
     Modal.confirm({
@@ -51,7 +43,7 @@ const Setting = connect(({ setting, loading, project }) => ({
             payload: currentProject.id,
           });
         } else {
-          message.error('Wrong project name !');
+          message.error('Wrong project name');
         }
       },
       okButtonProps: {
@@ -62,45 +54,14 @@ const Setting = connect(({ setting, loading, project }) => ({
     });
   };
 
-  const handleSubmit = async values => {
-    try {
-      await dispatch({
-        type: 'setting/updateProject',
-        payload: values,
-      });
-      message.info('Successfully updated!');
-    } catch ({ data }) {
-      const valueWithError = {};
-      const form = formRef.current;
-      if (data) {
-        Object.entries(data).forEach(([key, val]) => {
-          // const msg = formatMessage({
-          //   id: messageID[val[0]],
-          // });
-          valueWithError[key] = {
-            value: form.getFieldValue(key),
-            errors: [new Error(val[0])],
-          };
-        });
-      }
-      form.setFields({ ...valueWithError });
-      message.error('Something wrong! Try again!');
-    }
-  };
   return (
     <PageHeaderWrapper>
       <div className={styles.main}>
         <Spin spinning={loading}></Spin>
         {!loading && (
           <>
-            <ProjectInfoForm
-              currentProject={currentProject}
-              onSubmit={handleSubmit}
-              loading={loadingUpdateProject}
-              errors={hasError ? null : errors}
-              wrappedComponentRef={formRef}
-            ></ProjectInfoForm>
-            <div>Task setting ( redundancy| scheduler | delete all tasks)</div>
+            <ProjectInfoForm />
+            <TaskSettings />
             <div>Contribution settings</div>
             <div className={styles.deletebutton}>
               <Button type="danger" block onClick={confirmDelete}>

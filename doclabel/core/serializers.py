@@ -148,112 +148,43 @@ class ProjectSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "guideline",
-            "users",
-            "current_users_role",
-            "project_type",
-            "image",
-            "updated_at",
             "randomize_document_order",
             "collaborative_annotation",
+            "annotator_per_example",
             "public",
+            "image",
+            "updated_at",
+            "users",
+            "project_type",
+            "current_users_role",
         )
-        read_only_fields = ("image", "updated_at", "project_type", "current_users_role")
+        read_only_fields = (
+            "image",
+            "updated_at",
+            "users",
+            "project_type",
+            "current_users_role",
+        )
 
 
 class TextClassificationProjectSerializer(ProjectSerializer):
-    class Meta:
+    class Meta(ProjectSerializer.Meta):
         model = TextClassificationProject
-        fields = (
-            "id",
-            "name",
-            "description",
-            "guideline",
-            "users",
-            "current_users_role",
-            "project_type",
-            "image",
-            "updated_at",
-            "randomize_document_order",
-            "public",
-        )
-        read_only_fields = (
-            "image",
-            "updated_at",
-            "users",
-            "current_users_role",
-        )
 
 
 class SequenceLabelingProjectSerializer(ProjectSerializer):
-    class Meta:
+    class Meta(ProjectSerializer.Meta):
         model = SequenceLabelingProject
-        fields = (
-            "id",
-            "name",
-            "description",
-            "guideline",
-            "users",
-            "current_users_role",
-            "project_type",
-            "image",
-            "updated_at",
-            "randomize_document_order",
-            "public",
-        )
-        read_only_fields = (
-            "image",
-            "updated_at",
-            "users",
-            "current_users_role",
-        )
 
 
 class Seq2seqProjectSerializer(ProjectSerializer):
-    class Meta:
+    class Meta(ProjectSerializer.Meta):
         model = Seq2seqProject
-        fields = (
-            "id",
-            "name",
-            "description",
-            "guideline",
-            "users",
-            "current_users_role",
-            "project_type",
-            "image",
-            "updated_at",
-            "randomize_document_order",
-            "public",
-        )
-        read_only_fields = (
-            "image",
-            "updated_at",
-            "users",
-            "current_users_role",
-        )
 
 
 class PdfLabelingProjectSerializer(ProjectSerializer):
-    class Meta:
+    class Meta(ProjectSerializer.Meta):
         model = PdfLabelingProject
-        fields = (
-            "id",
-            "name",
-            "description",
-            "guideline",
-            "users",
-            "current_users_role",
-            "project_type",
-            "image",
-            "updated_at",
-            "randomize_document_order",
-            "public",
-        )
-        read_only_fields = (
-            "image",
-            "updated_at",
-            "users",
-            "current_users_role",
-        )
 
 
 class ProjectPolymorphicSerializer(PolymorphicSerializer):

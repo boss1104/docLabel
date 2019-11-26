@@ -38,6 +38,7 @@ class Project(PolymorphicModel):
     updated_at = models.DateTimeField(auto_now=True)
     users = models.ManyToManyField(User, related_name="projects")
     project_type = models.CharField(max_length=30, choices=PROJECT_CHOICES, null=False)
+    annotator_per_example = models.IntegerField(default=3)
     randomize_document_order = models.BooleanField(default=False)
     # Allow see annotation from other user
     collaborative_annotation = models.BooleanField(default=False)
