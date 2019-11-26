@@ -88,7 +88,7 @@ export default {
   routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
-    // ...themes[themeName],
+    ...themes[themeName],
     '@primary-color': primaryColor,
   },
   define: {

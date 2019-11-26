@@ -96,16 +96,16 @@ export default [
             component: './project/export',
           },
           {
-            name: 'setting',
-            icon: 'setting',
-            path: '/projects/:id/setting',
-            component: './project/setting',
-          },
-          {
             name: 'guide',
             icon: 'deployment-unit',
             path: '/projects/:id/guide',
             component: './project/guide',
+          },
+          {
+            name: 'setting',
+            icon: 'setting',
+            path: '/projects/:id/setting',
+            component: './project/setting',
           },
         ],
       },

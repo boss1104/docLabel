@@ -13,7 +13,7 @@ export default () => {
         id: 'projects-list.project_type.label',
       })}
     >
-      <Typography.Text code>{PROJECT_TYPE[currentProject.project_type].label}</Typography.Text>
+      <Typography.Text code>{PROJECT_TYPE[currentProject.project_type].tag}</Typography.Text>
     </Form.Item>
   );
 };

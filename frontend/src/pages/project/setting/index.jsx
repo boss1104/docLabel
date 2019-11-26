@@ -5,7 +5,12 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 import ProjectInfoForm from './components/ProjectInfoForm';
 
-const Setting = props => {
+const Setting = connect(({ setting, loading, project }) => ({
+  project,
+  setting,
+  loading: loading.effects['project/fetchProject'],
+  loadingUpdateProject: loading.effects['setting/updateProject'],
+}))(props => {
   const {
     dispatch,
     project: { currentProject },
@@ -15,11 +20,12 @@ const Setting = props => {
   } = props;
 
   const inputRef = React.useRef(null);
+  const formRef = React.useRef(null);
 
   const confirmDelete = () => {
     Modal.confirm({
       okText: 'Delete',
-      title: 'Confirm delete !',
+      title: 'Confirm delete ?',
       content: (
         <>
           <Typography.Paragraph>
@@ -52,17 +58,34 @@ const Setting = props => {
         type: 'danger',
       },
       onCancel() {},
+      centered: true,
     });
   };
 
-  const handleSubmit = values => {
-    dispatch({
-      type: 'setting/updateProject',
-      payload: {
-        id: currentProject.id,
-        data: values,
-      },
-    });
+  const handleSubmit = async values => {
+    try {
+      await dispatch({
+        type: 'setting/updateProject',
+        payload: values,
+      });
+      message.info('Successfully updated!');
+    } catch ({ data }) {
+      const valueWithError = {};
+      const form = formRef.current;
+      if (data) {
+        Object.entries(data).forEach(([key, val]) => {
+          // const msg = formatMessage({
+          //   id: messageID[val[0]],
+          // });
+          valueWithError[key] = {
+            value: form.getFieldValue(key),
+            errors: [new Error(val[0])],
+          };
+        });
+      }
+      form.setFields({ ...valueWithError });
+      message.error('Something wrong! Try again!');
+    }
   };
   return (
     <PageHeaderWrapper>
@@ -75,6 +98,7 @@ const Setting = props => {
               onSubmit={handleSubmit}
               loading={loadingUpdateProject}
               errors={hasError ? null : errors}
+              wrappedComponentRef={formRef}
             ></ProjectInfoForm>
             <div>Task setting ( redundancy| scheduler | delete all tasks)</div>
             <div>Contribution settings</div>
@@ -88,11 +112,6 @@ const Setting = props => {
       </div>
     </PageHeaderWrapper>
   );
-};
+});
 
-export default connect(({ setting, loading, project }) => ({
-  project,
-  setting,
-  loading: loading.effects['project/fetchProject'],
-  loadingUpdateProject: loading.effects['setting/updateProject'],
-}))(Setting);
+export default Setting;

@@ -113,9 +113,8 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        public = request.data["public"]
 
-        if public:
+        if request.data.get("public"):
             labels = instance.labels.count()
             documents = instance.documents.count()
             if not labels or not documents:

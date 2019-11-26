@@ -13,6 +13,7 @@ const Model = {
         type: 'project/saveCurrentProject',
         payload: response,
       });
+      return response;
     },
     *deleteProject({ payload: id }, { call, put }) {
       yield call(deleteProject, id);
