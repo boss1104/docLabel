@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Icon, Tag } from 'antd';
 
+export const PAGE_SIZE = 6;
+
 export const PROJECT_TYPE = {
   TextClassificationProject: {
     icon: <Icon type="smile" theme="twoTone" />,
@@ -10,8 +12,8 @@ export const PROJECT_TYPE = {
   },
   SequenceLabelingProject: {
     icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,
-    label: 'Sequence Labeling',
-    tag: <Tag color="magenta">Sequence Labeling</Tag>,
+    label: 'Named Entity Recognition',
+    tag: <Tag color="magenta">Named Entity Recognition</Tag>,
   },
   Seq2seqProject: {
     icon: <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />,

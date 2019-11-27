@@ -25,7 +25,7 @@ function LabelList({ labelList, handleChooseLabel }) {
 
   return (
     <GlobalHotKeys allowChanges keyMap={memoHotkey.keyMap} handlers={memoHotkey.handlers}>
-      <Row type="flex" gutter={[24, 16]}>
+      <Row type="flex" gutter={[24, 16]} justify="center">
         {labelList &&
           Object.keys(labelList).map(key => (
             <Col key={key}>

@@ -127,9 +127,7 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
 
         if request.data.get("project_type"):
             return Response(
-                data={
-                    "project_type": "Unable to change the project category"
-                },
+                data={"project_type": "Unable to change the project category"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -279,10 +277,21 @@ class AnnotationList(generics.ListCreateAPIView):
         return queryset
 
     def create(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs["project_id"])
+        annotation_class = project.get_annotation_class()
+        queryset = annotation_class.objects.filter(
+            document_id__in=project.documents.all(), user_id=self.request.user, finished=True
+        )
+        if queryset:
+            return Response(
+                "Cant not change finished annotation!",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         request.data["document"] = self.kwargs["doc_id"]
-        if request.data.get('content'):
-            content = request.data['content']
-            if content.get('image'):
+        # pdf case
+        if request.data.get("content"):
+            content = request.data["content"]
+            if content.get("image"):
                 image = to_file(content["image"])
                 fs = FileSystemStorage(
                     location=settings.MEDIA_ROOT
@@ -297,6 +306,31 @@ class AnnotationList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(document_id=self.kwargs["doc_id"], user=self.request.user)
+
+
+class AnnotationCompleted(APIView):
+    def patch(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs["project_id"])
+        docs = project.documents
+        annotation_class = project.get_annotation_class()
+        annotation_serializer = project.get_annotation_serializer()
+        total = docs.count()
+        query = annotation_class.objects.filter(
+            document_id__in=docs.all(), user_id=self.request.user
+        )
+        done = query.aggregate(Count("document", distinct=True))["document__count"]
+
+        if total != done:
+            return Response(
+                "The taskset is not completed.", status=status.HTTP_400_BAD_REQUEST
+            )
+        query.update(finished=True)
+        for anno in query:
+            anno.save()
+        data = annotation_serializer(
+            query, many=True, context={"request": request}
+        ).data
+        return Response(data=data, status=status.HTTP_201_CREATED)
 
 
 class AnnotationDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -316,6 +350,24 @@ class AnnotationDetail(generics.RetrieveUpdateDestroyAPIView):
         self.queryset = model.objects.all()
         return self.queryset
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.finished:
+            return Response(
+                "Cant not change finished annotation!",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.finished:
+            return Response(
+                "Cant not change finished annotation!",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return super().destroy(request, *args, **kwargs)
+
 
 class TextUploadAPI(APIView):
     parser_classes = (MultiPartParser,)
@@ -325,7 +377,8 @@ class TextUploadAPI(APIView):
         if "file" not in request.data:
             raise ParseError("Empty content")
 
-        if request.data["format"] == "pdf":
+        file_format = request.data["format"]
+        if file_format == "pdf":
             file = request.data["file"]
             fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/",)
             filename = fs.save(file.name, file)
@@ -344,7 +397,7 @@ class TextUploadAPI(APIView):
             self.save_file(
                 user=request.user,
                 file=request.data["file"],
-                file_format=request.data["format"],
+                file_format=file_format,
                 project_id=kwargs["project_id"],
             )
 

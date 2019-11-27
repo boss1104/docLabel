@@ -1,7 +1,7 @@
 import { Alert, Table } from 'antd';
 import React, { Component, Fragment } from 'react';
 import styles from './index.less';
-import { PAGE_SIZE } from '../../constants';
+import { PAGE_SIZE } from '@/pages/constants';
 
 function initTotalList(columns) {
   if (!columns) {

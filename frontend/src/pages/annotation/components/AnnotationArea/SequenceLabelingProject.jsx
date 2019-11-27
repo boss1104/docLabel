@@ -1,8 +1,10 @@
 import React from 'react';
-import { Row, Col, Tooltip, Spin, Card, Icon } from 'antd';
+import { Row, Col, Tooltip, Spin, Card, Icon, Typography, Tag } from 'antd';
 import { TokenAnnotator } from 'react-text-annotate';
+import classNames from 'classnames';
 import LabelList from '../LabelList';
 import LabelPreview from '../LabelPreview';
+import styles from './SequenceLabelingProject.less';
 
 function SequenceLabelingProject({
   annoList = [],
@@ -51,61 +53,79 @@ function SequenceLabelingProject({
     setValue(annoMap);
   }, [annoList]);
 
+  const isDisabled = annoList[0] && annoList[0].finished;
+
   return (
     <React.Fragment>
       <Card>
-        <Row type="flex">
-          <Col span={2}>Labels: </Col>
-          <Col span={22}>
+        <Row gutter={[0, 16]}>
+          <Col>
+            <Typography.Text strong>Labels</Typography.Text>
+          </Col>
+          <Col>
             <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
           </Col>
         </Row>
       </Card>
       <Card>
-        <Row type="flex">
-          <Col span={2}>Choosen label: </Col>
-          <Col span={22}>
-            <LabelPreview label={tag} />
+        <Row gutter={[0, 16]}>
+          <Col>
+            <Typography.Text strong>Choosen label</Typography.Text>
+          </Col>
+          <Col>
+            <Row type="flex" justify="center">
+              <Col>
+                <LabelPreview label={tag} />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Card>
       <Card>
         <Spin spinning={!!loading} size="large">
-          <Row type="flex" gutter={[0, 16]} justify="center">
-            {task && (
-              <TokenAnnotator
-                style={{
-                  fontFamily: 'IBM Plex Sans',
-                  lineHeight: 2,
-                  fontSize: 20,
-                  padding: 0.2,
-                }}
-                tokens={task.text.split(' ')}
-                value={value}
-                onChange={handleChange}
-                getSpan={span => ({
-                  ...span,
-                  tag,
-                })}
-                renderMark={props => (
-                  <Tooltip title={props.tag.text}>
-                    <mark
-                      style={{ backgroundColor: props.tag.background_color, cursor: 'pointer' }}
-                      onClick={() => props.onClick({ start: props.start, end: props.end })}
-                    >
-                      {props.content}{' '}
-                      {
-                        <Icon
-                          type="close-circle"
-                          style={{ fontSize: 14, lineHeight: 2, color: '#444457' }}
-                        />
-                      }
-                    </mark>{' '}
-                  </Tooltip>
-                )}
-              />
-            )}
-          </Row>
+          {task && (
+            <Row
+              type="flex"
+              justify="center"
+              align="middle"
+              style={{ minHeight: '165px' }}
+              className={classNames({
+                [styles.disabled]: isDisabled,
+              })}
+            >
+              <Col className={styles.tokenText}>
+                <TokenAnnotator
+                  tokens={task.text.split(' ')}
+                  value={value}
+                  onChange={handleChange}
+                  getSpan={span => ({
+                    ...span,
+                    tag,
+                  })}
+                  renderMark={props => (
+                    <React.Fragment key={props.key}>
+                      <div className={styles.labelText}>
+                        <Tag
+                          className={styles.text}
+                          closable
+                          color={props.tag.background_color}
+                          onClick={() => props.onClick({ start: props.start, end: props.end })}
+                        >
+                          {props.tag.text}
+                        </Tag>
+                        <div
+                          className={styles.content}
+                          style={{ borderColor: props.tag.background_color }}
+                        >
+                          {props.content}
+                        </div>
+                      </div>{' '}
+                    </React.Fragment>
+                  )}
+                />
+              </Col>
+            </Row>
+          )}
         </Spin>
       </Card>
     </React.Fragment>

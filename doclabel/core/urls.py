@@ -7,7 +7,7 @@ from .views import Features
 from .views import ProjectList, ProjectDetail
 from .views import LabelList, LabelDetail, ApproveLabelsAPI
 from .views import DocumentList, DocumentDetail
-from .views import AnnotationList, AnnotationDetail
+from .views import AnnotationList, AnnotationDetail, AnnotationCompleted
 from .views import TextUploadAPI, TextDownloadAPI, CloudUploadAPI
 from .views import StatisticsAPI
 
@@ -64,6 +64,11 @@ urlpatterns = [
         "projects/<int:project_id>/docs/<int:doc_id>/annotations/",
         AnnotationList.as_view(),
         name="annotation_list",
+    ),
+    path(
+        "projects/<int:project_id>/annotations/completed/",
+        AnnotationCompleted.as_view(),
+        name="annotation_completed",
     ),
     path(
         "projects/<int:project_id>/docs/<int:doc_id>/annotations/<int:annotation_id>/",

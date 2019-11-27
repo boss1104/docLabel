@@ -1,6 +1,18 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Button, Row, Col, Progress, Card, Spin, Icon, Modal, Typography } from 'antd';
+import {
+  Layout,
+  Button,
+  Row,
+  Col,
+  Progress,
+  Card,
+  Spin,
+  Icon,
+  Modal,
+  Typography,
+  notification,
+} from 'antd';
 import { router } from 'umi';
 
 import styles from './index.less';
@@ -193,26 +205,44 @@ const Annotation = connect(({ project, task, label, loading }) => ({
    */
 
   const handleRemoveLabel = async annotationId => {
-    const res = await dispatch({
-      type: 'annotation/removeAnno',
-      payload: {
-        taskId,
-        annotationId,
-      },
-    });
-    const newAnno = annotations[taskId].filter(val => val.id !== Number(annotationId));
-    setAnnotations({ ...annotations, [taskId]: newAnno });
+    try {
+      await dispatch({
+        type: 'annotation/removeAnno',
+        payload: {
+          taskId,
+          annotationId,
+        },
+      });
+      const newAnno = annotations[taskId].filter(val => val.id !== Number(annotationId));
+      setAnnotations({ ...annotations, [taskId]: newAnno });
+    } catch (error) {
+      notification.error({
+        message: 'Unable to delete annotation',
+        description: 'Task is already completed!',
+      });
+    }
   };
 
   const handleAddLabel = async data => {
-    const res = await dispatch({
-      type: 'annotation/addAnno',
-      payload: {
-        taskId,
-        data,
-      },
-    });
-    setAnnotations({ ...annotations, [taskId]: [...annotations[taskId], res] });
+    try {
+      const res = await dispatch({
+        type: 'annotation/addAnno',
+        payload: {
+          taskId,
+          data,
+        },
+      });
+      setAnnotations({ ...annotations, [taskId]: [...annotations[taskId], res] });
+      notification.success({
+        message: 'Successfully added',
+      });
+    } catch (error) {
+      notification.error({
+        message: 'Unable to add new annotation',
+        description: 'Task mark as completed!',
+      });
+      setAnnotations({ ...annotations });
+    }
   };
 
   const handleEditLabel = async (annotationId, data) => {
@@ -298,12 +328,14 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         </Spin>
       </Layout.Content>
       <SiderList
+        remaining={remaining}
         onChangeKey={handleChangeKey}
         onSearchChange={handleChangeSearch}
         pageSize={sidebarTotal}
         page={sidebarPage}
         pageNumber={pageNumber}
         annotations={annotations}
+        annoList={annotations[taskId]}
       />
     </Layout>
   );

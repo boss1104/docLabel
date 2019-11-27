@@ -7,7 +7,7 @@ import { router } from 'umi';
 import CreateForm from './components/CreateForm';
 import StandardTable from './components/StandardTable';
 import styles from './index.less';
-import { PAGE_SIZE } from './constants';
+import { PAGE_SIZE } from '@/pages/constants';
 
 const getValue = obj =>
   Object.keys(obj)

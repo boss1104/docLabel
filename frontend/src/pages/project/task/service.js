@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { PAGE_SIZE } from './constants';
+import { PAGE_SIZE } from '@/pages/constants';
 
 export async function fetchTask({ projectId, params }) {
   return request(`/api/projects/${projectId}/docs/`, {

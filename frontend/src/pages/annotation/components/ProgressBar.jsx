@@ -49,7 +49,7 @@ function ProgressBar({ totalTask, remaining, currentProject }) {
           </Row>
         </Col>
         <Col md={{ span: 12 }} xs={{ span: 24 }}>
-          <div style={{ maxWidth: '350px' }}>
+          <div style={{ maxWidth: '350px', marginLeft: 'auto' }}>
             <Tooltip title="Progress" placement="topRight">
               <Progress
                 percent={Math.floor(((totalTask - remaining) / totalTask) * 100)}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Tag, Empty, Spin, Card, Typography } from 'antd';
 import LabelList from '../LabelList';
+import styles from './TextClassificationProject.less';
 
 function TextClassificationProject({
   annoList = [],
@@ -13,7 +14,6 @@ function TextClassificationProject({
   const handleChooseLabel = labelKey => {
     const currentAnno = annoList;
     const anno = currentAnno.find(val => val.label === Number(labelKey));
-    console.log('[DEBUG]: anno', anno);
     if (anno) {
       handleRemoveLabel(anno.id);
     } else {
@@ -40,7 +40,7 @@ function TextClassificationProject({
           </Col>
           <Col>
             <Spin spinning={!!loading}>
-              <Row type="flex" gutter={[16, 16]} justify="center">
+              <Row type="flex" gutter={[16, 16]} justify="center" className={styles.annoList}>
                 {annoList.length > 0 &&
                   Object.values(annoList).map(({ label, id }) => (
                     <Col key={id}>

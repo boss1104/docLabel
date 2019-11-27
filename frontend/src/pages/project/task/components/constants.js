@@ -11,7 +11,7 @@ import uploadSequenceLabelingJsonl from '@/assets/examples/upload_sequence_label
 import uploadSequenceLabelingConll from '@/assets/examples/upload_sequence_labeling.conll';
 
 export const TextClassificationProject = {
-  plaintext: {
+  plain: {
     label: 'Plain',
     format: uploadTextClassificationTxt,
   },
@@ -26,7 +26,7 @@ export const TextClassificationProject = {
   },
 };
 export const SequenceLabelingProject = {
-  plaintext: {
+  plain: {
     label: 'Plain',
     format: uploadSequenceLabelingTxt,
   },
@@ -41,7 +41,7 @@ export const SequenceLabelingProject = {
 };
 
 export const Seq2seqProject = {
-  plaintext: {
+  plain: {
     label: 'Plain',
     format: uploadSeq2seqTxt,
   },

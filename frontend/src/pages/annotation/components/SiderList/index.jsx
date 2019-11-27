@@ -1,5 +1,17 @@
 import React from 'react';
-import { Menu, Icon, Layout, Input, Spin, Row, Col, Typography, Descriptions } from 'antd';
+import {
+  Menu,
+  Icon,
+  Layout,
+  Input,
+  Spin,
+  Row,
+  Col,
+  Typography,
+  Descriptions,
+  Button,
+  Modal,
+} from 'antd';
 import { connect } from 'dva';
 import { Link } from 'umi';
 import className from 'classnames';
@@ -17,6 +29,7 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
   dark: settings.navTheme === 'dark',
 }))(props => {
   const {
+    dispatch,
     project: { currentProject },
     task: { list, pagination },
     projectLoading,
@@ -28,11 +41,11 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
     pageNumber,
     annotations = [],
     dark,
+    remaining,
+    annoList = [],
   } = props;
-  console.log('[DEBUG]: dark', dark);
   const [collapsed, setCollapsed] = React.useState(false);
 
-  const annoList = Object.values(annotations) || [];
   /**
    * Handle Function
    */
@@ -40,9 +53,36 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
     console.log('TCL: value', value);
   };
 
+  const onCollapse = (newCollapsed, type) => {
+    console.log('[DEBUG]: onCollapse -> type', type);
+    setCollapsed(newCollapsed);
+  };
+
+  const submitTaskCompleted = () => {
+    try {
+      console.log('run');
+      dispatch({
+        type: 'annotation/confirm',
+        payload: {},
+      });
+    } catch (error) {
+      console.log('[DEBUG]: submitTaskCompleted -> error', error);
+    }
+  };
+
+  const showConfirm = () => {
+    Modal.confirm({
+      title: 'Are you sure to submit this task ?',
+      content: 'You can not change the answers after submit.',
+      onOk: submitTaskCompleted,
+    });
+  };
+
   /**
    * Init variables
    */
+
+  const annotationsList = Object.values(annotations) || [];
 
   const hasData = currentProject && Object.keys(currentProject).length;
 
@@ -50,10 +90,8 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
 
   const isProjectAdmin = hasData && currentProject.current_users_role.is_project_admin;
 
-  const onCollapse = (newCollapsed, type) => {
-    console.log('[DEBUG]: onCollapse -> type', type);
-    setCollapsed(newCollapsed);
-  };
+  const isSubmitDisabled = Number(remaining) !== 0;
+  const isFinished = annoList[0] && annoList[0].finished;
 
   return (
     <Sider
@@ -89,8 +127,8 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
         )}
       </Spin>
 
-      <Spin spinning={taskLoading} size="small">
-        <section>
+      <section>
+        <Spin spinning={taskLoading} size="small">
           <div className={styles.search}>
             {/* <Search size="large" placeholder="Search task" onSearch={handleOnSearch} /> */}
           </div>
@@ -112,7 +150,9 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
                 <Menu.Item key={index}>
                   <Row gutter={16} type="flex">
                     <Col span={2}>
-                      {annoList[index] && annoList[index].length !== 0 && <Icon type="check" />}
+                      {annotationsList[index] && annotationsList[index].length !== 0 && (
+                        <Icon type="check" />
+                      )}
                     </Col>
                     <Col span={22}>
                       <Typography.Paragraph ellipsis>{list[key].text}</Typography.Paragraph>
@@ -120,9 +160,21 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
                   </Row>
                 </Menu.Item>
               ))}
+            <div className={styles.buttonSubmit}>
+              <Button
+                icon="submit"
+                type="primary"
+                size="large"
+                block
+                onClick={showConfirm}
+                disabled={isSubmitDisabled || isFinished}
+              >
+                {isFinished ? 'Finished' : 'Submit'}
+              </Button>
+            </div>
           </Menu>
-        </section>
-      </Spin>
+        </Spin>
+      </section>
     </Sider>
   );
 });

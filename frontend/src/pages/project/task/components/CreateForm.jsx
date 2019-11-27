@@ -70,12 +70,14 @@ const CreateForm = connect(({ loading }) => ({
   loading: loading.models.task,
 }))(({ modalVisible, setModalVisible, form, currentProject, onAddCompleted }) => {
   const [uploading, setUploading] = React.useState(false);
+  const format = form.getFieldValue('format');
+  const projectType = currentProject.project_type;
 
   const uploadProps = {
     name: 'file',
     action: `/api/projects/${currentProject.id}/docs/upload/`,
     data: {
-      format: form.getFieldValue('format'),
+      format,
     },
     headers: {
       Authorization: `Token ${getAuthorization()}`,
@@ -94,8 +96,6 @@ const CreateForm = connect(({ loading }) => ({
       }
     },
   };
-  const format = form.getFieldValue('format');
-  const projectType = currentProject.project_type;
 
   return (
     <Modal
