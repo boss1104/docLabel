@@ -23,12 +23,16 @@ export default function(props) {
     </Button>
   );
 
+  const labelText = prefixKey
+    ? `${prefixKey.toUpperCase()} - ${suffixKey.toUpperCase()}`
+    : `${suffixKey.toUpperCase()}`;
+
   return (
     <div>
       {
         <ButtonGroup type="dashed" onClick={onClick}>
           {isLongText ? <Tooltip title={text}>{preButton}</Tooltip> : preButton}
-          <Button>{`${prefixKey} - ${suffixKey}`}</Button>
+          <Button>{labelText}</Button>
         </ButtonGroup>
       }
     </div>
