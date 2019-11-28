@@ -10,6 +10,7 @@ function Sidebar({
   activeKey,
   setCurrentAnno,
   dark,
+  isDisabled,
 }) {
   const handleDeleteAnno = annoId => {
     if (annoId) {
@@ -94,13 +95,15 @@ function Sidebar({
                           </Typography.Text>
                         </Col>
                         <Col>
-                          <Popconfirm
-                            title="Are you sure delete this annotation?"
-                            onConfirm={() => handleDeleteAnno(id)}
-                            placement="topRight"
-                          >
-                            <Button icon="delete" shape="circle-outline" />
-                          </Popconfirm>
+                          {!isDisabled && (
+                            <Popconfirm
+                              title="Are you sure delete this annotation?"
+                              onConfirm={() => handleDeleteAnno(id)}
+                              placement="topRight"
+                            >
+                              <Button icon="delete" shape="circle-outline" />
+                            </Popconfirm>
+                          )}
                         </Col>
                       </Row>
                     </Row>

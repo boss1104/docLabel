@@ -17,14 +17,13 @@ import styles from './style.less';
 import Tip from './Tip';
 
 const HighlightPopup = ({ label }) => {
-  // console.log('[DEBUG]: HighlightPopup -> label', label);
   if (label && label.text) {
     return (
       <div className={styles.popup}>
-        <div className={styles.highlightPopup} style={{ color: label.background_color }}>
+        <div className={styles.highlightPopup} style={{ backgroundColor: label.background_color }}>
           <Typography.Text strong>{label.text}</Typography.Text>
         </div>
-        <div className={styles.arrow} />
+        <div className={styles.arrow} style={{ borderColor: label.background_color }} />
       </div>
     );
   }
@@ -36,7 +35,7 @@ const DEFAULT_URL = 'https://arxiv.org/pdf/1708.08021.pdf';
 const PdfLabelingProject = connect(({ settings }) => ({
   dark: settings.navTheme === 'dark',
 }))(props => {
-  const { labelList, annoList, task, handleRemoveLabel, handleAddLabel, dark } = props;
+  const { labelList, annoList = [], task, handleRemoveLabel, handleAddLabel, dark } = props;
   const [activeKey, setActiveKey] = React.useState('');
   const [currentAnno, setCurrentAnno] = React.useState(null);
 
@@ -94,6 +93,8 @@ const PdfLabelingProject = connect(({ settings }) => ({
     }
   }, [currentAnno]);
 
+  const isDisabled = annoList[0] && annoList[0].finished;
+
   return (
     <Card>
       <Layout className={styles.main}>
@@ -116,16 +117,20 @@ const PdfLabelingProject = connect(({ settings }) => ({
                     hideTipAndSelection,
                     transformSelection,
                   ) => (
-                    <Tip
-                      labelList={labelList}
-                      onOpen={transformSelection}
-                      onConfirm={label => {
-                        if (Object.keys(label).length) {
-                          addHighlight({ content, position }, label);
-                          hideTipAndSelection();
-                        }
-                      }}
-                    />
+                    <React.Fragment>
+                      {!isDisabled && (
+                        <Tip
+                          labelList={labelList}
+                          onOpen={transformSelection}
+                          onConfirm={label => {
+                            if (Object.keys(label).length) {
+                              addHighlight({ content, position }, label);
+                              hideTipAndSelection();
+                            }
+                          }}
+                        />
+                      )}
+                    </React.Fragment>
                   )}
                   highlightTransform={(
                     highlight,
@@ -183,6 +188,7 @@ const PdfLabelingProject = connect(({ settings }) => ({
           setActiveKey={setActiveKey}
           setCurrentAnno={setCurrentAnno}
           dark={dark}
+          isDisabled={isDisabled}
         />
       </Layout>
     </Card>
