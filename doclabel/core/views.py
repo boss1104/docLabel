@@ -121,16 +121,12 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
             project_type = instance.project_type
             if not documents:
                 return Response(
-                    data={
-                        "public": "Unable to publish project! Missing dataset!"
-                    },
+                    data={"public": "Unable to publish project! Missing dataset!"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             if not labels and project_type != SEQ2SEQ:
                 return Response(
-                    data={
-                        "public": "Unable to publish project! Missing label!"
-                    },
+                    data={"public": "Unable to publish project! Missing label!"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         # Unable to change project type
@@ -152,22 +148,26 @@ class StatisticsAPI(APIView):
         include = set(request.GET.getlist("include"))
         response = {}
 
+        if "user_progress" in include:
+            user_progress = self.annotator_progress(project=p)
+            response.update(user_progress)
+
         if not include or "label" in include or "user" in include:
             label_count, user_count = self.label_per_data(p)
             response["label"] = label_count
             response["user"] = user_count
 
-        if not include or "total" in include or "remaining" in include:
-            progress = self.progress(project=p)
-            response.update(progress)
+        if not include or "project_proggress" in include:
+            project_proggress = self.project_proggress(project=p)
+            response.update(project_proggress)
 
-        if include:
-            response = {
-                key: value for (key, value) in response.items() if key in include
-            }
+        # if include:
+        #     response = {
+        #         key: value for (key, value) in response.items() if key in include
+        #     }
         return Response(response)
 
-    def progress(self, project):
+    def annotator_progress(self, project):
         docs = project.documents
         annotation_class = project.get_annotation_class()
         total = docs.count()
@@ -176,6 +176,29 @@ class StatisticsAPI(APIView):
         ).aggregate(Count("document", distinct=True))["document__count"]
         remaining = total - done
         return {"total": total, "remaining": remaining}
+
+    def project_proggress(self, project):
+        docs = project.documents
+        annotator_per_example = project.annotator_per_example
+        annotation_class = project.get_annotation_class()
+        docs_stat = {}
+        remaining = 0
+        total = 0
+        for doc in docs.all():
+            annotation = annotation_class.objects.filter(document_id=doc, finished=True).aggregate(
+                Count("user", distinct=True)
+            )["user__count"]
+            doc_remaining = (
+                0 if annotation >= annotator_per_example else annotator_per_example - annotation
+            )
+            remaining += doc_remaining
+            total += annotator_per_example
+            docs_stat[doc.text] = {
+                "id": doc.id,
+                "annotation": annotation,
+                "remaining": doc_remaining,
+            }
+        return {"total": total, "remaining": remaining, "doc_stat": docs_stat} 
 
     def label_per_data(self, project):
         annotation_class = project.get_annotation_class()
@@ -289,7 +312,9 @@ class AnnotationList(generics.ListCreateAPIView):
         project = get_object_or_404(Project, pk=kwargs["project_id"])
         annotation_class = project.get_annotation_class()
         queryset = annotation_class.objects.filter(
-            document_id__in=project.documents.all(), user_id=self.request.user, finished=True
+            document_id__in=project.documents.all(),
+            user_id=self.request.user,
+            finished=True,
         )
         if queryset:
             return Response(

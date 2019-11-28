@@ -94,12 +94,6 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
    */
   const percent = Math.floor(((total - remaining) / total) * 100);
   console.log('[DEBUG]: percent', percent);
-  // Effects
-  React.useEffect(() => {
-    dispatch({
-      type: 'dashboard/fetchStatistics',
-    });
-  }, []);
 
   /**
    * Handlers
@@ -118,15 +112,26 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
       message.error('Can not publish this project. Missing data');
     }
   };
+  const fetchStatistics = async () => {
+    const res = await dispatch({
+      type: 'dashboard/fetchStatistics',
+    });
+    console.log('[DEBUG]: fetchStatistics -> res', res);
+  };
 
-  function showConfirm() {
+  const showConfirm = () => {
     Modal.confirm({
       title: 'Do you want to publish this project?',
       content: 'Please make sure import tasks and create labels before publishing',
       onOk: changePublished,
       onCancel() {},
     });
-  }
+  };
+
+  // Effects
+  React.useEffect(() => {
+    fetchStatistics();
+  }, []);
 
   return (
     <div className={styles.main}>

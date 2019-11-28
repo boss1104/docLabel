@@ -13,7 +13,7 @@ const Model = {
         projectId = action.payload.id;
       }
       try {
-        const response = yield call(fetchStatistics, { projectId });
+        const response = yield call(fetchStatistics, { projectId, params: payload });
         const ret = { ...response };
         yield put({
           type: 'changeDashboard',

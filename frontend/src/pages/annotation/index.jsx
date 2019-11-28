@@ -110,6 +110,9 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     const queryStatistics = async () => {
       const res = await dispatch({
         type: 'dashboard/fetchStatistics',
+        payload: {
+          include: 'user_progress',
+        },
       });
       const { total, remaining: resRemaining } = res;
       setTotalTask(total);
