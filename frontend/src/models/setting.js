@@ -51,13 +51,13 @@ const SettingModel = {
       if (typeof window === 'undefined') {
         return { ...state };
       }
-      const hide = message.loading(
-        formatMessage({
-          id: 'app.setting.loading',
-          defaultMessage: 'Loading theme.',
-        }),
-        0.5,
-      );
+      // message.loading(
+      //   formatMessage({
+      //     id: 'app.setting.loading',
+      //     defaultMessage: 'Loading theme.',
+      //   }),
+      //   0.5,
+      // );
       const href = dark ? '/theme/dark' : '/theme/';
 
       const dom = document.getElementById('theme-style');
@@ -83,7 +83,7 @@ const SettingModel = {
         style.id = 'theme-style';
         style.onload = () => {
           window.setTimeout(() => {
-            hide();
+            // hide();
           });
         };
         style.href = url;

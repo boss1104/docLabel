@@ -102,9 +102,9 @@ const BasicLayout = props => {
 
   useEffect(() => {
     if (dispatch) {
-      dispatch({
-        type: 'settings/getSetting',
-      });
+      // dispatch({
+      //   type: 'settings/getSetting',
+      // });
     }
   }, []);
   /**

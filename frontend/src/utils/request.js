@@ -6,7 +6,7 @@
 import { extend } from 'umi-request';
 import { message } from 'antd';
 import router from 'umi/router';
-import { getAuthorization } from '@/utils/authority';
+import { getAuthorization, setAuthorization } from '@/utils/authority';
 
 /**
  * Exception handler
@@ -16,7 +16,13 @@ const errorHandler = error => {
 
   if (response && response.status) {
     const { status } = response;
-    const errorText = response.statusText;
+    if (status === 401) {
+      setAuthorization();
+      // eslint-disable-next-line no-underscore-dangle
+      window.g_app._store.dispatch({
+        type: 'login/logout',
+      });
+    }
 
     if (status === 403) {
       router.push('/exception/403');

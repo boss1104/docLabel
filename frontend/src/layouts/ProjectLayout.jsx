@@ -7,10 +7,10 @@ import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import { Icon, Result, Button } from 'antd';
+import { Icon, Result, Button, Spin } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { router } from 'umi';
-import Authorized from '@/utils/Authorized';
+import Authorized, { reloadAuthorized } from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
@@ -115,9 +115,11 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
       type: 'project/fetchProject',
       payload: match.params.id,
     });
-    if (!res.current_users_role.is_project_admin) {
-      router.push('/exception/403');
-    }
+    reloadAuthorized();
+    setIsReady(true);
+    // if (!res.current_users_role.is_project_admin) {
+    //   router.push('/exception/403');
+    // }
   };
 
   useEffect(() => {
@@ -127,7 +129,6 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
         type: 'settings/getSetting',
       });
     }
-    setIsReady(true);
   }, []);
   /**
    * init variables
@@ -146,47 +147,55 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
+  console.log('[DEBUG]: authorized', authorized);
+
+  const isLoading = loading || !isReady;
+  console.log('[DEBUG]: isLoading', isLoading);
 
   return (
-    <ProLayout
-      logo={logo}
-      onCollapse={handleMenuCollapse}
-      menuDataRender={menuDataRender}
-      menuItemRender={(menuItemProps, defaultDom) => {
-        if (menuItemProps.isUrl || menuItemProps.children) {
-          return defaultDom;
-        }
-        let { path } = menuItemProps;
-        if (match.path !== match.url) {
-          // Compute the right path
-          Object.keys(match.params).forEach(key => {
-            path = path.replace(`:${key}`, match.params[key]);
-          });
-        }
+    <Spin spinning={isLoading}>
+      <ProLayout
+        logo={logo}
+        onCollapse={handleMenuCollapse}
+        menuDataRender={menuDataRender}
+        menuItemRender={(menuItemProps, defaultDom) => {
+          if (menuItemProps.isUrl || menuItemProps.children) {
+            return defaultDom;
+          }
+          let { path } = menuItemProps;
+          if (match.path !== match.url) {
+            // Compute the right path
+            Object.keys(match.params).forEach(key => {
+              path = path.replace(`:${key}`, match.params[key]);
+            });
+          }
 
-        return <Link to={path}>{defaultDom}</Link>;
-      }}
-      breadcrumbRender={(routers = []) => [...routers]}
-      // Antd Breadcrumb
-      itemRender={(route, params, routes, paths) => {
-        const first = routes.indexOf(route) === 0;
-        return first ? (
-          <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-        ) : (
-          <span>{route.breadcrumbName}</span>
-        );
-      }}
-      footerRender={footerRender}
-      formatMessage={formatMessage}
-      rightContentRender={rightProps => <RightContent {...rightProps} />}
-      {...props}
-      {...settings}
-      layout="sidemenu"
-    >
-      <Authorized authority={authorized.authority} noMatch={noMatch}>
-        {loading || !isReady ? <PageLoading /> : children}
-      </Authorized>
-    </ProLayout>
+          return <Link to={path}>{defaultDom}</Link>;
+        }}
+        breadcrumbRender={(routers = []) => [...routers]}
+        // Antd Breadcrumb
+        itemRender={(route, params, routes, paths) => {
+          const first = routes.indexOf(route) === 0;
+          return first ? (
+            <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+          ) : (
+            <span>{route.breadcrumbName}</span>
+          );
+        }}
+        footerRender={footerRender}
+        formatMessage={formatMessage}
+        rightContentRender={rightProps => <RightContent {...rightProps} />}
+        {...props}
+        {...settings}
+        layout="sidemenu"
+      >
+        {!isLoading && (
+          <Authorized authority={authorized.authority} noMatch={noMatch}>
+            {children}
+          </Authorized>
+        )}
+      </ProLayout>
+    </Spin>
   );
 });
 

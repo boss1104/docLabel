@@ -1,6 +1,7 @@
 import pathToRegexp from 'path-to-regexp';
 import { queryCurrent, createProject } from '@/services/project';
 import { arrayToObject } from '@/utils/utils';
+import { setAuthority } from '@/utils/authority';
 
 const UserModel = {
   namespace: 'project',
@@ -15,6 +16,7 @@ const UserModel = {
       const response = yield call(queryCurrent, payload);
       // console.log('TCL: *fetchProject -> response', response);
       yield put({ type: 'saveCurrentProject', payload: response });
+
       return response;
     },
     *createProject({ payload }, { call, put }) {
@@ -29,6 +31,10 @@ const UserModel = {
   },
   reducers: {
     saveCurrentProject(state, action) {
+      const authority = Object.keys(action.payload.current_users_role).filter(
+        item => action.payload.current_users_role[item],
+      );
+      setAuthority(authority);
       return { ...state, currentProject: action.payload || {} };
     },
     changeProjectState(state, action) {

@@ -15,9 +15,9 @@ const Guide = props => {
     dispatch,
     project: { currentProject },
     loading,
+    dark,
   } = props;
   const [markdownSrc, setMarkdownSrc] = React.useState(initialSource);
-  console.log('[DEBUG]: currentProject', currentProject);
 
   const handleMarkdownChange = value => {
     setMarkdownSrc(value);
@@ -52,7 +52,7 @@ const Guide = props => {
         <div className={styles.main}>
           <Row type="flex" gutter={24}>
             <Col span={12} className={styles.editorPane}>
-              <Editor value={markdownSrc} onChange={handleMarkdownChange} />
+              <Editor value={markdownSrc} onChange={handleMarkdownChange} dark={dark} />
             </Col>
             <Col span={12} className={styles.resultPane}>
               <Markdown markdownSrc={markdownSrc} />
@@ -64,7 +64,8 @@ const Guide = props => {
   );
 };
 
-export default connect(({ project, loading }) => ({
+export default connect(({ project, loading, settings }) => ({
   project,
   loading: loading.effects['guide/updateGuideline'],
+  dark: settings.navTheme === 'dark',
 }))(Guide);

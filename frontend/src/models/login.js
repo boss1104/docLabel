@@ -4,7 +4,7 @@ import { message } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 
 import { accountLogin, accountLogout } from '@/services/login';
-import { setAuthorization } from '@/utils/authority';
+import { setAuthorization, setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
 // import { reloadAuthorized } from '@/utils/Authorized';
@@ -51,6 +51,7 @@ const Model = {
         payload: {},
       });
       reloadAuthorized();
+      setAuthority();
       if (window.location.pathname !== '/user/login' && !redirect) {
         yield put(
           routerRedux.replace({

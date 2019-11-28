@@ -3,24 +3,12 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
-import {
-  Avatar,
-  Card,
-  Col,
-  Skeleton,
-  Row,
-  Statistic,
-  Button,
-  Icon,
-  Tag,
-  Popconfirm,
-  Modal,
-  message,
-} from 'antd';
+import { Avatar, Card, Col, Skeleton, Row, Statistic, Button, Modal, message } from 'antd';
 
 import styles from './index.less';
 import Pie from './components/Pie';
 import { PROJECT_TYPE } from '@/pages/constants';
+import ContributionCard from './components/ContributionCard';
 
 const PageHeaderContent = ({ currentProject }) => {
   const loading = currentProject && Object.keys(currentProject).length;
@@ -50,18 +38,21 @@ const PageHeaderContent = ({ currentProject }) => {
     </div>
   );
 };
-const ExtraContent = ({ currentProject, showConfirm }) => (
+const ExtraContent = ({ currentProject, showConfirm, userNum, taskNum, labelNum }) => (
   <div className={styles.extraContent}>
     {currentProject.public ? (
       <div>
         <div className={styles.statItem}>
-          <Statistic title="Number of items" value={56} />
+          <Statistic title="Contributers" value={userNum} />
         </div>
         <div className={styles.statItem}>
-          <Statistic title="Team ranking" value={8} suffix="/ 24" />
+          <Statistic title="Tasks" value={taskNum} />
         </div>
         <div className={styles.statItem}>
-          <Statistic title="Project visit" value={2223} />
+          <Statistic title="Labels" value={labelNum} />
+        </div>
+        <div className={styles.statItem}>
+          <Statistic title="Visit" value="TODO" />
         </div>
       </div>
     ) : (
@@ -82,9 +73,8 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
   const {
     dispatch,
     dashboard: {
-      statistics: { total = 0, remaining = 0 },
+      statistics: { total = 1, remaining = 0, doc_stat: docStat = {}, label = {}, user = {} },
     },
-    loading,
     statisticsLoading,
     currentProject,
   } = props;
@@ -93,7 +83,6 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
    * Init variables
    */
   const percent = Math.floor(((total - remaining) / total) * 100);
-  console.log('[DEBUG]: percent', percent);
 
   /**
    * Handlers
@@ -116,7 +105,6 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
     const res = await dispatch({
       type: 'dashboard/fetchStatistics',
     });
-    console.log('[DEBUG]: fetchStatistics -> res', res);
   };
 
   const showConfirm = () => {
@@ -133,11 +121,29 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
     fetchStatistics();
   }, []);
 
+  const userData = Object.entries(user).map(([key, value]) => ({
+    x: key,
+    y: value,
+  }));
+
+  const labelData = Object.entries(label).map(([key, value]) => ({
+    x: key,
+    y: value,
+  }));
+
   return (
     <div className={styles.main}>
       <PageHeaderWrapper
         content={<PageHeaderContent currentProject={currentProject} />}
-        extraContent={<ExtraContent currentProject={currentProject} showConfirm={showConfirm} />}
+        extraContent={
+          <ExtraContent
+            currentProject={currentProject}
+            showConfirm={showConfirm}
+            userNum={Object.keys(user).length}
+            taskNum={Object.keys(docStat).length}
+            labelNum={Object.keys(label).length}
+          />
+        }
         // support ant tab
       >
         <Row gutter={24}>
@@ -150,30 +156,16 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
               marginBottom: 24,
             }}
           >
-            <Card
-              title={
-                <FormattedMessage
-                  id="dashboardandmonitor.monitor.proportion-per-category"
-                  defaultMessage="Proportion Per Category"
-                />
-              }
-              bordered={false}
-              className={styles.pieCard}
-            >
-              <Row
-                style={{
-                  padding: '16px 0',
-                }}
-              >
-                <Col span={8}></Col>
-                <Col span={8}></Col>
-                <Col span={8}></Col>
-              </Row>
-            </Card>
+            <ContributionCard
+              labelData={labelData}
+              userData={userData}
+              docStat={docStat}
+              loading={statisticsLoading}
+            />
           </Col>
           <Col
             xl={8}
-            lg={12}
+            lg={24}
             sm={24}
             xs={24}
             style={{
@@ -181,7 +173,7 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
             }}
           >
             <Card
-              title={<FormattedMessage id="dashboard.progress" defaultMessage="Progress" />}
+              title={<FormattedMessage id="dashboard.progress" defaultMessage="Project progress" />}
               bodyStyle={{
                 textAlign: 'center',
                 fontSize: 0,
@@ -209,13 +201,8 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
             </Card>
           </Col>
         </Row>
-        Annotation Progress | User stats | Label stats
-        {/* It's tab content */}
-        {currentProject.public ? (
-          <div>Link to add tasks, add labels</div>
-        ) : (
-          <div>Daily graph | Weekly graph</div>
-        )}
+        {currentProject.public && <div>Daily graph | Weekly graph</div>}
+        {!currentProject.public && <div>Link to add tasks, add labels</div>}
       </PageHeaderWrapper>
     </div>
   );

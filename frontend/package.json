@@ -47,8 +47,6 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/colors": "^3.2.2",
-    "@ant-design/dark-theme": "^1.0.3",
     "@ant-design/pro-layout": "^4.8.2",
     "@antv/data-set": "^0.10.2",
     "antd": "^3.25.3",

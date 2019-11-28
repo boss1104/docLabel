@@ -15,15 +15,15 @@ class SecurityLayout extends React.Component {
     isReady: false,
   };
 
-  componentDidMount() {
-    this.setState({
-      isReady: true,
-    });
+  async componentDidMount() {
     const { dispatch } = this.props;
 
     if (dispatch) {
-      dispatch({
+      await dispatch({
         type: 'user/fetchCurrent',
+      });
+      this.setState({
+        isReady: true,
       });
       dispatch({
         type: 'settings/changeTheme',
@@ -36,8 +36,8 @@ class SecurityLayout extends React.Component {
     const { children, loading, currentUser } = this.props;
 
     // You can replace it to your authentication rule (such as check token exists)
-    const isLogin = getAuthorization() !== 'undefined' && getAuthorization() !== null;
-    // const isLogin = currentUser && currentUser.id;
+    // const isLogin = getAuthorization() !== 'undefined' && getAuthorization() !== null;
+    const isLogin = currentUser && currentUser.id;
     const queryString = stringify({
       redirect: window.location.href,
     });
