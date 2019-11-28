@@ -112,7 +112,7 @@ const PdfLabelingProject = connect(({ settings }) => ({
                   pdfDocument={pdfDocument}
                   enableAreaSelection={e => {
                     setEvent(e);
-                    return e.altKey;
+                    return !isDisabled && e.altKey;
                   }}
                   onScrollChange={resetCurrent}
                   scrollRef={scrollTo => {
