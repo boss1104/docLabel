@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Tag, Empty, Spin, Card, Typography } from 'antd';
+import classNames from 'classnames';
 import LabelList from '../LabelList';
 import styles from './TextClassificationProject.less';
 
@@ -21,6 +22,8 @@ function TextClassificationProject({
       handleAddLabel({ label: labelKey });
     }
   };
+  const isDisabled = annoList[0] && annoList[0].finished;
+
   return (
     <React.Fragment>
       <Card>
@@ -28,7 +31,7 @@ function TextClassificationProject({
           <Col>
             <Typography.Text strong>Labels</Typography.Text>
           </Col>
-          <Col>
+          <Col className={classNames({ [styles.disabled]: isDisabled })}>
             <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
           </Col>
         </Row>
@@ -40,7 +43,12 @@ function TextClassificationProject({
           </Col>
           <Col>
             <Spin spinning={!!loading}>
-              <Row type="flex" gutter={[16, 16]} justify="center" className={styles.annoList}>
+              <Row
+                type="flex"
+                gutter={[16, 16]}
+                justify="center"
+                className={classNames(styles.annoList, { [styles.disabled]: isDisabled })}
+              >
                 {annoList.length > 0 &&
                   Object.values(annoList).map(({ label, id }) => (
                     <Col key={id}>

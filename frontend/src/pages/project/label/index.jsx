@@ -1,24 +1,25 @@
 import React from 'react';
-import { Button, message, Card, Divider, Table, Popconfirm } from 'antd';
+import { Button, message, Card, Divider, Table, Popconfirm, Typography } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 
 import styles from './index.less';
 import CreateForm from './components/CreateForm';
+import { PROJECT_TYPE } from '@/pages/constants';
 
 // TODO: make color random
 
 export default connect(({ project, label, loading }) => ({
-  project,
+  currentProject: project.currentProject,
   label,
   loading: loading.effects['label/fetch'],
   createLoading: loading.effects['label/add'],
   updateLoading: loading.effects['label/update'],
 }))(props => {
   // Props
-  const { dispatch, updateLoading, createLoading, loading, label, project } = props;
+  const { dispatch, updateLoading, createLoading, loading, label, currentProject } = props;
   const { list: dataSource } = label;
-  const projectId = project.currentProject.id;
+  const projectId = currentProject.id;
   // States
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalUpdateVisible, setModalUpdateVisible] = React.useState(false);
@@ -173,44 +174,59 @@ export default connect(({ project, label, loading }) => ({
   ];
   const dataSourceTranform = React.useMemo(() => {
     const list = dataSource ? Object.entries(dataSource).map(([key, val]) => val) : [];
-    console.log('[DEBUG]: list', list);
     return list;
   }, [dataSource]);
+
+  const isShow = currentProject.project_type !== 'Seq2seqProject';
   return (
     <PageHeaderWrapper
       content={
-        <Button icon="plus" type="primary" onClick={() => setModalVisible(true)}>
-          Add label
-        </Button>
+        <React.Fragment>
+          {isShow && (
+            <Button icon="plus" type="primary" onClick={() => setModalVisible(true)}>
+              Add label
+            </Button>
+          )}
+          {!isShow && (
+            <Typography.Text type="warning" style={{ fontSize: '16px' }}>
+              {currentProject.project_type && PROJECT_TYPE[currentProject.project_type].label}{' '}
+              project does not use labels for annotation !
+            </Typography.Text>
+          )}
+        </React.Fragment>
       }
     >
-      <Card bordered={false}>
-        <div className={styles.tableList}></div>
-        <Table
-          rowKey={record => record.id}
-          loading={loading}
-          dataSource={dataSourceTranform}
-          columns={columns}
-        />
-      </Card>
-      <CreateForm
-        onCreate={form => {
-          formRef.current = form;
-        }}
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        loading={createLoading}
-        handleSubmit={handleAddLabel}
-      />
-      <CreateForm
-        onCreate={form => {
-          formRef.current = form;
-        }}
-        modalVisible={modalUpdateVisible}
-        setModalVisible={setModalUpdateVisible}
-        loading={updateLoading}
-        handleSubmit={handleUpdateLabel}
-      />
+      {isShow && (
+        <React.Fragment>
+          <Card bordered={false}>
+            <div className={styles.tableList}></div>
+            <Table
+              rowKey={record => record.id}
+              loading={loading}
+              dataSource={dataSourceTranform}
+              columns={columns}
+            />
+          </Card>
+          <CreateForm
+            onCreate={form => {
+              formRef.current = form;
+            }}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            loading={createLoading}
+            handleSubmit={handleAddLabel}
+          />
+          <CreateForm
+            onCreate={form => {
+              formRef.current = form;
+            }}
+            modalVisible={modalUpdateVisible}
+            setModalVisible={setModalUpdateVisible}
+            loading={updateLoading}
+            handleSubmit={handleUpdateLabel}
+          />
+        </React.Fragment>
+      )}
     </PageHeaderWrapper>
   );
 });

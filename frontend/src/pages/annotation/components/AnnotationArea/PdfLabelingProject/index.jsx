@@ -8,6 +8,7 @@ import {
   Popup,
   AreaHighlight,
 } from 'react-pdf-highlighter';
+import classNames from 'classnames';
 
 // import testHighlights from './testHighlights';
 import Sidebar from './Sidebar';

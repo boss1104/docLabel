@@ -17,8 +17,8 @@ export const PROJECT_TYPE = {
   },
   Seq2seqProject: {
     icon: <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />,
-    label: 'Sequence to Sequence',
-    tag: <Tag color="cyan">Sequence to Sequence</Tag>,
+    label: 'Translation',
+    tag: <Tag color="cyan">Translation</Tag>,
   },
   PdfLabelingProject: {
     icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,

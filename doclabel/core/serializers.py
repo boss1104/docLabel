@@ -212,14 +212,14 @@ class AnnotationSerializer(serializers.ModelSerializer):
 
     class Meta:
         abstract = True
-        fields = ("id", "prob", "label", "user", "document", "finished")
+        fields = ("id", "prob", "user", "document", "finished")
         read_only_fields = ("user",)
 
 
 class DocumentAnnotationSerializer(AnnotationSerializer):
     class Meta(AnnotationSerializer.Meta):
         model = DocumentAnnotation
-        fields = AnnotationSerializer.Meta.fields
+        fields = AnnotationSerializer.Meta.fields + ("label",)
 
 
 class SequenceAnnotationSerializer(AnnotationSerializer):
@@ -228,17 +228,16 @@ class SequenceAnnotationSerializer(AnnotationSerializer):
     class Meta(AnnotationSerializer.Meta):
         model = SequenceAnnotation
         fields = AnnotationSerializer.Meta.fields + (
+            "label",
             "start_offset",
             "end_offset",
         )
 
 
 class Seq2seqAnnotationSerializer(AnnotationSerializer):
-    document = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all())
-
     class Meta(AnnotationSerializer.Meta):
         model = Seq2seqAnnotation
-        fields = ("id", "text", "user", "document", "prob")
+        fields = AnnotationSerializer.Meta.fields + ("text", )
 
 
 class PdfAnnotationSerializer(AnnotationSerializer):
@@ -262,6 +261,7 @@ class PdfAnnotationSerializer(AnnotationSerializer):
     class Meta(AnnotationSerializer.Meta):
         model = PdfAnnotation
         fields = AnnotationSerializer.Meta.fields + (
+            "label",
             "content",
             "image_url",
             "position",

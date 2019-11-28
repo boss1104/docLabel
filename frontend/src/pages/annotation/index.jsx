@@ -57,6 +57,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
    */
 
   const [annotations, setAnnotations] = React.useState({});
+  console.log('[DEBUG]: annotations', annotations);
   const [sidebarTotal, setSidebarTotal] = React.useState(0);
   const [sidebarPage, setSidebarPage] = React.useState(0);
   const [paginationType, setPaginationType] = React.useState('');
@@ -258,6 +259,15 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     setAnnotations({ ...annotations, [taskId]: newAnno });
   };
 
+  const handleOnSubmit = () => {
+    const newAnno = { ...annotations };
+    Object.keys(newAnno).forEach(key => {
+      newAnno[key] = newAnno[key].map(item => ({ ...item, finished: true }));
+    });
+    console.log('[DEBUG]: newAnno', newAnno);
+    setAnnotations(newAnno);
+  };
+
   const AnnotationArea = {
     TextClassificationProject: (
       <TextClassificationProject
@@ -336,6 +346,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         pageNumber={pageNumber}
         annotations={annotations}
         annoList={annotations[taskId]}
+        onSubmit={handleOnSubmit}
       />
     </Layout>
   );

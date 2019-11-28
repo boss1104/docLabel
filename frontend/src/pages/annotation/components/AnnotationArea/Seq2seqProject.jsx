@@ -1,9 +1,11 @@
 import React from 'react';
 import { Row, Col, Empty, Spin, Card, Typography, List, Input, Button } from 'antd';
+import classNames from 'classnames';
+import styles from './Seq2seqProject.less';
 
 const { TextArea } = Input;
 
-function SequenceLabelingProject({
+function Seq2seqProject({
   annoList = [],
   labelList = [],
   handleRemoveLabel,
@@ -53,6 +55,7 @@ function SequenceLabelingProject({
       setValue('');
     }
   };
+  const isDisabled = annoList[0] && annoList[0].finished;
 
   return (
     <React.Fragment>
@@ -62,21 +65,25 @@ function SequenceLabelingProject({
         </Row>
       </Card>
       <Spin spinning={!!loading}>
-        <Row>
-          <TextArea
-            value={newAnno}
-            onChange={e => setNewAnno(e.target.value)}
-            placeholder="What is your response ?"
-            autoSize={{ minRows: 3, maxRows: 5 }}
-            onPressEnter={handleAddAnno}
-          />
+        <Row className={styles.translation}>
+          {!isDisabled && (
+            <TextArea
+              value={newAnno}
+              onChange={e => setNewAnno(e.target.value)}
+              placeholder="What is your response ?"
+              autoSize={{ minRows: 2, maxRows: 5 }}
+              onPressEnter={handleAddAnno}
+            />
+          )}
           <List
-            size="large"
+            size="default"
+            bordered
+            className={classNames({ [styles.disabled]: isDisabled })}
             locale={{
               emptyText: (
                 <Empty
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description="No label"
+                  description="No translation"
                   imageStyle={{
                     height: 15,
                   }}
@@ -85,14 +92,12 @@ function SequenceLabelingProject({
             }}
             dataSource={annoList}
             renderItem={item => (
-              // console.log('[DEBUG]: item', item);
-
               <React.Fragment>
                 {item === editedAnno ? (
                   <TextArea
                     value={value}
                     onChange={handleOnChange}
-                    autoSize={{ minRows: 3, maxRows: 5 }}
+                    autoSize={{ minRows: 2, maxRows: 5 }}
                     onPressEnter={() => handleDoneEdit(value)}
                     onBlur={() => handleDoneEdit(value)}
                     onKeyDown={handleCancelEdit}
@@ -125,4 +130,4 @@ function SequenceLabelingProject({
     </React.Fragment>
   );
 }
-export default SequenceLabelingProject;
+export default Seq2seqProject;

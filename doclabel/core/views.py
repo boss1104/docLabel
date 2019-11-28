@@ -18,7 +18,7 @@ from notifications.models import Notification
 from notifications.signals import notify
 
 from .filters import DocumentFilter, ProjectFilter
-from .models import Project, Label, Document, RoleMapping, Role
+from .models import Project, Label, Document, RoleMapping, Role, SEQ2SEQ
 from .permissions import (
     IsProjectAdmin,
     IsAnnotatorAndReadOnly,
@@ -114,17 +114,26 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
+        # Unable to publish project if missing data
         if request.data.get("public"):
             labels = instance.labels.count()
             documents = instance.documents.count()
-            if not labels or not documents:
+            project_type = instance.project_type
+            if not documents:
                 return Response(
                     data={
-                        "public": "Unable to publish project! Missing label data or task data"
+                        "public": "Unable to publish project! Missing dataset!"
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
+            if not labels and project_type != SEQ2SEQ:
+                return Response(
+                    data={
+                        "public": "Unable to publish project! Missing label!"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        # Unable to change project type
         if request.data.get("project_type"):
             return Response(
                 data={"project_type": "Unable to change the project category"},

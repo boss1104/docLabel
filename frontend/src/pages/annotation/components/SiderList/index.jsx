@@ -11,6 +11,7 @@ import {
   Descriptions,
   Button,
   Modal,
+  notification,
 } from 'antd';
 import { connect } from 'dva';
 import { Link } from 'umi';
@@ -26,6 +27,7 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
   task,
   projectLoading: loading.effects['project/fetchProject'],
   taskLoading: loading.effects['task/fetch'],
+  submitLoading: loading.effects['annotation/markCompleted'],
   dark: settings.navTheme === 'dark',
 }))(props => {
   const {
@@ -34,6 +36,7 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
     task: { list, pagination },
     projectLoading,
     taskLoading,
+    submitLoading,
     // Parent props
     onChangeKey,
     pageSize,
@@ -43,6 +46,7 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
     dark,
     remaining,
     annoList = [],
+    onSubmit,
   } = props;
   const [collapsed, setCollapsed] = React.useState(false);
 
@@ -54,19 +58,20 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
   };
 
   const onCollapse = (newCollapsed, type) => {
-    console.log('[DEBUG]: onCollapse -> type', type);
     setCollapsed(newCollapsed);
   };
 
-  const submitTaskCompleted = () => {
+  const submitTaskCompleted = async () => {
     try {
-      console.log('run');
-      dispatch({
-        type: 'annotation/confirm',
-        payload: {},
+      await dispatch({
+        type: 'annotation/markCompleted',
       });
+      notification.success({ message: 'Successfully submitted' });
+      if (onSubmit) {
+        onSubmit();
+      }
     } catch (error) {
-      console.log('[DEBUG]: submitTaskCompleted -> error', error);
+      notification.error({ message: 'Something wrong! Try again' });
     }
   };
 
@@ -168,6 +173,7 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
                 block
                 onClick={showConfirm}
                 disabled={isSubmitDisabled || isFinished}
+                loading={submitLoading}
               >
                 {isFinished ? 'Finished' : 'Submit'}
               </Button>

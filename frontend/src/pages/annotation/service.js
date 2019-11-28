@@ -30,8 +30,8 @@ export async function editAnno({ projectId, taskId, annotationId, data }) {
   });
 }
 
-export async function completedAnno({ projectId, taskId }) {
-  return request(`/api/projects/${projectId}/docs/${taskId}/completed/`, {
+export async function markCompleted({ projectId }) {
+  return request(`/api/projects/${projectId}/annotations/completed/`, {
     method: 'PATCH',
   });
 }
