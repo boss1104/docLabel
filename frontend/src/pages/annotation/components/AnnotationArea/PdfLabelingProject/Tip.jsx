@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, Col, Row, Empty, Typography, Button } from 'antd';
+import { Modal, Col, Row, Empty, Typography, Divider } from 'antd';
 import { useModal } from 'sunflower-antd';
 import styles from './style.less';
 import LabelList from '../../LabelList';
@@ -66,19 +66,21 @@ function Tip({ onOpen, onConfirm, labelList }) {
         centered
       >
         <LabelList labelList={labelList} handleChooseLabel={handleChooseLabel} />
+        <Divider />
         <div style={{ marginTop: 24 }}>
-          <Row gutter={32} type="flex" align="middle">
+          <Row>
             <Col>
               <Typography.Text strong>Labeled:</Typography.Text>
             </Col>
-            <Col>
+            <Col style={{ textAlign: 'center' }}>
               {!!Object.keys(label).length && (
-                <div style={{ margin: '32px 0' }}>
+                <div style={{ marginBottom: 8 }}>
                   <LabelPreview label={label} />
                 </div>
               )}
               {!Object.keys(label).length && (
                 <Empty
+                  style={{ margin: 0 }}
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
                   description={false}
                   imageStyle={{

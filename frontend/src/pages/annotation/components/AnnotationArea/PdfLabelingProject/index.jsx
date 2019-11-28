@@ -11,6 +11,7 @@ import {
 import classNames from 'classnames';
 
 // import testHighlights from './testHighlights';
+import { connect } from 'dva';
 import Sidebar from './Sidebar';
 import styles from './style.less';
 import Tip from './Tip';
@@ -32,14 +33,10 @@ const HighlightPopup = ({ label }) => {
 
 const DEFAULT_URL = 'https://arxiv.org/pdf/1708.08021.pdf';
 
-function PdfLabelingProject({
-  labelList,
-  annoList,
-  loading,
-  task,
-  handleRemoveLabel,
-  handleAddLabel,
-}) {
+const PdfLabelingProject = connect(({ settings }) => ({
+  dark: settings.navTheme === 'dark',
+}))(props => {
+  const { labelList, annoList, task, handleRemoveLabel, handleAddLabel, dark } = props;
   const [activeKey, setActiveKey] = React.useState('');
   const [currentAnno, setCurrentAnno] = React.useState(null);
 
@@ -85,21 +82,21 @@ function PdfLabelingProject({
   };
 
   const scrollToHighlightFromHash = () => {
-    const anno = annoList.find(val => val.id === currentAnno);
-    if (anno) {
-      scrollViewerTo.current(anno);
+    if (annoList) {
+      const anno = annoList.find(val => val.id === currentAnno);
+      if (anno) scrollViewerTo.current(anno);
     }
   };
 
   React.useEffect(() => {
-    if (currentAnno) {
+    if (currentAnno && annoList) {
       scrollToHighlightFromHash();
     }
   }, [currentAnno]);
 
   return (
     <Card>
-      <Layout>
+      <Layout className={styles.main}>
         <Layout.Content className={styles.content}>
           {task && (
             <PdfLoader url={task.file_url} beforeLoad={<Spin spinning />}>
@@ -185,10 +182,11 @@ function PdfLabelingProject({
           activeKey={activeKey}
           setActiveKey={setActiveKey}
           setCurrentAnno={setCurrentAnno}
+          dark={dark}
         />
       </Layout>
     </Card>
   );
-}
+});
 
 export default PdfLabelingProject;

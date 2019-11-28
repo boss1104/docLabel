@@ -317,6 +317,17 @@ const Annotation = connect(({ project, task, label, loading }) => ({
 
   return (
     <Layout hasSider className={styles.main}>
+      <SiderList
+        remaining={remaining}
+        onChangeKey={handleChangeKey}
+        onSearchChange={handleChangeSearch}
+        pageSize={sidebarTotal}
+        page={sidebarPage}
+        pageNumber={pageNumber}
+        annotations={annotations}
+        annoList={annotations[taskId]}
+        onSubmit={handleOnSubmit}
+      />
       <Layout.Content className={styles.content}>
         <Spin spinning={labelLoading || taskLoading} size="small">
           <ProgressBar
@@ -337,17 +348,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
           />
         </Spin>
       </Layout.Content>
-      <SiderList
-        remaining={remaining}
-        onChangeKey={handleChangeKey}
-        onSearchChange={handleChangeSearch}
-        pageSize={sidebarTotal}
-        page={sidebarPage}
-        pageNumber={pageNumber}
-        annotations={annotations}
-        annoList={annotations[taskId]}
-        onSubmit={handleOnSubmit}
-      />
     </Layout>
   );
 });

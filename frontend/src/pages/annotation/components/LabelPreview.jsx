@@ -18,7 +18,7 @@ export default function(props) {
   const isLongText = text.length > MAX_LEN;
 
   const preButton = (
-    <Button type="primary" style={{ backgroundColor, color: textColor }}>
+    <Button style={{ backgroundColor, color: textColor }}>
       {isLongText ? `${text.slice(0, MAX_LEN)}...` : text}
     </Button>
   );
@@ -28,13 +28,9 @@ export default function(props) {
     : `${suffixKey.toUpperCase()}`;
 
   return (
-    <div>
-      {
-        <ButtonGroup type="dashed" onClick={onClick}>
-          {isLongText ? <Tooltip title={text}>{preButton}</Tooltip> : preButton}
-          <Button>{labelText}</Button>
-        </ButtonGroup>
-      }
-    </div>
+    <ButtonGroup type="dashed" onClick={onClick}>
+      {isLongText ? <Tooltip title={text}>{preButton}</Tooltip> : preButton}
+      <Button>{labelText}</Button>
+    </ButtonGroup>
   );
 }

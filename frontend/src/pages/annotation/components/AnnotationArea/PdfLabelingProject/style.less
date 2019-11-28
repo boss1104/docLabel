@@ -1,3 +1,5 @@
+@import '~antd/es/style/themes/default.less';
+
 .arrow {
   position: absolute;
   bottom: -3px;
@@ -13,63 +15,83 @@
   transform: translateX(-50%) rotate(45deg);
 }
 
-.content {
-  position: relative;
-  width: 70vw;
+.main {
+  height: ~'calc(100vh - 64px - 180px - 2px)' !important;
+  min-height: ~'calc(100vh - 64px - 180px - 2px)' !important;
+  margin: -24px;
 
-  .tip {
-    .compact {
-      padding: 5px 10px;
-      color: white;
-      background-color: #3d464d;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 3px;
-      cursor: pointer;
-    }
-  }
+  .content {
+    position: relative;
+    // height: ~'calc(100vh - 64px - 180px - 2px)';
+    // min-height: ~'calc(100vh - 64px - 180px - 2px)';
+    margin-right: 400px;
+    overflow: initial;
 
-  .popup {
-    .highlightPopup {
-      max-width: 300px;
-      max-height: 100px;
-      padding: 0.5rem 1rem;
-      overflow-y: auto;
-      color: white;
-      background-color: #3d464d;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 3px;
-    }
-  }
-}
-
-.sidebar {
-  overflow: auto;
-
-  .title {
-    padding: 24px;
-  }
-
-  .sidebarItem {
-    border-bottom: 1px solid whitesmoke;
-
-    .dataImage {
-      max-width: 352px;
-      overflow: hidden;
-      border: 1px dashed;
-    }
-
-    .contentMark {
-      font-size: 18px;
-      mark {
-        display: block;
+    .tip {
+      .compact {
+        padding: 5px 10px;
+        color: white;
+        background-color: #3d464d;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 3px;
+        cursor: pointer;
       }
     }
 
-    .labelPage {
-      display: block;
-      font-size: 18px;
-      line-height: 32px;
-      text-align: right;
+    .popup {
+      .highlightPopup {
+        max-width: 300px;
+        max-height: 100px;
+        padding: 0.5rem 1rem;
+        overflow-y: auto;
+        color: white;
+        background-color: #3d464d;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 3px;
+      }
+    }
+  }
+
+  .sidebar {
+    position: fixed;
+    right: 0;
+    height: ~'calc(100vh - 64px - 180px - 2px)';
+    overflow-x: hidden;
+    // background-color: @layout-sider-background-light;
+
+    :global {
+      .ant-tag {
+        padding: 0 15px;
+        font-size: 14px;
+        line-height: 30px;
+      }
+    }
+
+    .title {
+      padding: 24px;
+    }
+
+    .sidebarItem {
+      border-bottom: 1px solid @border-color-base;
+      cursor: pointer;
+
+      .dataImage {
+        max-width: 352px;
+        overflow: hidden;
+        border: 1px dashed;
+      }
+
+      .contentMark {
+        font-size: 18px;
+        mark {
+          display: block;
+        }
+      }
+
+      .labelPage {
+        font-size: 18px;
+        line-height: 32px;
+      }
     }
   }
 }

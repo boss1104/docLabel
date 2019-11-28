@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, List, Row, Col, Typography, Tag, Popconfirm, Icon, Collapse } from 'antd';
+import { Layout, List, Row, Col, Typography, Tag, Popconfirm, Icon, Collapse, Button } from 'antd';
 import styles from './style.less';
 
 function Sidebar({
@@ -9,6 +9,7 @@ function Sidebar({
   setActiveKey,
   activeKey,
   setCurrentAnno,
+  dark,
 }) {
   const handleDeleteAnno = annoId => {
     if (annoId) {
@@ -29,9 +30,9 @@ function Sidebar({
   const loading = !labelList;
 
   return (
-    <Layout.Sider width={400} className={styles.sidebar}>
+    <Layout.Sider width={400} className={styles.sidebar} theme={dark ? 'dark' : 'light'}>
       <div className={styles.title}>
-        <Typography.Title level={3}>Annotation Label</Typography.Title>
+        <Typography.Title level={4}>Annotation Label</Typography.Title>
       </div>
       <Collapse
         accordion
@@ -44,7 +45,7 @@ function Sidebar({
           Object.values(dataObjectList).map((val, idx) => (
             <Collapse.Panel
               header={
-                <Row type="flex" gutter={24}>
+                <Row type="flex" gutter={48}>
                   <Col>
                     <Typography.Text strong style={{ lineHeight: '32px' }}>
                       Label:
@@ -62,7 +63,6 @@ function Sidebar({
             >
               <List
                 loading={loading}
-                bordered
                 dataSource={val.array}
                 renderItem={({ content, position, label, id, image_url: url }) => (
                   <List.Item
@@ -72,7 +72,7 @@ function Sidebar({
                     className={styles.sidebarItem}
                   >
                     <Row gutter={[0, 24]} style={{ flex: 1 }} align="middle">
-                      <Col span={24}>
+                      <Col>
                         {content.text ? (
                           <Typography.Text code mark strong className={styles.contentMark}>
                             {content.text.length > 90
@@ -87,19 +87,22 @@ function Sidebar({
                         ) : null}
                       </Col>
                       {/*  */}
-                      <Col span={22}>
-                        <Typography.Text code className={styles.labelPage}>
-                          Page {position.pageNumber}
-                        </Typography.Text>
-                      </Col>
-                      <Col span={2}>
-                        <Popconfirm
-                          title="Are you sure delete this annotation?"
-                          onConfirm={() => handleDeleteAnno(id)}
-                        >
-                          <Icon type="delete" />
-                        </Popconfirm>
-                      </Col>
+                      <Row type="flex" justify="space-between">
+                        <Col>
+                          <Typography.Text code className={styles.labelPage}>
+                            Page {position.pageNumber}
+                          </Typography.Text>
+                        </Col>
+                        <Col>
+                          <Popconfirm
+                            title="Are you sure delete this annotation?"
+                            onConfirm={() => handleDeleteAnno(id)}
+                            placement="topRight"
+                          >
+                            <Button icon="delete" shape="circle-outline" />
+                          </Popconfirm>
+                        </Col>
+                      </Row>
                     </Row>
                   </List.Item>
                 )}
