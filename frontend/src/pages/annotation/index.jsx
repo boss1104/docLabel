@@ -1,18 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import {
-  Layout,
-  Button,
-  Row,
-  Col,
-  Progress,
-  Card,
-  Spin,
-  Icon,
-  Modal,
-  Typography,
-  notification,
-} from 'antd';
+import { Layout, Spin, notification } from 'antd';
 import { router } from 'umi';
 
 import styles from './index.less';
@@ -57,7 +45,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
    */
 
   const [annotations, setAnnotations] = React.useState({});
-  console.log('[DEBUG]: annotations', annotations);
   const [sidebarTotal, setSidebarTotal] = React.useState(0);
   const [sidebarPage, setSidebarPage] = React.useState(0);
   const [paginationType, setPaginationType] = React.useState('');
@@ -93,7 +80,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       // Then
       const { offset: queryOffset = 0 } = query;
       const { next, previous, total } = res.pagination;
-      console.log('[DEBUG]: queryTask -> next', next);
 
       const limitCount = next ? next.limit : total;
 
@@ -200,7 +186,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   };
   const taskId = React.useMemo(() => Object.keys(taskList)[pageNumber], [pageNumber, taskList]);
 
-  // console.log('[DEBUG]: taskId', taskId);
   /**
    * Init variables
    */
@@ -308,6 +293,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         task={taskId ? taskList[taskId] : null}
         handleRemoveLabel={handleRemoveLabel}
         handleAddLabel={handleAddLabel}
+        pageNumber={pageNumber}
       />
     ),
   };

@@ -8,7 +8,6 @@ import {
   Popup,
   AreaHighlight,
 } from 'react-pdf-highlighter';
-import classNames from 'classnames';
 
 // import testHighlights from './testHighlights';
 import { connect } from 'dva';
@@ -34,15 +33,21 @@ const DEFAULT_URL = 'https://arxiv.org/pdf/1708.08021.pdf';
 
 const PdfLabelingProject = connect(({ settings }) => ({
   dark: settings.navTheme === 'dark',
-}))(props => {
-  const { labelList, annoList = [], task, handleRemoveLabel, handleAddLabel, dark } = props;
+}))(({ labelList, annoList = [], task, handleRemoveLabel, handleAddLabel, dark, pageNumber }) => {
   const [activeKey, setActiveKey] = React.useState('');
   const [currentAnno, setCurrentAnno] = React.useState(null);
+
+  const funcRef = React.useRef(handleAddLabel);
 
   React.useEffect(() => {
     setActiveKey(Object.keys(labelList)[0]);
   }, [labelList]);
 
+  const [event, setEvent] = React.useState(null);
+
+  React.useEffect(() => {
+    funcRef.current = handleAddLabel;
+  }, [event]);
   /**
    * Handlers
    */
@@ -53,7 +58,7 @@ const PdfLabelingProject = connect(({ settings }) => ({
       label: label.id,
     };
     // console.log('[DEBUG]: addHighlight -> payload', JSON.stringify(payload, null, 2));
-    handleAddLabel(payload);
+    funcRef.current(payload);
     setActiveKey(label.id);
   };
 
@@ -94,7 +99,8 @@ const PdfLabelingProject = connect(({ settings }) => ({
   }, [currentAnno]);
 
   const isDisabled = annoList[0] && annoList[0].finished;
-
+  // console.log('[DEBUG]: pageNumber', pageNumber);
+  console.log('[DEBUG]: activeKey', activeKey);
   return (
     <Card>
       <Layout className={styles.main}>
@@ -104,7 +110,10 @@ const PdfLabelingProject = connect(({ settings }) => ({
               {pdfDocument => (
                 <PdfHighlighter
                   pdfDocument={pdfDocument}
-                  enableAreaSelection={event => event.altKey}
+                  enableAreaSelection={e => {
+                    setEvent(e);
+                    return e.altKey;
+                  }}
                   onScrollChange={resetCurrent}
                   scrollRef={scrollTo => {
                     scrollViewerTo.current = scrollTo;
