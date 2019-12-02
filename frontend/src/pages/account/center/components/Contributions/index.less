@@ -1,12 +1,24 @@
 @import '~antd/es/style/themes/default.less';
 
-.articleList {
+.filterCardList {
   :global {
-    .ant-list-item:first-child {
-      padding-top: 0;
+    .ant-card-meta-content {
+      margin-top: 0;
+    }
+    // disabled white space
+    .ant-card-meta-avatar {
+      font-size: 0;
+    }
+
+    .ant-list .ant-list-item-content-single {
+      max-width: 100%;
     }
   }
-}
-a.listItemMetaTitle {
-  color: @heading-color;
+  .cardInfo {
+    margin-top: 24px;
+    .paragraph {
+      height: 64px;
+      margin-bottom: 24px;
+    }
+  }
 }

@@ -5,23 +5,34 @@ import moment from 'moment';
 import { router } from 'umi';
 import styles from './index.less';
 import CreateModalForm from './CreateModalForm';
-import { PROJECT_TYPE } from '@/pages/constants';
+import { PROJECT_TYPE, PAGE_SIZE } from '@/pages/constants';
 
 const Projects = connect(({ user, accountCenter, loading }) => ({
   currentUser: user.currentUser,
   myProjects: accountCenter.myProjects,
-  accountCenterLoading: loading.effects['accountCenter/fetchMyProject'],
+  loading: loading.effects['accountCenter/fetchMyProject'],
 }))(props => {
   const {
     currentUser,
     myProjects: { list, pagination },
-    accountCenterLoading,
+    loading,
+    location: {
+      query: { pp = 1, ...rest },
+    },
+    fetchMyProject,
   } = props;
 
-  const dataLoading = accountCenterLoading || !list;
+  const dataLoading = loading || !list;
 
   const isSuperUser = currentUser && Object.keys(currentUser).length && currentUser.is_superuser;
 
+  /** Handler */
+  const handleOnChange = newPage => {
+    router.push({
+      query: { ...rest, pp: newPage },
+    });
+    fetchMyProject(newPage);
+  };
   return (
     <React.Fragment>
       {isSuperUser && <CreateModalForm buttonText="New Project" className={styles.createModal} />}
@@ -39,6 +50,12 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
         }}
         loading={dataLoading}
         dataSource={list}
+        pagination={{
+          onChange: handleOnChange,
+          defaultPageSize: PAGE_SIZE,
+          total: pagination.count,
+          current: pp ? Number(pp) : 1,
+        }}
         renderItem={item => (
           <List.Item key={item.id}>
             <Card

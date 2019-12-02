@@ -1,58 +1,113 @@
-import { Card, List } from 'antd';
-import React, { Component } from 'react';
+import { Avatar, Card, Icon, List, Tooltip, Row, Col, Typography } from 'antd';
+import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import AvatarList from './AvatarList';
+import { router } from 'umi';
 import styles from './index.less';
+import { PROJECT_TYPE, PAGE_SIZE } from '@/pages/constants';
 
-@connect(({ accountCenter }) => ({
-  list: accountCenter.list,
-}))
-class Approvals extends Component {
-  render() {
-    const { list } = this.props;
-    return (
+const Approvals = connect(({ user, accountCenter, loading }) => ({
+  currentUser: user.currentUser,
+  myApprovals: accountCenter.myApprovals,
+  loading: loading.effects['accountCenter/fetchMyApproval'],
+}))(props => {
+  const {
+    currentUser,
+    myApprovals: { list, pagination },
+    loading,
+    location: {
+      query: { pc = 1, ...rest },
+    },
+    fetchMyApproval,
+  } = props;
+  console.log('[DEBUG]: loading', loading);
+  console.log('[DEBUG]: list', list);
+
+  const dataLoading = loading || loading === undefined;
+
+  /** Handler */
+  const handleOnChange = newPage => {
+    router.push({
+      query: { ...rest, pc: newPage },
+    });
+    fetchMyApproval(newPage);
+  };
+  return (
+    <React.Fragment>
       <List
-        className={styles.coverCardList}
         rowKey="id"
+        className={styles.filterCardList}
         grid={{
           gutter: 24,
-          xxl: 3,
+          xxl: 2,
           xl: 2,
           lg: 2,
           md: 2,
           sm: 2,
           xs: 1,
         }}
+        loading={dataLoading}
         dataSource={list}
+        pagination={{
+          onChange: handleOnChange,
+          defaultPageSize: PAGE_SIZE,
+          total: pagination.count,
+          current: pc ? Number(pc) : 1,
+        }}
         renderItem={item => (
-          <List.Item>
+          <List.Item key={item.id}>
             <Card
-              className={styles.card}
               hoverable
-              cover={<img alt={item.title} src={item.cover} />}
+              bodyStyle={{
+                paddingBottom: 20,
+              }}
+              actions={[
+                <Tooltip title="Edit" key="edit">
+                  <Icon type="edit" onClick={() => router.push(`/projects/${item.id}/dashboard`)} />
+                </Tooltip>,
+                <Tooltip title="Download" key="download">
+                  <Icon type="download" />
+                </Tooltip>,
+                <Tooltip title="Share" key="share">
+                  <Icon type="share-alt" />
+                </Tooltip>,
+              ]}
             >
-              <Card.Meta title={<a>{item.title}</a>} description={item.subDescription} />
-              <div className={styles.cardItemContent}>
-                <span>{moment(item.updatedAt).fromNow()}</span>
-                <div className={styles.avatarList}>
-                  <AvatarList size="small">
-                    {item.members.map(member => (
-                      <AvatarList.Item
-                        key={`${item.id}-avatar-${member.id}`}
-                        src={member.avatar}
-                        tips={member.name}
-                      />
-                    ))}
-                  </AvatarList>
+              <Card.Meta
+                avatar={<Avatar src={item.image} />}
+                title={item.name}
+                description={
+                  <Row gutter={16} type="flex" justify="space-between">
+                    <Col>
+                      <Typography.Text strong>
+                        {PROJECT_TYPE[item.project_type].tag}
+                      </Typography.Text>
+                    </Col>
+                    <Col>{item.public ? 'Published' : 'Unpublished'}</Col>
+                  </Row>
+                }
+              />
+              <div className={styles.cardInfo}>
+                <div className={styles.paragraph}>
+                  <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                    {item.description}
+                  </Typography.Paragraph>
                 </div>
+                <Row type="flex" gutter={16} justify="end">
+                  <Col>{moment(item.updated_at).fromNow()}</Col>
+                </Row>
+                <Row type="flex" gutter={16}>
+                  <Col span={8}>task_number</Col>
+                  <Col span={8}>complete status</Col>
+                  <Col span={8}>contributors</Col>
+                </Row>
               </div>
             </Card>
           </List.Item>
         )}
       />
-    );
-  }
-}
+    </React.Fragment>
+  );
+});
 
 export default Approvals;

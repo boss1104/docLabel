@@ -1,64 +1,111 @@
-import { Icon, List, Tag } from 'antd';
-import React, { Component } from 'react';
+import { Avatar, Card, Icon, List, Tooltip, Row, Col, Typography } from 'antd';
+import React from 'react';
 import { connect } from 'dva';
-import ArticleListContent from './ArticleListContent';
+import moment from 'moment';
+import { router } from 'umi';
 import styles from './index.less';
+import { PROJECT_TYPE, PAGE_SIZE } from '@/pages/constants';
 
-@connect(({ accountCenter }) => ({
-  list: accountCenter.list,
-}))
-class Contributions extends Component {
-  render() {
-    const { list } = this.props;
+const Contributions = connect(({ user, accountCenter, loading }) => ({
+  currentUser: user.currentUser,
+  myContributions: accountCenter.myContributions,
+  loading: loading.effects['accountCenter/fetchMyContribution'],
+}))(props => {
+  const {
+    currentUser,
+    myContributions: { list, pagination },
+    loading,
+    location: {
+      query: { pc = 1, ...rest },
+    },
+    fetchMyContribution,
+  } = props;
 
-    const IconText = ({ type, text }) => (
-      <span>
-        <Icon
-          type={type}
-          style={{
-            marginRight: 8,
-          }}
-        />
-        {text}
-      </span>
-    );
+  const dataLoading = loading || loading === undefined;
 
-    return (
+  /** Handler */
+  const handleOnChange = newPage => {
+    router.push({
+      query: { ...rest, pc: newPage },
+    });
+    fetchMyContribution(newPage);
+  };
+  return (
+    <React.Fragment>
       <List
-        size="large"
-        className={styles.articleList}
         rowKey="id"
-        itemLayout="vertical"
+        className={styles.filterCardList}
+        grid={{
+          gutter: 24,
+          xxl: 2,
+          xl: 2,
+          lg: 2,
+          md: 2,
+          sm: 2,
+          xs: 1,
+        }}
+        loading={dataLoading}
         dataSource={list}
+        pagination={{
+          onChange: handleOnChange,
+          defaultPageSize: PAGE_SIZE,
+          total: pagination.count,
+          current: pc ? Number(pc) : 1,
+        }}
         renderItem={item => (
-          <List.Item
-            key={item.id}
-            actions={[
-              <IconText key="star" type="star-o" text={item.star} />,
-              <IconText key="like" type="like-o" text={item.like} />,
-              <IconText key="message" type="message" text={item.message} />,
-            ]}
-          >
-            <List.Item.Meta
-              title={
-                <a className={styles.listItemMetaTitle} href={item.href}>
-                  {item.title}
-                </a>
-              }
-              description={
-                <span>
-                  <Tag>Ant Design</Tag>
-                  <Tag>设计语言</Tag>
-                  <Tag>蚂蚁金服</Tag>
-                </span>
-              }
-            />
-            <ArticleListContent data={item} />
+          <List.Item key={item.id}>
+            <Card
+              hoverable
+              bodyStyle={{
+                paddingBottom: 20,
+              }}
+              actions={[
+                <Tooltip title="Edit" key="edit">
+                  <Icon type="edit" onClick={() => router.push(`/projects/${item.id}/dashboard`)} />
+                </Tooltip>,
+                <Tooltip title="Download" key="download">
+                  <Icon type="download" />
+                </Tooltip>,
+                <Tooltip title="Share" key="share">
+                  <Icon type="share-alt" />
+                </Tooltip>,
+              ]}
+            >
+              <Card.Meta
+                avatar={<Avatar src={item.image} />}
+                title={item.name}
+                description={
+                  <Row gutter={16} type="flex" justify="space-between">
+                    <Col>
+                      <Typography.Text strong>
+                        {PROJECT_TYPE[item.project_type].tag}
+                      </Typography.Text>
+                    </Col>
+                    <Col>{item.public ? 'Published' : 'Unpublished'}</Col>
+                  </Row>
+                }
+              />
+              <div className={styles.cardInfo}>
+                <div className={styles.paragraph}>
+                  <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                    {item.description}
+                  </Typography.Paragraph>
+                </div>
+                <Row type="flex" gutter={16} justify="end">
+                  <Col>{moment(item.updated_at).fromNow()}</Col>
+                </Row>
+                <Row type="flex" gutter={16}>
+                  <Col span={8}>task_number</Col>
+                  <Col span={8}>complete status</Col>
+                  <Col span={8}>contributors</Col>
+                </Row>
+              </div>
+            </Card>
           </List.Item>
         )}
       />
-    );
-  }
-}
+    </React.Fragment>
+  );
+});
 
 export default Contributions;

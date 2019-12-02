@@ -92,12 +92,6 @@ class ProjectList(generics.ListCreateAPIView):
     def get_queryset(self):
         # Filter public only (published project)
         queryset = Project.objects.filter(public=True)
-
-        # # Filter user's project
-        mine = self.request.GET.get("mine")
-        if mine:
-            queryset = Project.objects.filter(users__id=self.request.user.id)
-
         return queryset
 
     def perform_create(self, serializer):
@@ -185,11 +179,13 @@ class StatisticsAPI(APIView):
         remaining = 0
         total = 0
         for doc in docs.all():
-            annotation = annotation_class.objects.filter(document_id=doc, finished=True).aggregate(
-                Count("user", distinct=True)
-            )["user__count"]
+            annotation = annotation_class.objects.filter(
+                document_id=doc, finished=True
+            ).aggregate(Count("user", distinct=True))["user__count"]
             doc_remaining = (
-                0 if annotation >= annotator_per_example else annotator_per_example - annotation
+                0
+                if annotation >= annotator_per_example
+                else annotator_per_example - annotation
             )
             remaining += doc_remaining
             total += annotator_per_example
@@ -198,7 +194,7 @@ class StatisticsAPI(APIView):
                 "annotation": annotation,
                 "remaining": doc_remaining,
             }
-        return {"total": total, "remaining": remaining, "doc_stat": docs_stat} 
+        return {"total": total, "remaining": remaining, "doc_stat": docs_stat}
 
     def label_per_data(self, project):
         annotation_class = project.get_annotation_class()
