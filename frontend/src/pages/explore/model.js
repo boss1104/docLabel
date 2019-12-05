@@ -13,13 +13,13 @@ const Model = {
       const ret = {
         list: arrayToObject(res.results, 'id'),
         pagination: {
-          total: res.count,
+          count: res.count,
           next: res.next && getPageQuery(res.next),
           previous: res.previous && getPageQuery(res.previous),
         },
       };
       yield put({
-        type: 'changeProjects',
+        type: 'changeState',
         payload: ret,
       });
       return ret;
@@ -31,10 +31,7 @@ const Model = {
     },
   },
   reducers: {
-    changePage(state, action) {
-      return { ...state, page: action.payload };
-    },
-    changeProjects(state, action) {
+    changeState(state, action) {
       return { ...state, ...action.payload };
     },
   },

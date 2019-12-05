@@ -9,7 +9,6 @@ import {
   Typography,
   Modal,
   Select,
-  Tag,
   message,
 } from 'antd';
 import React from 'react';
@@ -17,7 +16,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { router } from 'umi';
 import styles from './index.less';
-import { PROJECT_TYPE, ROLE_LABELS } from '@/pages/constants';
+import { PROJECT_TYPE, ROLE_LABELS, PAGE_SIZE } from '@/pages/constants';
 
 const Projects = connect(({ loading, projects }) => ({
   projects,
@@ -27,26 +26,12 @@ const Projects = connect(({ loading, projects }) => ({
     dispatch,
     projects: { list, pagination },
     loading,
+    location: { query },
   } = props;
+
   const [visible, setVisible] = React.useState(false);
   const [selectedRole, setSelectedRole] = React.useState('annotator');
   const [selectedProject, setSelectedProject] = React.useState({});
-
-  // const paginationProps = {
-  //   current: Number(query.page),
-  //   pageSize: 4,
-  //   total: count,
-  //   showQuickJumper: true,
-  //   showTotal: total => `Total ${total} projects`,
-  //   onChange: newPage =>
-  //     router.push({
-  //       pathname: path,
-  //       query: {
-  //         ...query,
-  //         page: newPage,
-  //       },
-  //     }),
-  // };
 
   const handleSentRequest = async projectId => {
     try {
@@ -110,6 +95,22 @@ const Projects = connect(({ loading, projects }) => ({
         }}
         loading={loading}
         dataSource={Object.values(list)}
+        pagination={{
+          onChange: newPage => {
+            router.push({
+              query: {
+                ...query,
+                page: newPage,
+              },
+            });
+            // refetchProject(newPage);
+          },
+          defaultPageSize: PAGE_SIZE,
+          total: pagination.count,
+          current: query.page ? Number(query.page) : 1,
+          showQuickJumper: true,
+          showTotal: total => `Total ${total} projects`,
+        }}
         renderItem={item => (
           <List.Item key={item.id}>
             <Card

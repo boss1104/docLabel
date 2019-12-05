@@ -9,13 +9,13 @@ const Explore = connect(({ projects, loading }) => ({
   projects,
   loading: loading.models.projects,
 }))(props => {
-  const { dispatch, projects, loading, location } = props;
+  const { location } = props;
 
   return (
     <div className={styles.coverCardList}>
       <FilterForm location={location} />
       <div className={styles.cardList}>
-        <Projects />
+        <Projects location={location} />
       </div>
     </div>
   );
