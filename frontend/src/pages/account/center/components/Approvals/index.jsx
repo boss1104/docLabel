@@ -20,8 +20,6 @@ const Approvals = connect(({ user, accountCenter, loading }) => ({
     },
     fetchMyApproval,
   } = props;
-  console.log('[DEBUG]: loading', loading);
-  console.log('[DEBUG]: list', list);
 
   const dataLoading = loading || loading === undefined;
 
@@ -62,11 +60,12 @@ const Approvals = connect(({ user, accountCenter, loading }) => ({
                 paddingBottom: 20,
               }}
               actions={[
-                <Tooltip title="Edit" key="edit">
-                  <Icon type="edit" onClick={() => router.push(`/projects/${item.id}/dashboard`)} />
-                </Tooltip>,
-                <Tooltip title="Download" key="download">
-                  <Icon type="download" />
+                <Tooltip title="Contribute" key="contribute">
+                  <Icon
+                    type="highlight"
+                    theme="twoTone"
+                    onClick={() => router.push(`/annotation/${item.id}`)}
+                  />
                 </Tooltip>,
                 <Tooltip title="Share" key="share">
                   <Icon type="share-alt" />
