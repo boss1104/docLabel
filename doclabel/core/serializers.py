@@ -94,7 +94,16 @@ class DocumentSerializer(serializers.ModelSerializer):
         model = project.get_annotation_class()
         serializer = project.get_annotation_serializer()
         annotations = model.objects.filter(document=instance.id)
-        if request and not project.collaborative_annotation:
+        role = RoleMapping.objects.get(user=request.user, project=project).role
+
+        if role.name == settings.ROLE_ANNOTATION_APPROVER:
+            try:
+                user = UserModel.objects.get(pk=request.GET.get('user', None))
+                annotations = annotations.filter(user=user)
+            except UserModel.DoesNotExist:
+                raise serializers.ValidationError("Request data missing!")
+        else:
+            # if not project.collaborative_annotation:
             annotations = annotations.filter(user=request.user)
         serializer = serializer(annotations, many=True, context={"request": request})
         return serializer.data
@@ -118,6 +127,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     current_users_role = serializers.SerializerMethodField()
+    users = CustomUserDetailsSerializer(read_only=True, many=True)
 
     def get_current_users_role(self, instance):
         role_abstractor = {
@@ -237,7 +247,7 @@ class SequenceAnnotationSerializer(AnnotationSerializer):
 class Seq2seqAnnotationSerializer(AnnotationSerializer):
     class Meta(AnnotationSerializer.Meta):
         model = Seq2seqAnnotation
-        fields = AnnotationSerializer.Meta.fields + ("text", )
+        fields = AnnotationSerializer.Meta.fields + ("text",)
 
 
 class PdfAnnotationSerializer(AnnotationSerializer):

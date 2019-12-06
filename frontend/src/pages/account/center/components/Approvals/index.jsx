@@ -60,9 +60,9 @@ const Approvals = connect(({ user, accountCenter, loading }) => ({
                 paddingBottom: 20,
               }}
               actions={[
-                <Tooltip title="Contribute" key="contribute">
+                <Tooltip title="Approval" key="approval">
                   <Icon
-                    type="highlight"
+                    type="safety-certificate"
                     theme="twoTone"
                     onClick={() => router.push(`/annotation/${item.id}`)}
                   />

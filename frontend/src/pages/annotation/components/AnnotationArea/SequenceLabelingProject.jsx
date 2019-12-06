@@ -1,36 +1,32 @@
 import React from 'react';
-import { Row, Col, Tooltip, Spin, Card, Icon, Typography, Tag } from 'antd';
+import { Row, Col, Spin, Card, Typography, Tag } from 'antd';
 import { TokenAnnotator } from 'react-text-annotate';
 import classNames from 'classnames';
 import LabelList from '../LabelList';
 import LabelPreview from '../LabelPreview';
 import styles from './SequenceLabelingProject.less';
+import { useWhyDidYouUpdate } from '@/hooks';
 
-function SequenceLabelingProject({
-  annoList = [],
-  labelList = [],
-  loading,
-  task,
-  handleRemoveLabel,
-  handleAddLabel,
-}) {
-  const [value, setValue] = React.useState([]);
+function SequenceLabelingProject(prs) {
+  const { annoList = [], labelList = [], loading, task, handleRemoveLabel, handleAddLabel } = prs;
+
   const [tag, setTag] = React.useState(null);
-
+  // useWhyDidYouUpdate('SequenceLabelingProject', prs);
+  // console.log('Render');
   const handleChange = newVal => {
-    const isAdd = value.length < newVal.length;
+    console.log('[DEBUG]: SequenceLabelingProject -> newVal', newVal);
+    const isAdd = annoList.length < newVal.length;
     if (isAdd) {
-      const [difference] = newVal.filter(val => !value.includes(val));
+      const [difference] = newVal.filter(val => !val.id);
       handleAddLabel({
         start_offset: difference.start,
         end_offset: difference.end,
         label: difference.tag.id,
       });
     } else {
-      const [difference] = value.filter(val => !newVal.includes(val));
+      const [difference] = annoList.filter(val => !newVal.includes(val));
       handleRemoveLabel(difference.id);
     }
-    setValue(newVal);
   };
 
   const handleChooseLabel = labelKey => {
@@ -43,17 +39,17 @@ function SequenceLabelingProject({
     setTag(Object.values(labelList)[0]);
   }, [labelList]);
 
-  React.useEffect(() => {
-    const annoMap = annoList.map(val => ({
+  const isDisabled = annoList[0] && annoList[0].finished;
+
+  const getTokenValue = () => {
+    const list = [...annoList];
+    return list.map(val => ({
       start: val.start_offset,
       end: val.end_offset,
       tag: labelList[val.label],
       id: val.id,
     }));
-    setValue(annoMap);
-  }, [annoList]);
-
-  const isDisabled = annoList[0] && annoList[0].finished;
+  };
 
   return (
     <React.Fragment>
@@ -96,7 +92,7 @@ function SequenceLabelingProject({
               <Col className={styles.tokenText}>
                 <TokenAnnotator
                   tokens={task.text.split(' ')}
-                  value={value}
+                  value={getTokenValue()}
                   onChange={handleChange}
                   getSpan={span => ({
                     ...span,
@@ -131,4 +127,4 @@ function SequenceLabelingProject({
     </React.Fragment>
   );
 }
-export default SequenceLabelingProject;
+export default React.memo(SequenceLabelingProject);

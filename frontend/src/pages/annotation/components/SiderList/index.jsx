@@ -12,6 +12,7 @@ import {
   Button,
   Modal,
   notification,
+  Select,
 } from 'antd';
 import { connect } from 'dva';
 import { Link } from 'umi';
@@ -47,12 +48,21 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
     remaining,
     annoList = [],
     onSubmit,
+    annotationValue,
+    setAnnotationValue,
   } = props;
   const [collapsed, setCollapsed] = React.useState(false);
 
   /**
    * Handle Function
    */
+  const getAnnotators = () => {
+    if (Object.keys(currentProject).length) {
+      return currentProject.users;
+    }
+    return [];
+  };
+
   const handleOnSearch = value => {
     console.log('TCL: value', value);
   };
@@ -94,6 +104,7 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
   const dataLoading = projectLoading || !hasData;
 
   const isProjectAdmin = hasData && currentProject.current_users_role.is_project_admin;
+  const isApprover = hasData && currentProject.current_users_role.is_annotation_approver;
 
   const isSubmitDisabled = Number(remaining) !== 0;
   const isFinished = annoList[0] && annoList[0].finished;
@@ -134,9 +145,9 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
 
       <section>
         <Spin spinning={taskLoading} size="small">
-          <div className={styles.search}>
-            {/* <Search size="large" placeholder="Search task" onSearch={handleOnSearch} /> */}
-          </div>
+          {/* <div className={styles.search}>
+            <Search size="large" placeholder="Search task" onSearch={handleOnSearch} />
+          </div> */}
           <div className={styles.about}>
             {`About ${pagination.total} tasks. (page ${page} of ${pageSize})`}
           </div>
@@ -165,19 +176,44 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
                   </Row>
                 </Menu.Item>
               ))}
-            <div className={styles.buttonSubmit}>
-              <Button
-                icon="submit"
-                type="primary"
+            {!isApprover && (
+              <div className={styles.buttonSubmit}>
+                <Button
+                  icon="submit"
+                  type="primary"
+                  size="large"
+                  block
+                  onClick={showConfirm}
+                  disabled={isSubmitDisabled || isFinished}
+                  loading={submitLoading}
+                >
+                  {isFinished ? 'Finished' : 'Submit'}
+                </Button>
+              </div>
+            )}
+            {isApprover && (
+              <Select
+                showSearch
+                placeholder="Select a annotation"
+                onChange={value => {
+                  setAnnotationValue(value);
+                  // fetch
+                }}
+                value={annotationValue}
+                // onFocus={onFocus}
+                // onBlur={onBlur}
+                // onSearch={onSearch}
                 size="large"
-                block
-                onClick={showConfirm}
-                disabled={isSubmitDisabled || isFinished}
-                loading={submitLoading}
+                className={styles.contibutors}
               >
-                {isFinished ? 'Finished' : 'Submit'}
-              </Button>
-            </div>
+                {getAnnotators().map(item => (
+                  <Select.Option value={item.id} key={item.id}>
+                    <span className={styles.username}>{item.username}</span>
+                    <span> - {item.full_name}</span>
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
           </Menu>
         </Spin>
       </section>

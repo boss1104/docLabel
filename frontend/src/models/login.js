@@ -25,22 +25,23 @@ const Model = {
       /**
        * Redirect
        */
-      const urlParams = new URL(window.location.href);
-      const params = getPageQuery();
-      let { redirect } = params;
-      if (redirect) {
-        const redirectUrlParams = new URL(redirect);
-        if (redirectUrlParams.origin === urlParams.origin) {
-          redirect = redirect.substr(urlParams.origin.length + 4);
-          if (redirect.match(/^\/.*#/)) {
-            redirect = redirect.substr(redirect.indexOf('#') + 1);
-          }
-        } else {
-          window.location.href = redirect;
-          return;
-        }
-      }
-      yield put(routerRedux.replace(redirect || '/'));
+      // const urlParams = new URL(window.location.href);
+      // const params = getPageQuery();
+      // let { redirect } = params;
+      // if (redirect) {
+      //   const redirectUrlParams = new URL(redirect);
+      //   if (redirectUrlParams.origin === urlParams.origin) {
+      //     redirect = redirect.substr(urlParams.origin.length + 4);
+      //     if (redirect.match(/^\/.*#/)) {
+      //       redirect = redirect.substr(redirect.indexOf('#') + 1);
+      //     }
+      //   } else {
+      //     window.location.href = redirect;
+      //     return;
+      //   }
+      // }
+      // yield put(routerRedux.replace(redirect || '/'));
+      yield put(routerRedux.replace('/'));
     },
 
     *logout(_, { call, put }) {

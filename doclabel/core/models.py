@@ -308,7 +308,8 @@ def add_linked_project(sender, instance, created, **kwargs):
         return
     userInstance = instance.user
     projectInstance = instance.project
-    if userInstance and projectInstance:
+    isAnnotator = instance.role.name == settings.ROLE_ANNOTATOR
+    if userInstance and projectInstance and isAnnotator:
         user = User.objects.get(pk=userInstance.pk)
         project = Project.objects.get(pk=projectInstance.pk)
         user.projects.add(project)
@@ -356,7 +357,8 @@ def add_new_superuser_to_projects(sender, instance, created, **kwargs):
 def delete_linked_project(sender, instance, using, **kwargs):
     userInstance = instance.user
     projectInstance = instance.project
-    if userInstance and projectInstance:
+    isAnnotator = instance.role.name == settings.ROLE_ANNOTATOR
+    if userInstance and projectInstance and isAnnotator:
         user = User.objects.get(pk=userInstance.pk)
         project = Project.objects.get(pk=projectInstance.pk)
         user.projects.remove(project)

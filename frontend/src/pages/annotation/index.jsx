@@ -54,6 +54,13 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   // Statistics
   const [totalTask, setTotalTask] = React.useState(0);
   const [remaining, setRemaining] = React.useState(0);
+  const [annotationValue, setAnnotationValue] = React.useState(null);
+
+  const taskId = React.useMemo(() => Object.keys(taskList)[pageNumber], [pageNumber, taskList]);
+
+  const hasData = currentProject && Object.keys(currentProject).length;
+  const isApprover = hasData && currentProject.current_users_role.is_annotation_approver;
+  const isNotApprover = hasData && !currentProject.current_users_role.is_annotation_approver;
 
   /**
    * Handler
@@ -64,19 +71,14 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     });
   };
 
-  const queryTask = async () => {
+  const queryTask = async data => {
     try {
       const q = searchQuery ? { q: searchQuery } : {};
-      // doc_annotations__isnull=${state}
       const res = await dispatch({
         type: 'task/fetch',
-        payload: { params: { offset: query.offset, ...q } },
+        payload: { params: { offset: query.offset, ...q }, data },
       });
-      const anno = {};
-      Object.entries(res.list).forEach(([key, val]) => {
-        anno[key] = val.annotations;
-      });
-      // console.log('[DEBUG]: queryTask -> anno', anno);
+
       // Then
       const { offset: queryOffset = 0 } = query;
       const { next, previous, total } = res.pagination;
@@ -85,17 +87,27 @@ const Annotation = connect(({ project, task, label, loading }) => ({
 
       setSidebarTotal(getSidebarTotal(total, limitCount));
       setSidebarPage(getSidebarPage(queryOffset, limitCount));
-      setAnnotations(anno);
       if (paginationType === 'next') {
         setPageNumber(0);
       } else if (paginationType === 'prev') {
         setPageNumber(Object.keys(res.list).length - 1);
       }
       setOffset(Number(queryOffset));
+      const anno = {};
+      Object.entries(res.list).forEach(([key, val]) => {
+        anno[key] = val.annotations;
+      });
+      setAnnotations(anno);
     } catch (error) {
       console.log('TCL: fetch -> error', error);
     }
   };
+
+  React.useEffect(() => {
+    if (Object.keys(currentProject).length) {
+      setAnnotationValue(currentProject.users[0].id);
+    }
+  }, [currentProject]);
 
   React.useEffect(() => {
     // Fetch guideline
@@ -103,8 +115,12 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   }, []);
 
   React.useEffect(() => {
-    queryTask();
-  }, [query]);
+    if (isApprover && !!annotationValue) {
+      queryTask({ user: annotationValue });
+    } else if (isNotApprover) {
+      queryTask();
+    }
+  }, [query, annotationValue]);
 
   React.useEffect(() => {
     const queryStatistics = async () => {
@@ -187,52 +203,57 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     }
     // resetScrollbar();
   };
-  const taskId = React.useMemo(() => Object.keys(taskList)[pageNumber], [pageNumber, taskList]);
 
   /**
    * Init variables
    */
 
-  const handleRemoveLabel = async annotationId => {
-    try {
-      await dispatch({
-        type: 'annotation/removeAnno',
-        payload: {
-          taskId,
-          annotationId,
-        },
-      });
-      const newAnno = annotations[taskId].filter(val => val.id !== Number(annotationId));
-      setAnnotations({ ...annotations, [taskId]: newAnno });
-    } catch (error) {
-      notification.error({
-        message: 'Unable to delete annotation',
-        description: 'Task is already completed!',
-      });
-    }
-  };
+  const handleRemoveLabel = React.useCallback(
+    async annotationId => {
+      try {
+        await dispatch({
+          type: 'annotation/removeAnno',
+          payload: {
+            taskId,
+            annotationId,
+          },
+        });
+        const newAnno = annotations[taskId].filter(val => val.id !== Number(annotationId));
+        setAnnotations({ ...annotations, [taskId]: newAnno });
+      } catch (error) {
+        notification.error({
+          message: 'Unable to delete annotation',
+          description: 'Task is already completed!',
+        });
+      }
+    },
+    [taskId, annotations],
+  );
 
-  const handleAddLabel = async data => {
-    try {
-      const res = await dispatch({
-        type: 'annotation/addAnno',
-        payload: {
-          taskId,
-          data,
-        },
-      });
-      setAnnotations({ ...annotations, [taskId]: [...annotations[taskId], res] });
-      notification.success({
-        message: 'Successfully added',
-      });
-    } catch (error) {
-      notification.error({
-        message: 'Unable to add new annotation',
-        description: 'Task mark as completed!',
-      });
-      setAnnotations({ ...annotations });
-    }
-  };
+  const handleAddLabel = React.useCallback(
+    async data => {
+      try {
+        const res = await dispatch({
+          type: 'annotation/addAnno',
+          payload: {
+            taskId,
+            data,
+          },
+        });
+        setAnnotations({ ...annotations, [taskId]: [...annotations[taskId], res] });
+        notification.success({
+          message: 'Successfully added',
+        });
+      } catch (error) {
+        notification.error({
+          message: 'Unable to add new annotation',
+          description: 'Task mark as completed!',
+        });
+        setAnnotations({ ...annotations });
+      }
+    },
+    [taskId, annotations],
+  );
 
   const handleEditLabel = async (annotationId, data) => {
     const res = await dispatch({
@@ -256,49 +277,58 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     setAnnotations(newAnno);
   };
 
-  const AnnotationArea = {
-    TextClassificationProject: (
-      <TextClassificationProject
-        labelList={labelList}
-        annoList={annotations[taskId]}
-        loading={annoLoading}
-        task={taskId ? taskList[taskId] : null}
-        handleRemoveLabel={handleRemoveLabel}
-        handleAddLabel={handleAddLabel}
-      />
-    ),
-    SequenceLabelingProject: (
-      <SequenceLabelingProject
-        labelList={labelList}
-        annoList={annotations[taskId]}
-        loading={annoLoading}
-        task={taskId ? taskList[taskId] : null}
-        handleRemoveLabel={handleRemoveLabel}
-        handleAddLabel={handleAddLabel}
-      />
-    ),
-    Seq2seqProject: (
-      <Seq2seqProject
-        labelList={labelList}
-        annoList={annotations[taskId]}
-        loading={annoLoading}
-        task={taskId ? taskList[taskId] : null}
-        handleRemoveLabel={handleRemoveLabel}
-        handleAddLabel={handleAddLabel}
-        handleEditLabel={handleEditLabel}
-      />
-    ),
-    PdfLabelingProject: (
-      <PdfLabelingProject
-        labelList={labelList}
-        annoList={annotations[taskId]}
-        loading={annoLoading}
-        task={taskId ? taskList[taskId] : null}
-        handleRemoveLabel={handleRemoveLabel}
-        handleAddLabel={handleAddLabel}
-        pageNumber={pageNumber}
-      />
-    ),
+  const getAnnotationArea = projectType => {
+    switch (projectType) {
+      case 'TextClassificationProject':
+        return (
+          <TextClassificationProject
+            labelList={labelList}
+            annoList={annotations[taskId]}
+            loading={annoLoading}
+            task={taskId ? taskList[taskId] : null}
+            handleRemoveLabel={handleRemoveLabel}
+            handleAddLabel={handleAddLabel}
+          />
+        );
+      case 'SequenceLabelingProject':
+        return (
+          <SequenceLabelingProject
+            labelList={labelList}
+            annoList={annotations[taskId]}
+            loading={annoLoading}
+            task={taskId ? taskList[taskId] : null}
+            handleRemoveLabel={handleRemoveLabel}
+            handleAddLabel={handleAddLabel}
+          />
+        );
+
+      case 'Seq2seqProject':
+        return (
+          <Seq2seqProject
+            labelList={labelList}
+            annoList={annotations[taskId]}
+            loading={annoLoading}
+            task={taskId ? taskList[taskId] : null}
+            handleRemoveLabel={handleRemoveLabel}
+            handleAddLabel={handleAddLabel}
+            handleEditLabel={handleEditLabel}
+          />
+        );
+      case 'PdfLabelingProject':
+        return (
+          <PdfLabelingProject
+            labelList={labelList}
+            annoList={annotations[taskId]}
+            loading={annoLoading}
+            task={taskId ? taskList[taskId] : null}
+            handleRemoveLabel={handleRemoveLabel}
+            handleAddLabel={handleAddLabel}
+            pageNumber={pageNumber}
+          />
+        );
+      default:
+        return null;
+    }
   };
   /**
    * Variables
@@ -316,6 +346,8 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         annotations={annotations}
         annoList={annotations[taskId]}
         onSubmit={handleOnSubmit}
+        annotationValue={annotationValue}
+        setAnnotationValue={setAnnotationValue}
       />
       <Layout.Content className={styles.content}>
         <Spin spinning={labelLoading || taskLoading} size="small">
@@ -325,7 +357,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
             currentProject={currentProject}
           />
 
-          {currentProject && AnnotationArea[currentProject.project_type]}
+          {currentProject && getAnnotationArea(currentProject.project_type)}
           <TaskPagination
             onNextPage={handleNextPage}
             onPrevPage={handlePrevPage}

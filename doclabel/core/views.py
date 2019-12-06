@@ -59,6 +59,7 @@ IsInProjectReadOnlyOrAdmin = (
     IsAnnotatorAndReadOnly | IsAnnotationApproverAndReadOnly | IsProjectAdmin
 )
 IsInProjectOrAdmin = IsAnnotator | IsAnnotationApprover | IsProjectAdmin
+IsInProjectReadOnlyOrAdmin2 = IsAnnotator | IsAnnotationApproverAndReadOnly | IsProjectAdmin
 
 
 class Features(APIView):
@@ -287,7 +288,7 @@ class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class AnnotationList(generics.ListCreateAPIView):
     pagination_class = None
-    permission_classes = [IsInProjectOrAdmin]
+    permission_classes = [IsInProjectReadOnlyOrAdmin2]
 
     def get_serializer_class(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
@@ -297,11 +298,16 @@ class AnnotationList(generics.ListCreateAPIView):
     def get_queryset(self):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
         model = project.get_annotation_class()
-
         queryset = model.objects.filter(document=self.kwargs["doc_id"])
-        if not project.collaborative_annotation:
+        
+        role = RoleMapping.objects.get(user=self.request.user, project=project).role
+        # If approver
+        if role.name == settings.ROLE_ANNOTATION_APPROVER:
+            user = get_object_or_404(User, pk=self.request.data["user"])
+            queryset = queryset.filter(user=user)
+        else:
+            # if not project.collaborative_annotation:
             queryset = queryset.filter(user=self.request.user)
-
         return queryset
 
     def create(self, request, *args, **kwargs):

@@ -1,4 +1,4 @@
-import { addAnno, removeAnno, editAnno, markCompleted } from './service';
+import { queryAnno, addAnno, removeAnno, editAnno, markCompleted } from './service';
 
 export default {
   namespace: 'annotation',
@@ -6,6 +6,12 @@ export default {
     annotation: {},
   },
   effects: {
+    *queryAnno({ payload }, { call, put, select }) {
+      const projectId = yield select(state => state.project.currentProject.id);
+      const { docId, data } = payload;
+      const res = yield call(addAnno, { projectId, docId, data });
+      return res;
+    },
     *addAnno({ payload }, { call, put, select }) {
       const projectId = yield select(state => state.project.currentProject.id);
       const { taskId, data } = payload;
