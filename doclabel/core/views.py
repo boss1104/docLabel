@@ -59,7 +59,9 @@ IsInProjectReadOnlyOrAdmin = (
     IsAnnotatorAndReadOnly | IsAnnotationApproverAndReadOnly | IsProjectAdmin
 )
 IsInProjectOrAdmin = IsAnnotator | IsAnnotationApprover | IsProjectAdmin
-IsInProjectReadOnlyOrAdmin2 = IsAnnotator | IsAnnotationApproverAndReadOnly | IsProjectAdmin
+IsInProjectReadOnlyOrAdmin2 = (
+    IsAnnotator | IsAnnotationApproverAndReadOnly | IsProjectAdmin
+)
 
 
 class Features(APIView):
@@ -208,11 +210,22 @@ class ApproveLabelsAPI(APIView):
     permission_classes = [IsAnnotationApprover | IsProjectAdmin]
 
     def post(self, request, *args, **kwargs):
-        approved = self.request.data.get("approved", True)
-        document = get_object_or_404(Document, pk=self.kwargs["doc_id"])
-        document.annotations_approved_by = self.request.user if approved else None
-        document.save()
-        return Response(DocumentSerializer(document).data)
+        prob = self.request.data.get("prob", 1)
+        user = self.request.data.get("user")
+        project = get_object_or_404(Project, pk=self.kwargs["project_id"])
+        annotation_class = project.get_annotation_class()
+        annotation_serializer = project.get_annotation_serializer()
+        query = annotation_class.objects.filter(
+            document_id=self.kwargs["doc_id"], user_id=user
+        )
+        query.update(prob=prob)
+        for anno in query:
+            anno.save()
+        data = annotation_serializer(
+            query, many=True, context={"request": request}
+        ).data
+
+        return Response(data)
 
 
 class LabelList(generics.ListCreateAPIView):
@@ -301,7 +314,7 @@ class AnnotationList(generics.ListCreateAPIView):
         project = get_object_or_404(Project, pk=self.kwargs["project_id"])
         model = project.get_annotation_class()
         queryset = model.objects.filter(document=self.kwargs["doc_id"])
-        
+
         role = RoleMapping.objects.get(user=self.request.user, project=project).role
         # If approver
         if role.name == settings.ROLE_ANNOTATION_APPROVER:

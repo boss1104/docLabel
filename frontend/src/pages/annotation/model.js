@@ -38,10 +38,10 @@ export default {
       const res = yield call(markCompleted, { projectId });
       return res;
     },
-    *markApproved(payload, { call, put, select }) {
+    *markApproved({ payload }, { call, put, select }) {
       const projectId = yield select(state => state.project.currentProject.id);
-      const { taskId } = payload;
-      const res = yield call(markApproved, { projectId, taskId });
+      const { taskId, user, prob } = payload;
+      const res = yield call(markApproved, { projectId, taskId, data: { prob, user } });
       return res;
     },
   },

@@ -265,22 +265,29 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   };
 
   const handleClickApproved = React.useCallback(async () => {
-    const isFinished = annotations[taskId] && annotations[taskId].finished;
+    const isFinished = annotations[taskId] && annotations[taskId][0].finished;
     if (isFinished) {
       try {
-        dispatch({
+        const res = await dispatch({
           type: 'annotation/markApproved',
           payload: {
             taskId,
+            user: annotationValue,
+            prob: 1,
           },
         });
+        setAnnotations({
+          ...annotations,
+          [taskId]: res,
+        });
+        message.success('Successfully approved!');
       } catch (error) {
         console.log('[DEBUG]: error', error);
       }
     } else {
       message.warn('Annotation did not confirm yet!');
     }
-  }, [taskId]);
+  }, [taskId, annotations, annotationValue]);
 
   const getAnnotationArea = projectType => {
     switch (projectType) {

@@ -36,8 +36,9 @@ export async function markCompleted({ projectId }) {
   });
 }
 
-export async function markApproved({ projectId, taskId }) {
+export async function markApproved({ projectId, taskId, data }) {
   return request(`/api/projects/${projectId}/docs/${taskId}/approve-labels/`, {
     method: 'POST',
+    data,
   });
 }

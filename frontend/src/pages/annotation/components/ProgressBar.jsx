@@ -1,8 +1,10 @@
 import React from 'react';
 import { Button, Card, Row, Col, Progress, Modal, Typography, Tooltip, Popconfirm } from 'antd';
 import Markdown from '@/components/Markdown';
+import { AnnotatationContext } from './AnnotationContext';
 
 function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, task }) {
+  const { annoList } = React.useContext(AnnotatationContext);
   // Modal
   const [visible, setVisible] = React.useState(false);
 
@@ -12,7 +14,7 @@ function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, ta
     (currentProject.current_users_role.is_annotation_approver ||
       currentProject.current_users_role.is_project_admin);
 
-  const isApproved = task && !!task.annotation_approver;
+  const isApproved = annoList && annoList[0].prob !== 0;
   return (
     <Card>
       <Row type="flex" gutter={[0, 24]} justify="space-between" align="middle">
@@ -42,13 +44,18 @@ function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, ta
             </Col>
             {isAnnotationApprover && (
               <Col>
-                <Tooltip title="Approved">
+                <Tooltip title={isApproved ? 'Approved' : 'UnApproved'}>
                   <Popconfirm
                     title="Are you sure approve this task?"
                     placement="topLeft"
                     onConfirm={onClickApproved}
+                    disabled={isApproved}
                   >
-                    <Button icon={isApproved ? 'check-circle' : 'question-circle'} size="large" />
+                    <Button
+                      icon={isApproved ? 'check-circle' : 'question-circle'}
+                      size="large"
+                      style={isApproved ? { color: '#00a854' } : {}}
+                    />
                   </Popconfirm>
                 </Tooltip>
               </Col>
