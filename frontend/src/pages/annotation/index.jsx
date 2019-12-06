@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Spin, notification } from 'antd';
+import { Layout, Spin, notification, message } from 'antd';
 import { router } from 'umi';
 
 import styles from './index.less';
@@ -11,6 +11,7 @@ import TextClassificationProject from './components/AnnotationArea/TextClassific
 import SequenceLabelingProject from './components/AnnotationArea/SequenceLabelingProject';
 import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
 import PdfLabelingProject from './components/AnnotationArea/PdfLabelingProject';
+import { AnnotatationProvider } from './components/AnnotationContext';
 
 const getSidebarTotal = (total, limit) => {
   if (total !== 0 && limit !== 0) {
@@ -57,19 +58,9 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   const [annotationValue, setAnnotationValue] = React.useState(null);
 
   const taskId = React.useMemo(() => Object.keys(taskList)[pageNumber], [pageNumber, taskList]);
-
   const hasData = currentProject && Object.keys(currentProject).length;
   const isApprover = hasData && currentProject.current_users_role.is_annotation_approver;
   const isNotApprover = hasData && !currentProject.current_users_role.is_annotation_approver;
-
-  /**
-   * Handler
-   */
-  const queryLabel = async () => {
-    const res = await dispatch({
-      type: 'label/fetch',
-    });
-  };
 
   const queryTask = async data => {
     try {
@@ -110,11 +101,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
   }, [currentProject]);
 
   React.useEffect(() => {
-    // Fetch guideline
-    queryLabel();
-  }, []);
-
-  React.useEffect(() => {
     if (isApprover && !!annotationValue) {
       queryTask({ user: annotationValue });
     } else if (isNotApprover) {
@@ -128,6 +114,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         type: 'dashboard/fetchStatistics',
         payload: {
           include: 'user_progress',
+          user: annotationValue,
         },
       });
       const { total, remaining: resRemaining } = res;
@@ -277,6 +264,24 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     setAnnotations(newAnno);
   };
 
+  const handleClickApproved = React.useCallback(async () => {
+    const isFinished = annotations[taskId] && annotations[taskId].finished;
+    if (isFinished) {
+      try {
+        dispatch({
+          type: 'annotation/markApproved',
+          payload: {
+            taskId,
+          },
+        });
+      } catch (error) {
+        console.log('[DEBUG]: error', error);
+      }
+    } else {
+      message.warn('Annotation did not confirm yet!');
+    }
+  }, [taskId]);
+
   const getAnnotationArea = projectType => {
     switch (projectType) {
       case 'TextClassificationProject':
@@ -330,46 +335,53 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         return null;
     }
   };
-  /**
-   * Variables
-   */
+
+  const getContext = () => ({
+    isApprover,
+    isNotApprover,
+    annoList: annotations[taskId],
+  });
 
   return (
-    <Layout hasSider className={styles.main}>
-      <SiderList
-        remaining={remaining}
-        onChangeKey={handleChangeKey}
-        onSearchChange={handleChangeSearch}
-        pageSize={sidebarTotal}
-        page={sidebarPage}
-        pageNumber={pageNumber}
-        annotations={annotations}
-        annoList={annotations[taskId]}
-        onSubmit={handleOnSubmit}
-        annotationValue={annotationValue}
-        setAnnotationValue={setAnnotationValue}
-      />
-      <Layout.Content className={styles.content}>
-        <Spin spinning={labelLoading || taskLoading} size="small">
-          <ProgressBar
-            totalTask={totalTask}
-            remaining={remaining}
-            currentProject={currentProject}
-          />
+    <AnnotatationProvider value={getContext()} {...props}>
+      <Layout hasSider className={styles.main}>
+        <SiderList
+          remaining={remaining}
+          onChangeKey={handleChangeKey}
+          onSearchChange={handleChangeSearch}
+          pageSize={sidebarTotal}
+          page={sidebarPage}
+          pageNumber={pageNumber}
+          annotations={annotations}
+          annoList={annotations[taskId]}
+          onSubmit={handleOnSubmit}
+          annotationValue={annotationValue}
+          setAnnotationValue={setAnnotationValue}
+        />
+        <Layout.Content className={styles.content}>
+          <Spin spinning={labelLoading || taskLoading} size="small">
+            <ProgressBar
+              totalTask={totalTask}
+              remaining={remaining}
+              onClickApproved={handleClickApproved}
+              currentProject={currentProject}
+              task={taskId ? taskList[taskId] : null}
+            />
 
-          {currentProject && getAnnotationArea(currentProject.project_type)}
-          <TaskPagination
-            onNextPage={handleNextPage}
-            onPrevPage={handlePrevPage}
-            total={pagination.total}
-            current={offset + pageNumber + 1}
-            onPrevPagination={handlePrevPagination}
-            onNextPagination={handleNextPagination}
-            pagination={pagination}
-          />
-        </Spin>
-      </Layout.Content>
-    </Layout>
+            {currentProject && getAnnotationArea(currentProject.project_type)}
+            <TaskPagination
+              onNextPage={handleNextPage}
+              onPrevPage={handlePrevPage}
+              total={pagination.total}
+              current={offset + pageNumber + 1}
+              onPrevPagination={handlePrevPagination}
+              onNextPagination={handleNextPagination}
+              pagination={pagination}
+            />
+          </Spin>
+        </Layout.Content>
+      </Layout>
+    </AnnotatationProvider>
   );
 });
 

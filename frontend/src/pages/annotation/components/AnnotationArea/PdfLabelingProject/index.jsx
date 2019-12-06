@@ -14,6 +14,7 @@ import { connect } from 'dva';
 import Sidebar from './Sidebar';
 import styles from './style.less';
 import Tip from './Tip';
+import { AnnotatationContext } from '../../AnnotationContext';
 
 const HighlightPopup = ({ label }) => {
   if (label && label.text) {
@@ -36,6 +37,7 @@ const PdfLabelingProject = connect(({ settings }) => ({
 }))(({ labelList, annoList = [], task, handleRemoveLabel, handleAddLabel, dark, pageNumber }) => {
   const [activeKey, setActiveKey] = React.useState('');
   const [currentAnno, setCurrentAnno] = React.useState(null);
+  const { isDisabled } = React.useContext(AnnotatationContext);
 
   const funcRef = React.useRef(handleAddLabel);
 
@@ -98,9 +100,6 @@ const PdfLabelingProject = connect(({ settings }) => ({
     }
   }, [currentAnno]);
 
-  const isDisabled = annoList[0] && annoList[0].finished;
-  // console.log('[DEBUG]: pageNumber', pageNumber);
-  console.log('[DEBUG]: activeKey', activeKey);
   return (
     <Card>
       <Layout className={styles.main}>

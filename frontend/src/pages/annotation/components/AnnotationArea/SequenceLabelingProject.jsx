@@ -6,9 +6,11 @@ import LabelList from '../LabelList';
 import LabelPreview from '../LabelPreview';
 import styles from './SequenceLabelingProject.less';
 import { useWhyDidYouUpdate } from '@/hooks';
+import { AnnotatationContext } from '../AnnotationContext';
 
 function SequenceLabelingProject(prs) {
   const { annoList = [], labelList = [], loading, task, handleRemoveLabel, handleAddLabel } = prs;
+  const { isDisabled } = React.useContext(AnnotatationContext);
 
   const [tag, setTag] = React.useState(null);
   // useWhyDidYouUpdate('SequenceLabelingProject', prs);
@@ -38,8 +40,6 @@ function SequenceLabelingProject(prs) {
   React.useEffect(() => {
     setTag(Object.values(labelList)[0]);
   }, [labelList]);
-
-  const isDisabled = annoList[0] && annoList[0].finished;
 
   const getTokenValue = () => {
     const list = [...annoList];

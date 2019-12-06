@@ -3,6 +3,7 @@ import { Row, Col, Tag, Empty, Spin, Card, Typography } from 'antd';
 import classNames from 'classnames';
 import LabelList from '../LabelList';
 import styles from './TextClassificationProject.less';
+import { AnnotatationContext } from '../AnnotationContext';
 
 function TextClassificationProject({
   annoList = [],
@@ -12,6 +13,8 @@ function TextClassificationProject({
   loading,
   task,
 }) {
+  const { isDisabled } = React.useContext(AnnotatationContext);
+
   const handleChooseLabel = labelKey => {
     const currentAnno = annoList;
     const anno = currentAnno.find(val => val.label === Number(labelKey));
@@ -22,7 +25,6 @@ function TextClassificationProject({
       handleAddLabel({ label: labelKey });
     }
   };
-  const isDisabled = annoList[0] && annoList[0].finished;
 
   return (
     <React.Fragment>

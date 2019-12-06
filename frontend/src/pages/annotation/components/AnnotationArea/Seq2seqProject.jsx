@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Empty, Spin, Card, Typography, List, Input, Button } from 'antd';
 import classNames from 'classnames';
 import styles from './Seq2seqProject.less';
+import { AnnotatationContext } from '../AnnotationContext';
 
 const { TextArea } = Input;
 
@@ -17,6 +18,8 @@ function Seq2seqProject({
   const [value, setValue] = React.useState('');
   const [newAnno, setNewAnno] = React.useState('');
   const [editedAnno, setEditedAnno] = React.useState(null);
+
+  const { isDisabled } = React.useContext(AnnotatationContext);
 
   /**
    * Handlers
@@ -55,7 +58,6 @@ function Seq2seqProject({
       setValue('');
     }
   };
-  const isDisabled = annoList[0] && annoList[0].finished;
 
   return (
     <React.Fragment>

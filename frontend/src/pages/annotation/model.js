@@ -1,4 +1,4 @@
-import { queryAnno, addAnno, removeAnno, editAnno, markCompleted } from './service';
+import { queryAnno, addAnno, removeAnno, editAnno, markCompleted, markApproved } from './service';
 
 export default {
   namespace: 'annotation',
@@ -36,6 +36,12 @@ export default {
     *markCompleted(_, { call, put, select }) {
       const projectId = yield select(state => state.project.currentProject.id);
       const res = yield call(markCompleted, { projectId });
+      return res;
+    },
+    *markApproved(payload, { call, put, select }) {
+      const projectId = yield select(state => state.project.currentProject.id);
+      const { taskId } = payload;
+      const res = yield call(markApproved, { projectId, taskId });
       return res;
     },
   },

@@ -75,12 +75,12 @@ urlpatterns = [
         AnnotationDetail.as_view(),
         name="annotation_detail",
     ),
-    # WORKDONE
     path(
         "projects/<int:project_id>/docs/<int:doc_id>/approve-labels/",
         ApproveLabelsAPI.as_view(),
         name="approve_labels",
     ),
+    # WORKDONE
     path(
         "projects/<int:project_id>/docs/download/",
         TextDownloadAPI.as_view(),

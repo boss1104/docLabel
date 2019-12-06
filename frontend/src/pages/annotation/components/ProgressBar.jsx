@@ -1,17 +1,18 @@
 import React from 'react';
-import { Button, Card, Row, Col, Progress, Modal, Typography, Tooltip } from 'antd';
+import { Button, Card, Row, Col, Progress, Modal, Typography, Tooltip, Popconfirm } from 'antd';
 import Markdown from '@/components/Markdown';
 
-function ProgressBar({ totalTask, remaining, currentProject }) {
+function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, task }) {
   // Modal
   const [visible, setVisible] = React.useState(false);
 
-  const approved = true;
-  const hasData = currentProject && Object.keys(currentProject).length;
+  const hasData = currentProject && !!Object.keys(currentProject).length;
   const isAnnotationApprover =
     hasData &&
     (currentProject.current_users_role.is_annotation_approver ||
       currentProject.current_users_role.is_project_admin);
+
+  const isApproved = task && !!task.annotation_approver;
   return (
     <Card>
       <Row type="flex" gutter={[0, 24]} justify="space-between" align="middle">
@@ -42,7 +43,13 @@ function ProgressBar({ totalTask, remaining, currentProject }) {
             {isAnnotationApprover && (
               <Col>
                 <Tooltip title="Approved">
-                  <Button icon={approved ? 'check-circle' : 'question-circle'} size="large" />
+                  <Popconfirm
+                    title="Are you sure approve this task?"
+                    placement="topLeft"
+                    onConfirm={onClickApproved}
+                  >
+                    <Button icon={isApproved ? 'check-circle' : 'question-circle'} size="large" />
+                  </Popconfirm>
                 </Tooltip>
               </Col>
             )}
