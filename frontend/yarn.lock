@@ -13734,6 +13734,18 @@ rc-animate@^3.0.0-rc.1:
     rc-util "^4.5.0"
     react-lifecycles-compat "^3.0.4"
 
+rc-banner-anim@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/rc-banner-anim/-/rc-banner-anim-2.4.2.tgz#3cfc33bbbdd4aa9b7b205a499f558b4ef83ae73c"
+  integrity sha512-lbm/DLIPWa+zrXIVpNB42M4nDVBPvrMrnnM2gF6R8x8ZVHYbQBCVPbu11b+r4JstiawJLdmI7KLlzOTyyljYUA==
+  dependencies:
+    babel-runtime "6.x"
+    prop-types "^15.5.0"
+    rc-tween-one "^2.4.0"
+    react-lifecycles-compat "^3.0.4"
+    style-utils "~0.2.0"
+    tween-functions "1.x"
+
 rc-calendar@~9.15.5:
   version "9.15.6"
   resolved "https://registry.yarnpkg.com/rc-calendar/-/rc-calendar-9.15.6.tgz#8823236728c3f892a822b9691ce85e1b2b308485"

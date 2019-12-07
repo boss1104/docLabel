@@ -4,13 +4,10 @@ import { connect } from 'dva';
 import styles from './style.less';
 import FilterForm from './components/FilterForm';
 import Projects from './components/Projects';
+import { useWhyDidYouUpdate } from '@/hooks';
 
-const Explore = connect(({ projects, loading }) => ({
-  projects,
-  loading: loading.models.projects,
-}))(props => {
+function Explore(props) {
   const { location } = props;
-
   return (
     <div className={styles.coverCardList}>
       <FilterForm location={location} />
@@ -19,6 +16,9 @@ const Explore = connect(({ projects, loading }) => ({
       </div>
     </div>
   );
-});
+}
 
-export default Explore;
+export default connect(({ projects, loading }) => ({
+  projects,
+  loading: loading.models.projects,
+}))(Explore);

@@ -73,43 +73,43 @@ if (isAntDesignProPreview) {
   plugins.push(['umi-plugin-antd-theme', themePluginConfig]);
 }
 
-// if (!TEST && !isAntDesignProPreview) {
-//   plugins.push([
-//     'umi-plugin-antd-theme',
-//     {
-//       theme: [
-//         {
-//           key: 'dark',
-//           fileName: 'dark.css',
-//           theme: 'dark',
-//         },
-//         {
-//           key: 'dust',
-//           fileName: 'dust.css',
-//           modifyVars: {
-//             '@primary-color': '#F5222D',
-//           },
-//         },
-//         {
-//           key: 'dust',
-//           theme: 'dark',
-//           fileName: 'dark-dust.css',
-//           modifyVars: {
-//             '@primary-color': '#F5222D',
-//           },
-//         },
-//         {
-//           key: 'volcano',
-//           theme: 'dark',
-//           fileName: 'dark-volcano.css',
-//           modifyVars: {
-//             '@primary-color': '#FA541C',
-//           },
-//         },
-//       ],
-//     },
-//   ]);
-// }
+if (!TEST && !isAntDesignProPreview) {
+  plugins.push([
+    'umi-plugin-antd-theme',
+    {
+      theme: [
+        {
+          key: 'dark',
+          fileName: 'dark.css',
+          theme: 'dark',
+        },
+        {
+          key: 'dust',
+          fileName: 'dust.css',
+          modifyVars: {
+            '@primary-color': '#F5222D',
+          },
+        },
+        {
+          key: 'dust',
+          theme: 'dark',
+          fileName: 'dark-dust.css',
+          modifyVars: {
+            '@primary-color': '#F5222D',
+          },
+        },
+        {
+          key: 'volcano',
+          theme: 'dark',
+          fileName: 'dark-volcano.css',
+          modifyVars: {
+            '@primary-color': '#FA541C',
+          },
+        },
+      ],
+    },
+  ]);
+}
 
 export default {
   plugins,
@@ -164,6 +164,7 @@ export default {
       return localName;
     },
   },
+  // cssModulesExcludes: ['./src/pages/Home/less/antMotionStyle.less'],
   manifest: {
     basePath: '/app/',
   },

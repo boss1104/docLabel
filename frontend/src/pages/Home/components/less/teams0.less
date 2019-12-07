@@ -1,0 +1,70 @@
+@teams0: teams0;
+
+.@{teams0}-wrapper {
+  height: 430px;
+  .@{teams0} {
+    display: flex;
+    align-items: flex-end;
+    padding: 64px 24px;
+    .banner-anim {
+      width: 100%;
+      height: 100%;
+    }
+    .banner-anim-thumb {
+      span {
+        background: #e9e9e9;
+        box-shadow: none;
+        &.active {
+          background: @primary-color;
+        }
+      }
+    }
+    & .queue-anim-leaving {
+      position: relative !important;
+    }
+
+    &-banner-user-elem {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      color: #fff;
+    }
+    &-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 120px;
+      height: 120px;
+      margin: auto;
+      margin-bottom: 24px;
+      overflow: hidden;
+      border-radius: 100%;
+      img {
+        height: 100%;
+      }
+    }
+    &-content {
+      width: 80%;
+      margin: 8px auto;
+      color: #919191;
+      font-size: 12px;
+      text-align: center;
+    }
+    &-h1 {
+      width: 80%;
+      margin: 24px auto 0;
+      font-size: 24px;
+      text-align: center;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .@{teams0}-wrapper {
+    min-height: 480px;
+
+    .@{teams0} {
+      display: block;
+    }
+  }
+}

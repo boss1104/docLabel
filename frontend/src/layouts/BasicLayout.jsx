@@ -102,9 +102,9 @@ const BasicLayout = props => {
 
   useEffect(() => {
     if (dispatch) {
-      // dispatch({
-      //   type: 'settings/getSetting',
-      // });
+      dispatch({
+        type: 'settings/getSetting',
+      });
     }
   }, []);
   /**
@@ -137,16 +137,7 @@ const BasicLayout = props => {
 
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
-      breadcrumbRender={(routers = []) => [
-        // {
-        //   path: '/app',
-        //   breadcrumbName: formatMessage({
-        //     id: 'menu.home',
-        //     defaultMessage: 'Home',
-        //   }),
-        // },
-        ...routers,
-      ]}
+      breadcrumbRender={(routers = []) => [...routers]}
       itemRender={(route, params, routes, paths) => {
         const first = routes.indexOf(route) === 0;
         return first ? (

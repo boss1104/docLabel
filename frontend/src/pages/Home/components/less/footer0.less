@@ -1,0 +1,28 @@
+.footer0-wrapper {
+  height: 80px;
+  overflow: hidden;
+  background-color: @template-bg-color;
+  .footer0 {
+    position: relative;
+    height: 100%;
+    padding: 0 24px;
+    color: @template-footer-text-color;
+    line-height: 80px;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .footer0-wrapper {
+    .footer0 {
+      font-size: 12px;
+      &.home-page {
+        padding: 0;
+      }
+      > div {
+        width: 90%;
+        margin: auto;
+      }
+    }
+  }
+}
