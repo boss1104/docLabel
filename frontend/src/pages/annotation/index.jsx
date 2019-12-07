@@ -67,7 +67,10 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       const q = searchQuery ? { q: searchQuery } : {};
       const res = await dispatch({
         type: 'task/fetch',
-        payload: { params: { offset: query.offset, ...q }, data },
+        payload: {
+          params: { offset: query.offset, ...q },
+          data,
+        },
       });
 
       // Then

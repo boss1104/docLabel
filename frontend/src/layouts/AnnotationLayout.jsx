@@ -114,10 +114,18 @@ const AnnotationLayout = connect(({ global, settings }) => ({
           payload: projectId,
         });
       }
-      dispatch({
-        type: 'settings/getSetting',
-      });
     }
+    return () => {
+      dispatch({
+        type: 'project/cleanProject',
+      });
+    };
+  }, [projectId]);
+
+  React.useEffect(() => {
+    dispatch({
+      type: 'settings/getSetting',
+    });
   }, []);
   /**
    * init variables

@@ -28,14 +28,21 @@ const UserModel = {
       });
       return ret;
     },
+    *cleanProject({ payload }, { put }) {
+      yield put({
+        type: 'saveCurrentProject',
+        payload: {},
+      });
+    },
   },
   reducers: {
-    saveCurrentProject(state, action) {
-      const authority = Object.keys(action.payload.current_users_role).filter(
-        item => action.payload.current_users_role[item],
-      );
+    saveCurrentProject(state, { payload }) {
+      const authority =
+        Object.keys(payload).length > 0
+          ? Object.keys(payload.current_users_role).filter(item => payload.current_users_role[item])
+          : '';
       setAuthority(authority);
-      return { ...state, currentProject: action.payload || {} };
+      return { ...state, currentProject: payload || {} };
     },
     changeProjectState(state, action) {
       return { ...state, ...action.payload };

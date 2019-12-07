@@ -7,8 +7,7 @@ export default {
   },
   effects: {
     *queryAnno({ payload }, { call, put, select }) {
-      const projectId = yield select(state => state.project.currentProject.id);
-      const { docId, data } = payload;
+      const { projectId, docId, data } = payload;
       const res = yield call(addAnno, { projectId, docId, data });
       return res;
     },
