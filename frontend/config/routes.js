@@ -135,7 +135,7 @@ export default [
           {
             path: '/home',
             name: 'home',
-            icon: 'smile',
+            icon: 'home',
             component: './Home',
           },
           {
@@ -147,7 +147,7 @@ export default [
           {
             name: 'account-center',
             path: '/account/center',
-            icon: 'profile',
+            icon: 'smile',
             component: './account/center',
           },
           {
