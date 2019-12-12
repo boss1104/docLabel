@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { queryCurrent, query as queryUsers } from '@/services/user';
 
 const UserModel = {
@@ -16,25 +15,12 @@ const UserModel = {
     },
 
     *fetchCurrent(_, { call, put }) {
-      try {
-        const response = yield call(queryCurrent);
-        yield put({
-          type: 'saveCurrentUser',
-          payload: response,
-        });
-      } catch (error) {
-        if (error.data) {
-          const { detail } = error.data;
-          message.error(detail);
-        }
-        yield put({
-          type: 'changeLoginStatus',
-          payload: {
-            // No Token
-            currentAuthority: 'guest',
-          },
-        });
-      }
+      const res = yield call(queryCurrent);
+      yield put({
+        type: 'saveCurrentUser',
+        payload: res,
+      });
+      return res;
     },
   },
   reducers: {

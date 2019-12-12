@@ -9,6 +9,7 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
+import router from 'umi/router';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -29,15 +30,23 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
-const menuDataRender = menuList =>
-  menuList.map(item => {
+const menuDataRender = menuList => {
+  console.log('[DEBUG]: menuList', menuList);
+  const isLogin = false;
+  return menuList.map($item => {
+    const item = { ...$item };
+    if (!isLogin && item.name !== 'home') {
+      item.hideInMenu = true;
+    }
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+
     return Authorized.check(item.authority, localItem, null);
   });
+};
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
+    copyright="2019 ICT"
     links={[
       {
         key: 'Ant Design Pro',
@@ -121,7 +130,7 @@ const BasicLayout = props => {
   };
 
   // get children authority
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/app') || {
     authority: undefined,
   };
 

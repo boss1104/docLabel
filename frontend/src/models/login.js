@@ -1,6 +1,5 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'querystring';
-import { message } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 
 import { accountLogin, accountLogout } from '@/services/login';
@@ -53,6 +52,7 @@ const Model = {
       });
       reloadAuthorized();
       setAuthority();
+      setAuthorization();
       if (window.location.pathname !== '/user/login' && !redirect) {
         yield put(
           routerRedux.replace({
@@ -63,11 +63,11 @@ const Model = {
           }),
         );
       }
-      message.success(
-        formatMessage({
-          id: 'user-login.login.logout-message',
-        }),
-      );
+      // message.success(
+      //   formatMessage({
+      //     id: 'user-login.login.logout-message',
+      //   }),
+      // );
     },
   },
   reducers: {

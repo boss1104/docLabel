@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Icon, Tag } from 'antd';
 
 export const PAGE_SIZE = 6;

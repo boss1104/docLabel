@@ -78,13 +78,9 @@ class AvatarDropdown extends React.Component {
         </span>
       </HeaderDropdown>
     ) : (
-      <Spin
-        size="small"
-        style={{
-          marginLeft: 8,
-          marginRight: 8,
-        }}
-      />
+      <span className={`${styles.action}`} onClick={() => router.push('/user/login')}>
+        Login
+      </span>
     );
   }
 }

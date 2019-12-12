@@ -125,6 +125,7 @@ export default [
             hideInMenu: true,
             path: '/annotation/:id',
             component: './annotation',
+            authority: ['is_project_admin', 'is_annotator', 'is_annotation_approver'],
           },
         ],
       },
@@ -132,6 +133,10 @@ export default [
         path: '/',
         component: '../layouts/BasicLayout',
         routes: [
+          {
+            path: '/',
+            redirect: '/home',
+          },
           {
             path: '/home',
             name: 'home',
@@ -155,10 +160,6 @@ export default [
             hideInMenu: true,
             path: '/account/settings',
             component: './account/settings',
-          },
-          {
-            path: '/',
-            redirect: '/home',
           },
         ],
       },

@@ -5,6 +5,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { router } from 'umi';
+import { Icon } from 'antd';
 import SelectLang from '@/components/SelectLang';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
@@ -47,6 +48,32 @@ const UserLayout = props => {
     ...props,
   });
 
+  const defaultFooterDom = (
+    <DefaultFooter
+      copyright="2019 ICT"
+      links={[
+        {
+          key: 'Ant Design Pro',
+          title: 'Ant Design Pro',
+          href: 'https://pro.ant.design',
+          blankTarget: true,
+        },
+        {
+          key: 'github',
+          title: <Icon type="github" />,
+          href: 'https://github.com/ant-design/ant-design-pro',
+          blankTarget: true,
+        },
+        {
+          key: 'Ant Design',
+          title: 'Ant Design',
+          href: 'https://ant.design',
+          blankTarget: true,
+        },
+      ]}
+    />
+  );
+
   return (
     <React.Fragment>
       <Helmet>
@@ -61,16 +88,16 @@ const UserLayout = props => {
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>
-              <Link to="/">
+              <Link to="/home">
                 <img alt="logo" className={styles.logo} src={logo} />
                 <span className={styles.title}>Doclabel</span>
               </Link>
             </div>
-            <div className={styles.desc}>Doclabel</div>
+            <div className={styles.desc}>{`${'The text annotation for your teams'}`}</div>
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        {defaultFooterDom}
       </div>
     </React.Fragment>
   );

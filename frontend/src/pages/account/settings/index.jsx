@@ -47,9 +47,6 @@ class Settings extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
 
-    dispatch({
-      type: 'accountSettings/fetchCurrent',
-    });
     window.addEventListener('resize', this.resize);
     this.resize();
   }

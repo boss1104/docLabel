@@ -13,4 +13,5 @@ export default {
   title: 'Doclabel',
   pwa: false,
   iconfontUrl: '',
+  basePath: '/app/',
 };

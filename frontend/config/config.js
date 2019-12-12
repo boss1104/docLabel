@@ -6,7 +6,7 @@ import themePluginConfig from './themePluginConfig'; // import darkTheme from '@
 import webpackPlugin from './plugin.config';
 import routes from './routes';
 
-const { pwa, primaryColor } = defaultSettings;
+const { pwa, primaryColor, basePath } = defaultSettings;
 // preview.pro.ant.design only do not use in your production ;
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, TEST } = process.env;
@@ -166,9 +166,9 @@ export default {
   },
   // cssModulesExcludes: ['./src/pages/Home/less/antMotionStyle.less'],
   manifest: {
-    basePath: '/app/',
+    basePath,
   },
-  base: '/app/',
+  base: basePath,
   publicPath: '/static/',
   urlLoaderExcludes: [/\.txt$/, /\.jsonl$/, /\.csv$/, /\.xlsx$/, /\.conll$/],
   chainWebpack: webpackPlugin,
