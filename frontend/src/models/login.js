@@ -1,13 +1,7 @@
 import { routerRedux } from 'dva/router';
-import { stringify } from 'querystring';
-import { formatMessage } from 'umi-plugin-react/locale';
-
 import { accountLogin, accountLogout } from '@/services/login';
 import { setAuthorization, setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
-// import { reloadAuthorized } from '@/utils/Authorized';
-// import { reloadAuthorizationInterceptors } from '@/utils/request';
 
 const Model = {
   namespace: 'login',
@@ -44,30 +38,18 @@ const Model = {
     },
 
     *logout(_, { call, put }) {
-      const { redirect } = getPageQuery(); // redirect
-      const response = yield call(accountLogout);
+      const res = yield call(accountLogout);
       yield put({
         type: 'changeLoginStatus',
         payload: {},
       });
-      reloadAuthorized();
+      yield put({
+        type: 'user/saveCurrentUser',
+        payload: {},
+      });
       setAuthority();
-      setAuthorization();
-      if (window.location.pathname !== '/user/login' && !redirect) {
-        yield put(
-          routerRedux.replace({
-            pathname: '/user/login',
-            search: stringify({
-              redirect: window.location.href,
-            }),
-          }),
-        );
-      }
-      // message.success(
-      //   formatMessage({
-      //     id: 'user-login.login.logout-message',
-      //   }),
-      // );
+      reloadAuthorized();
+      return res;
     },
   },
   reducers: {

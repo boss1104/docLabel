@@ -9,7 +9,6 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
-import router from 'umi/router';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -30,19 +29,19 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
-const menuDataRender = menuList => {
-  console.log('[DEBUG]: menuList', menuList);
-  const isLogin = false;
-  return menuList.map($item => {
+const menuDataRender = (menuList, isLogin) =>
+  menuList.map($item => {
     const item = { ...$item };
     if (!isLogin && item.name !== 'home') {
       item.hideInMenu = true;
     }
-    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    const localItem = {
+      ...item,
+      children: item.children ? menuDataRender(item.children, isLogin) : [],
+    };
 
     return Authorized.check(item.authority, localItem, null);
   });
-};
 
 const defaultFooterDom = (
   <DefaultFooter
@@ -104,6 +103,7 @@ const BasicLayout = props => {
     location = {
       pathname: '/app',
     },
+    currentUser,
   } = props;
   /**
    * constructor
@@ -134,11 +134,13 @@ const BasicLayout = props => {
     authority: undefined,
   };
 
+  const isLogin = currentUser && currentUser.id;
+
   return (
     <ProLayout
       logo={logo}
       onCollapse={handleMenuCollapse}
-      menuDataRender={menuDataRender}
+      menuDataRender={menuList => menuDataRender(menuList, isLogin)}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
@@ -168,7 +170,8 @@ const BasicLayout = props => {
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({ global, settings, user }) => ({
   collapsed: global.collapsed,
   settings,
+  currentUser: user.currentUser,
 }))(BasicLayout);

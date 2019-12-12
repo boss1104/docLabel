@@ -20,7 +20,7 @@ const SecurityLayout = props => {
       }
     };
 
-    if (dispatch && !isHome) {
+    if (dispatch) {
       fetchCurrentUser();
     }
 

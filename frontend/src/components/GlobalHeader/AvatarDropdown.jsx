@@ -1,22 +1,39 @@
-import { Avatar, Icon, Menu, Spin } from 'antd';
-import { FormattedMessage } from 'umi-plugin-react/locale';
-import React from 'react';
+import { Avatar, Icon, Menu, message } from 'antd';
 import { connect } from 'dva';
+import { stringify } from 'querystring';
+import React from 'react';
+import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import router from 'umi/router';
+import { getPageQuery } from '@/utils/utils';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
 class AvatarDropdown extends React.Component {
-  onMenuClick = event => {
+  onMenuClick = async event => {
     const { key } = event;
 
     if (key === 'logout') {
       const { dispatch } = this.props;
 
       if (dispatch) {
-        dispatch({
+        await dispatch({
           type: 'login/logout',
         });
+
+        const { redirect } = getPageQuery(); // redirect
+        if (window.location.pathname !== '/user/login' && !redirect) {
+          router.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: window.location.href,
+            }),
+          });
+        }
+        message.success(
+          formatMessage({
+            id: 'user-login.login.logout-message',
+          }),
+        );
       }
 
       return;
@@ -70,7 +87,7 @@ class AvatarDropdown extends React.Component {
         </Menu.Item>
       </Menu>
     );
-    return currentUser && currentUser.full_name ? (
+    return currentUser && currentUser.id && currentUser.full_name ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size="small" className={styles.avatar} src={this.getAvatarURL()} alt="avatar" />
