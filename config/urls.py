@@ -13,7 +13,7 @@ from rest_framework import routers
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from doclabel.users.views import UserViewSet
+from doclabel.users.views import UserViewSet, FacebookLogin, GitHubLogin, GoogleLogin
 
 
 class APIRoot(routers.APIRootView):
@@ -66,6 +66,9 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),
     path("accounts/", include("allauth.urls")),
     path("api/", include("rest_auth.urls")),
+    path("api/facebook/", FacebookLogin.as_view(), name="fb_login"),
+    path("api/github/", GitHubLogin.as_view(), name="github_login"),
+    path("api/google/", GoogleLogin.as_view(), name="google_login"),
     path("api/registration/", include("rest_auth.registration.urls")),
     path(
         "graphql/",

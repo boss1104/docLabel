@@ -47,21 +47,25 @@ function SampleNextArrow(props) {
 function ProjectsBanner(props) {
   const data = [
     {
+      key: '#1',
       image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
       title: 'Team Collaboration',
       description: 'Annotation with your teammates',
     },
     {
+      key: '#2',
       image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
       title: 'Team Collaboration 2',
       description: 'Annotation with your teammates 2',
     },
     {
+      key: '#3',
       image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
       title: 'Team Collaboration 3',
       description: 'Annotation with your teammates 3',
     },
     {
+      key: '#4',
       image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
       title: 'Team Collaboration 4',
       description: 'Annotation with your teammates 4',
@@ -83,7 +87,7 @@ function ProjectsBanner(props) {
     <div className={styles.projectsBanner}>
       <Carousel {...settings}>
         {data.map(item => (
-          <React.Fragment>
+          <React.Fragment key={item.key}>
             <Card
               className={styles.card}
               hoverable

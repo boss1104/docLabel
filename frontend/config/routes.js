@@ -29,6 +29,11 @@ export default [
         component: './user/register-confirm',
       },
       {
+        name: 'oauth',
+        path: '/user/oauth/:key',
+        component: './user/oauth',
+      },
+      {
         component: './exception/404',
       },
     ],

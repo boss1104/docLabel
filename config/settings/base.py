@@ -71,8 +71,9 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    # "allauth.socialaccount.providers.facebook",
-    # "allauth.socialaccount.providers.twitter",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
+    "allauth.socialaccount.providers.facebook",
     "rest_framework",
     "rest_framework.authtoken",
     "rest_auth",
@@ -311,6 +312,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 REST_SESSION_LOGIN = False
 
+SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": ["user", "repo", "user:email"]}}
 
 # django-compressor
 # ------------------------------------------------------------------------------

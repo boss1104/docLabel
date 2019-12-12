@@ -8,16 +8,19 @@ function FeatureCards(props) {
 
   const data = [
     {
+      key: '#1',
       icon: 'team',
       title: 'Team Collaboration',
       description: 'Annotation with team collaboration',
     },
     {
+      key: '#2',
       icon: 'team',
       title: 'Team Collaboration',
       description: 'Annotation with team collaboration',
     },
     {
+      key: '#3',
       icon: 'team',
       title: 'Team Collaboration',
       description: 'Annotation with team collaboration',
@@ -31,7 +34,7 @@ function FeatureCards(props) {
       </Typography.Title>
       <Row type="flex" align="middle" justify="center" gutter={[24, 24]}>
         {data.map(item => (
-          <Col xs={24} md={8}>
+          <Col xs={24} md={8} key={item.key}>
             <Card
               hoverable
               cover={<Icon type="smile" theme="twoTone" className={styles.cardCover} />}

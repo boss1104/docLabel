@@ -1,10 +1,13 @@
-import { Alert, Checkbox, Button, message } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
-import React, { Component } from 'react';
-import Link from 'umi/link';
+import { Alert, Col, Icon, message, Row, Button } from 'antd';
 import { connect } from 'dva';
+import React, { Component } from 'react';
+import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
+import Link from 'umi/link';
+import NewWindow from 'react-new-window';
+import { router } from 'umi';
 import LoginComponents from './components/Login';
 import styles from './style.less';
+import { loginProviders, loginProviderSettings } from '@/pages/constants';
 
 const { Username, Password, Submit } = LoginComponents;
 
@@ -13,9 +16,10 @@ const nonFieldErrors = {
   'Unable to log in with provided credentials.': 'user-login.login.invalid-credentials',
 };
 
-@connect(({ login, loading }) => ({
+@connect(({ login, loading, oauth }) => ({
   userLogin: login,
   submitting: loading.effects['login/login'],
+  opened: oauth.opened,
 }))
 class Login extends Component {
   loginForm = undefined;
@@ -23,7 +27,20 @@ class Login extends Component {
   state = {
     autoLogin: true,
     error: false,
+    key: 'google',
   };
+
+  componentDidMount() {
+    window.addEventListener('storage', event => {
+      if (event.key === 'antd-pro-authorization') {
+        router.replace('/');
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('storage', () => {});
+  }
 
   changeAutoLogin = e => {
     this.setState({
@@ -64,9 +81,36 @@ class Login extends Component {
     />
   );
 
+  handlePortalLogin = $key => {
+    const { dispatch } = this.props;
+    this.setState({ key: $key });
+    dispatch({
+      type: 'oauth/changeOAuth',
+      payload: {
+        opened: true,
+      },
+    });
+  };
+
+  newWindowUnloaded = data => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'oauth/changeOAuth',
+      payload: {
+        opened: false,
+      },
+    });
+  };
+
+  getUrl = () => {
+    const { key } = this.state;
+    const { authorizationUri, scope, clientId } = loginProviderSettings[key];
+    return `${authorizationUri}?scope=${scope}&client_id=${clientId}`;
+  };
+
   render() {
-    const { submitting } = this.props;
-    const { type, autoLogin, error } = this.state;
+    const { submitting, opened } = this.props;
+    const { type, autoLogin, error, key } = this.state;
     return (
       <div className={styles.main}>
         <LoginComponents
@@ -145,27 +189,38 @@ class Login extends Component {
               }
             }}
           />
-          <div>
-            <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
+          <Row type="flex" justify="end">
+            {/* <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="user-login.login.remember-me" />
-            </Checkbox>
-            <a
-              style={{
-                float: 'right',
-              }}
-              href=""
-            >
-              <FormattedMessage id="user-login.login.forgot-password" />
-            </a>
-          </div>
+            </Checkbox> */}
+            <Col>
+              <Link className={styles.forgotPassword} to="/user/forgot-password">
+                <FormattedMessage id="user-login.login.forgot-password" />
+              </Link>
+            </Col>
+          </Row>
           <Submit loading={submitting}>
             <FormattedMessage id="user-login.login.login" />
           </Submit>
           <div className={styles.other}>
+            {opened && (
+              <NewWindow
+                url={this.getUrl()}
+                title={`Social login with ${loginProviders[key].title}`}
+                onUnload={() => this.newWindowUnloaded()}
+                features={{ left: 200, top: 200, width: 500, height: 650 }}
+              />
+            )}
             <FormattedMessage id="user-login.login.sign-in-with" />
-            {/* <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
-            <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
-            <Icon type="weibo-circle" className={styles.icon} theme="outlined" /> */}
+            {Object.entries(loginProviders).map(([$key, val]) => (
+              <Icon
+                key={$key}
+                type={val.type}
+                className={styles.icon}
+                theme={val.theme}
+                onClick={() => this.handlePortalLogin($key)}
+              />
+            ))}
             <Link className={styles.register} to="/user/register">
               <FormattedMessage id="user-login.login.signup" />
             </Link>

@@ -37,3 +37,51 @@ export const ROLE_LABELS = {
   annotator: 'Annotator',
   annotation_approver: 'Annotation Approver',
 };
+
+export const loginProviderSettings = {
+  google: {
+    authorizationUri:
+      'https://google.com/login/oauth/authorize?scope=user&client_id=821fd7d157afbca77993',
+    scope: 'user:email',
+    clientId: '821fd7d157afbca77993',
+    clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
+    state: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae821fd7d157afbca77993',
+    redirectUri: 'http://localhost:8001/app/user/oauth/github',
+  },
+  github: {
+    authorizationUri: 'https://github.com/login/oauth/authorize',
+    scope: 'user:email',
+    clientId: '821fd7d157afbca77993',
+    clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
+    state: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae821fd7d157afbca77993',
+    redirectUri: 'http://localhost:8001/app/user/oauth/github',
+  },
+  facebook: {
+    authorizationUri:
+      'https://facebook.com/login/oauth/authorize?scope=user&client_id=821fd7d157afbca77993',
+    scope: 'user:email',
+    clientId: '821fd7d157afbca77993',
+    clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
+    state: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae821fd7d157afbca77993',
+
+    redirectUri: 'http://localhost:8001/app/user/oauth/github',
+  },
+};
+
+export const loginProviders = {
+  google: {
+    title: 'Google',
+    type: 'google-circle',
+    theme: 'filled',
+  },
+  github: {
+    title: 'GitHub',
+    type: 'github',
+    theme: 'filled',
+  },
+  facebook: {
+    title: 'Facebook',
+    type: 'facebook',
+    theme: 'filled',
+  },
+};
