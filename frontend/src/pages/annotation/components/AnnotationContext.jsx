@@ -13,6 +13,11 @@ const AnnotatationProvider = props => {
       });
     };
     queryLabel();
+    return () => {
+      dispatch({
+        type: 'label/reset',
+      });
+    };
   }, []);
 
   const isDisabled = (annoList[0] && annoList[0].finished) || isApprover;

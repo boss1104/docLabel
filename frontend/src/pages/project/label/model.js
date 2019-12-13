@@ -55,6 +55,12 @@ const Model = {
       const response = yield call(removeRule, payload);
       if (callback) callback();
     },
+    *reset(_, { put }) {
+      yield put({
+        type: 'save',
+        payload: [],
+      });
+    },
   },
   reducers: {
     save(state, action) {

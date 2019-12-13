@@ -43,12 +43,20 @@ const Model = {
       }
       yield call(removeTask, { projectId, ...payload });
     },
-
     *update({ payload }, { call, put }) {
       const response = yield call(updateTask, payload);
       yield put({
         type: 'save',
         payload: response,
+      });
+    },
+    *reset(_, { put }) {
+      yield put({
+        type: 'save',
+        payload: {
+          list: {},
+          pagination: {},
+        },
       });
     },
   },

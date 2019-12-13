@@ -109,6 +109,11 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     } else if (isNotApprover) {
       queryTask();
     }
+    return () => {
+      dispatch({
+        type: 'task/reset',
+      });
+    };
   }, [query, annotationValue]);
 
   React.useEffect(() => {
@@ -125,6 +130,12 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       setRemaining(resRemaining);
     };
     queryStatistics();
+
+    return () => {
+      dispatch({
+        type: 'dashboard/reset',
+      });
+    };
   }, [annotations]);
 
   const handleChangeKey = key => {

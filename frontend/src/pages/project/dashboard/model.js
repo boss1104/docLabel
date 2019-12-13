@@ -26,6 +26,14 @@ const Model = {
         return error.data;
       }
     },
+    *reset(_, { put }) {
+      yield put({
+        type: 'changeDashboard',
+        payload: {
+          statistics: {},
+        },
+      });
+    },
   },
   reducers: {
     changeDashboard(state, action) {
