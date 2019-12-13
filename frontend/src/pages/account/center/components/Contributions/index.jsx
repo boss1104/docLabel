@@ -52,58 +52,65 @@ const Contributions = connect(({ user, accountCenter, loading }) => ({
           total: pagination.count,
           current: pc ? Number(pc) : 1,
         }}
-        renderItem={item => (
-          <List.Item key={item.id}>
-            <Card
-              hoverable
-              bodyStyle={{
-                paddingBottom: 20,
-              }}
-              actions={[
-                <Tooltip title="Contribute" key="contribute">
-                  <Icon
-                    type="highlight"
-                    theme="twoTone"
-                    onClick={() => router.push(`/annotation/${item.id}`)}
-                  />
-                </Tooltip>,
-                <Tooltip title="Share" key="share">
-                  <Icon type="share-alt" />
-                </Tooltip>,
-              ]}
-            >
-              <Card.Meta
-                avatar={<Avatar src={item.image} />}
-                title={item.name}
-                description={
-                  <Row gutter={16} type="flex" justify="space-between">
-                    <Col>
-                      <Typography.Text strong>
-                        {PROJECT_TYPE[item.project_type].tag}
-                      </Typography.Text>
-                    </Col>
-                    <Col>{item.public ? 'Published' : 'Unpublished'}</Col>
+        renderItem={item => {
+          const stat = item.project_stat;
+          const isDone = stat.remaining === 0;
+          const taskNumber = stat && stat.doc_stat && `${Object.keys(stat.doc_stat).length}`;
+          const completeStatus = `${stat.total - stat.remaining}/${stat.total}`;
+          return (
+            <List.Item key={item.id}>
+              <Card
+                hoverable
+                bodyStyle={{
+                  paddingBottom: 20,
+                }}
+                actions={[
+                  <Tooltip title="Contribute" key="contribute">
+                    <Icon
+                      type="highlight"
+                      theme="twoTone"
+                      onClick={() => router.push(`/annotation/${item.id}`)}
+                    />
+                  </Tooltip>,
+                  <Tooltip title="Share" key="share">
+                    <Icon type="share-alt" />
+                  </Tooltip>,
+                ]}
+              >
+                <Card.Meta
+                  avatar={<Avatar src={item.image} />}
+                  title={item.name}
+                  description={
+                    <Row gutter={16} type="flex" justify="space-between">
+                      <Col>
+                        <Typography.Text strong>
+                          {PROJECT_TYPE[item.project_type].tag}
+                        </Typography.Text>
+                      </Col>
+                      <Col>{isDone ? 'Done' : 'On progress'}</Col>
+                    </Row>
+                  }
+                />
+                <div className={styles.cardInfo}>
+                  <div className={styles.paragraph}>
+                    <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                      {item.description}
+                    </Typography.Paragraph>
+                  </div>
+                  <Row type="flex" gutter={16} justify="end">
+                    <Col>{moment(item.updated_at).fromNow()}</Col>
                   </Row>
-                }
-              />
-              <div className={styles.cardInfo}>
-                <div className={styles.paragraph}>
-                  <Typography.Paragraph ellipsis={{ rows: 3 }}>
-                    {item.description}
-                  </Typography.Paragraph>
+                  <Row type="flex" gutter={16}>
+                    <Col span={12}>
+                      {taskNumber} {taskNumber === 1 ? ' task' : ' tasks'}
+                    </Col>
+                    <Col span={12}>{completeStatus} done</Col>
+                  </Row>
                 </div>
-                <Row type="flex" gutter={16} justify="end">
-                  <Col>{moment(item.updated_at).fromNow()}</Col>
-                </Row>
-                <Row type="flex" gutter={16}>
-                  <Col span={8}>task_number</Col>
-                  <Col span={8}>complete status</Col>
-                  <Col span={8}>contributors</Col>
-                </Row>
-              </div>
-            </Card>
-          </List.Item>
-        )}
+              </Card>
+            </List.Item>
+          );
+        }}
       />
     </React.Fragment>
   );

@@ -56,57 +56,68 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
           total: pagination.count,
           current: pp ? Number(pp) : 1,
         }}
-        renderItem={item => (
-          <List.Item key={item.id}>
-            <Card
-              hoverable
-              bodyStyle={{
-                paddingBottom: 20,
-              }}
-              actions={[
-                <Tooltip title="Edit" key="edit">
-                  <Icon type="edit" onClick={() => router.push(`/projects/${item.id}/dashboard`)} />
-                </Tooltip>,
-                <Tooltip title="Download" key="download">
-                  <Icon type="download" />
-                </Tooltip>,
-                <Tooltip title="Share" key="share">
-                  <Icon type="share-alt" />
-                </Tooltip>,
-              ]}
-            >
-              <Card.Meta
-                avatar={<Avatar src={item.image} />}
-                title={item.name}
-                description={
-                  <Row gutter={16} type="flex" justify="space-between">
-                    <Col>
-                      <Typography.Text strong>
-                        {PROJECT_TYPE[item.project_type].tag}
-                      </Typography.Text>
-                    </Col>
-                    <Col>{item.public ? 'Published' : 'Unpublished'}</Col>
+        renderItem={item => {
+          const stat = item.project_stat;
+          const taskNumber = stat && stat.doc_stat && `${Object.keys(stat.doc_stat).length}`;
+          const completeStatus = `${stat.total - stat.remaining}/${stat.total}`;
+          const contributors = item && item.users && Object.keys(item.users).length;
+          return (
+            <List.Item key={item.id}>
+              <Card
+                hoverable
+                bodyStyle={{
+                  paddingBottom: 20,
+                }}
+                actions={[
+                  <Tooltip title="Edit" key="edit">
+                    <Icon
+                      type="edit"
+                      onClick={() => router.push(`/projects/${item.id}/dashboard`)}
+                    />
+                  </Tooltip>,
+                  <Tooltip title="Download" key="download">
+                    <Icon type="download" />
+                  </Tooltip>,
+                  <Tooltip title="Share" key="share">
+                    <Icon type="share-alt" />
+                  </Tooltip>,
+                ]}
+              >
+                <Card.Meta
+                  avatar={<Avatar src={item.image} />}
+                  title={item.name}
+                  description={
+                    <Row gutter={16} type="flex" justify="space-between">
+                      <Col>
+                        <Typography.Text strong>
+                          {PROJECT_TYPE[item.project_type].tag}
+                        </Typography.Text>
+                      </Col>
+                      <Col>{item.public ? 'Published' : 'Unpublished'}</Col>
+                    </Row>
+                  }
+                />
+                <div className={styles.cardInfo}>
+                  <div className={styles.paragraph}>
+                    <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                      {item.description}
+                    </Typography.Paragraph>
+                  </div>
+                  <Row type="flex" gutter={16} justify="end">
+                    <Col>{moment(item.updated_at).fromNow()}</Col>
                   </Row>
-                }
-              />
-              <div className={styles.cardInfo}>
-                <div className={styles.paragraph}>
-                  <Typography.Paragraph ellipsis={{ rows: 3 }}>
-                    {item.description}
-                  </Typography.Paragraph>
+                  <Row type="flex" gutter={16}>
+                    <Col span={8}>
+                      {taskNumber} {taskNumber === 1 ? ' task' : ' tasks'}
+                    </Col>
+                    <Col span={8}>{completeStatus} done</Col>
+                    <Col span={8}>{contributors} contributors</Col>
+                  </Row>
                 </div>
-                <Row type="flex" gutter={16} justify="end">
-                  <Col>{moment(item.updated_at).fromNow()}</Col>
-                </Row>
-                <Row type="flex" gutter={16}>
-                  <Col span={8}>task_number</Col>
-                  <Col span={8}>complete status</Col>
-                  <Col span={8}>contributors</Col>
-                </Row>
-              </div>
-            </Card>
-          </List.Item>
-        )}
+              </Card>
+            </List.Item>
+          );
+        }}
       />
     </React.Fragment>
   );

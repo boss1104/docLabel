@@ -7,6 +7,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from django.core.files.storage import FileSystemStorage
 from doclabel.users.serializers import CustomUserDetailsSerializer
 from notifications.models import Notification
+from django.db.models import Count
 
 from .models import Label, Project, Document, RoleMapping, Role
 from .models import (
@@ -98,7 +99,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
         if role.name == settings.ROLE_ANNOTATION_APPROVER:
             try:
-                user = UserModel.objects.get(pk=request.GET.get('user', None))
+                user = UserModel.objects.get(pk=request.GET.get("user", None))
                 annotations = annotations.filter(user=user)
             except UserModel.DoesNotExist:
                 raise serializers.ValidationError("Request data missing!")
@@ -128,6 +129,43 @@ class DocumentSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     current_users_role = serializers.SerializerMethodField()
     users = CustomUserDetailsSerializer(read_only=True, many=True)
+    project_stat = serializers.SerializerMethodField()
+
+    def get_project_stat(self, instance):
+        docs = instance.documents
+        annotator_per_example = instance.annotator_per_example
+        annotation_class = instance.get_annotation_class()
+        docs_stat = {}
+        remaining = 0
+        total = 0
+        for doc in docs.all():
+            annotation = annotation_class.objects.filter(
+                document_id=doc, finished=True
+            ).aggregate(Count("user", distinct=True))["user__count"]
+            doc_remaining = (
+                0
+                if annotation >= annotator_per_example
+                else annotator_per_example - annotation
+            )
+            remaining += doc_remaining
+            total += annotator_per_example
+            docs_stat[doc.id] = {
+                "id": doc.id,
+                "text": doc.text,
+                "annotation": annotation,
+                "remaining": doc_remaining,
+            }
+        request = self.context["request"]
+        role_project = request.GET.get("role_project")
+
+        if role_project == "annotator":
+            total = docs.count()
+            done = annotation_class.objects.filter(
+                document_id__in=docs.all(), user_id=request.user.id
+            ).aggregate(Count("document", distinct=True))["document__count"]
+            remaining = total - done
+
+        return {"total": total, "remaining": remaining, "doc_stat": docs_stat}
 
     def get_current_users_role(self, instance):
         role_abstractor = {
@@ -167,6 +205,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "users",
             "project_type",
             "current_users_role",
+            "project_stat",
         )
         read_only_fields = (
             "image",

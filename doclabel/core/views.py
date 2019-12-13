@@ -194,8 +194,9 @@ class StatisticsAPI(APIView):
             )
             remaining += doc_remaining
             total += annotator_per_example
-            docs_stat[doc.text] = {
+            docs_stat[doc.id] = {
                 "id": doc.id,
+                "text": doc.text,
                 "annotation": annotation,
                 "remaining": doc_remaining,
             }

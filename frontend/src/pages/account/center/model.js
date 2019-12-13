@@ -19,10 +19,12 @@ const Model = {
     },
     myContributions: {
       list: [],
+      listStat: [],
       pagination: {},
     },
     myApprovals: {
       list: [],
+      listStat: [],
       pagination: {},
     },
   },
