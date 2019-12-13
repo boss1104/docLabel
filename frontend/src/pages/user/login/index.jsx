@@ -60,7 +60,7 @@ class Login extends Component {
         this.setState({
           error: false,
         });
-        message.success('Successfully login!');
+        message.success('Welcome!');
       } catch (e) {
         const { data } = e;
         this.setState({

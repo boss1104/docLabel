@@ -4,12 +4,12 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
-import Authorized from '@/utils/Authorized';
+import Authorized, { reloadAuthorized } from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
@@ -87,9 +87,10 @@ const footerRender = () => {
   );
 };
 
-const AnnotationLayout = connect(({ global, settings }) => ({
+const AnnotationLayout = connect(({ global, settings, loading }) => ({
   collapsed: global.collapsed,
   settings,
+  loading: loading.effects['project/fetchProject'],
 }))(props => {
   const {
     dispatch,
@@ -99,21 +100,29 @@ const AnnotationLayout = connect(({ global, settings }) => ({
     location = {
       pathname: '/app',
     },
+    loading,
   } = props;
   /**
    * constructor
    */
+  const [isReady, setIsReady] = React.useState(false);
 
   const { id: projectId } = match.params;
 
-  useEffect(() => {
+  const fetchProject = async () => {
+    if (projectId) {
+      await dispatch({
+        type: 'project/fetchProject',
+        payload: projectId,
+      });
+      reloadAuthorized();
+      setIsReady(true);
+    }
+  };
+
+  React.useEffect(() => {
     if (dispatch) {
-      if (projectId) {
-        dispatch({
-          type: 'project/fetchProject',
-          payload: projectId,
-        });
-      }
+      fetchProject();
     }
     return () => {
       dispatch({
@@ -144,6 +153,7 @@ const AnnotationLayout = connect(({ global, settings }) => ({
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
+  const isLoading = loading || !isReady;
 
   return (
     <ProLayout
@@ -173,9 +183,11 @@ const AnnotationLayout = connect(({ global, settings }) => ({
       {...settings}
       disableMobile
     >
-      <Authorized authority={authorized.authority} noMatch={noMatch}>
-        {children}
-      </Authorized>
+      {!isLoading && (
+        <Authorized authority={authorized.authority} noMatch={noMatch}>
+          {children}
+        </Authorized>
+      )}
     </ProLayout>
   );
 });

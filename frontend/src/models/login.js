@@ -5,7 +5,9 @@ import { reloadAuthorized } from '@/utils/Authorized';
 
 const Model = {
   namespace: 'login',
-  state: {},
+  state: {
+    key: undefined,
+  },
   effects: {
     *login({ payload }, { call, put }) {
       const res = yield call(accountLogin, payload);
@@ -41,7 +43,9 @@ const Model = {
       const res = yield call(accountLogout);
       yield put({
         type: 'changeLoginStatus',
-        payload: {},
+        payload: {
+          key: undefined,
+        },
       });
       yield put({
         type: 'user/saveCurrentUser',

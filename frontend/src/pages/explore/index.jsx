@@ -1,10 +1,8 @@
-import React from 'react';
 import { connect } from 'dva';
-
-import styles from './style.less';
+import React from 'react';
 import FilterForm from './components/FilterForm';
 import Projects from './components/Projects';
-import { useWhyDidYouUpdate } from '@/hooks';
+import styles from './style.less';
 
 function Explore(props) {
   const { location } = props;
