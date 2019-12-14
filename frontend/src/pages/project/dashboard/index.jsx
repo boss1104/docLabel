@@ -43,7 +43,7 @@ const ExtraContent = ({ currentProject, showConfirm, userNum, taskNum, labelNum 
     {currentProject.public ? (
       <div>
         <div className={styles.statItem}>
-          <Statistic title="Contributers" value={userNum} />
+          <Statistic title="Contributors" value={userNum} />
         </div>
         <div className={styles.statItem}>
           <Statistic title="Tasks" value={taskNum} />
@@ -52,7 +52,7 @@ const ExtraContent = ({ currentProject, showConfirm, userNum, taskNum, labelNum 
           <Statistic title="Labels" value={labelNum} />
         </div>
         <div className={styles.statItem}>
-          <Statistic title="Visit" value="TODO" />
+          <Statistic title="Visit" value="..." />
         </div>
       </div>
     ) : (
@@ -105,6 +105,7 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
     const res = await dispatch({
       type: 'dashboard/fetchStatistics',
     });
+    console.log('[DEBUG]: fetchStatistics -> res', res);
   };
 
   const showConfirm = () => {

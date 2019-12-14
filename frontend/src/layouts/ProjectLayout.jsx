@@ -147,55 +147,51 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
-  console.log('[DEBUG]: authorized', authorized);
 
   const isLoading = loading || !isReady;
-  console.log('[DEBUG]: isLoading', isLoading);
 
   return (
-    <Spin spinning={isLoading}>
-      <ProLayout
-        logo={logo}
-        onCollapse={handleMenuCollapse}
-        menuDataRender={menuDataRender}
-        menuItemRender={(menuItemProps, defaultDom) => {
-          if (menuItemProps.isUrl || menuItemProps.children) {
-            return defaultDom;
-          }
-          let { path } = menuItemProps;
-          if (match.path !== match.url) {
-            // Compute the right path
-            Object.keys(match.params).forEach(key => {
-              path = path.replace(`:${key}`, match.params[key]);
-            });
-          }
+    <ProLayout
+      logo={logo}
+      onCollapse={handleMenuCollapse}
+      menuDataRender={menuDataRender}
+      menuItemRender={(menuItemProps, defaultDom) => {
+        if (menuItemProps.isUrl || menuItemProps.children) {
+          return defaultDom;
+        }
+        let { path } = menuItemProps;
+        if (match.path !== match.url) {
+          // Compute the right path
+          Object.keys(match.params).forEach(key => {
+            path = path.replace(`:${key}`, match.params[key]);
+          });
+        }
 
-          return <Link to={path}>{defaultDom}</Link>;
-        }}
-        breadcrumbRender={(routers = []) => [...routers]}
-        // Antd Breadcrumb
-        itemRender={(route, params, routes, paths) => {
-          const first = routes.indexOf(route) === 0;
-          return first ? (
-            <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-          ) : (
-            <span>{route.breadcrumbName}</span>
-          );
-        }}
-        footerRender={footerRender}
-        formatMessage={formatMessage}
-        rightContentRender={rightProps => <RightContent {...rightProps} />}
-        {...props}
-        {...settings}
-        layout="sidemenu"
-      >
-        {!isLoading && (
-          <Authorized authority={authorized.authority} noMatch={noMatch}>
-            {children}
-          </Authorized>
-        )}
-      </ProLayout>
-    </Spin>
+        return <Link to={path}>{defaultDom}</Link>;
+      }}
+      breadcrumbRender={(routers = []) => [...routers]}
+      // Antd Breadcrumb
+      itemRender={(route, params, routes, paths) => {
+        const first = routes.indexOf(route) === 0;
+        return first ? (
+          <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+        ) : (
+          <span>{route.breadcrumbName}</span>
+        );
+      }}
+      footerRender={footerRender}
+      formatMessage={formatMessage}
+      rightContentRender={rightProps => <RightContent {...rightProps} />}
+      {...props}
+      {...settings}
+      layout="sidemenu"
+    >
+      {!isLoading && (
+        <Authorized authority={authorized.authority} noMatch={noMatch}>
+          {children}
+        </Authorized>
+      )}
+    </ProLayout>
   );
 });
 
