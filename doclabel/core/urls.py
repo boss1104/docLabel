@@ -80,7 +80,6 @@ urlpatterns = [
         ApproveLabelsAPI.as_view(),
         name="approve_labels",
     ),
-    # WORKDONE
     path(
         "projects/<int:project_id>/docs/download/",
         TextDownloadAPI.as_view(),
