@@ -447,46 +447,37 @@ class JSONLRenderer(JSONRenderer):
 
 class JSONPainter(object):
 
-    def paint(self, serializer_data):
+    def paint(self, serializer_data, label_serializer_data):
         data = []
         for d in serializer_data:
-            d['meta'] = json.loads(d['meta'])
+            d.pop('file_url')
+            d.pop('annotation_approver')
+            d.pop('meta')
+            annotations = []
             for a in d['annotations']:
-                a.pop('id')
-                a.pop('prob')
-                a.pop('document')
-            data.append(d)
-        return data
-
-    @staticmethod
-    def paint_labels(serializer_data, label_serializer_data):
-        data = []
-        for d in serializer_data:
-            labels = []
-            for a in d['annotations']:
-                label_obj = [x for x in label_serializer_data if x['id'] == a['label']][0]
-                label_text = label_obj['text']
-                label_start = a['start_offset']
-                label_end = a['end_offset']
-                labels.append([label_start, label_end, label_text])
-            d.pop('annotations')
-            d['labels'] = labels
-            d['meta'] = json.loads(d['meta'])
+                label_obj = [x for x in label_serializer_data if x['id'] == a['label']]
+                anno = {"label_text": label_obj[0]["text"]} if label_obj else {}
+                anno_pop = ["id", "user", "prob", "document", "label", "finished"]
+                for k, v in a.items():
+                    if k not in anno_pop:
+                        anno[k if k != "text" else "label_text"] = v
+                annotations.append(anno)
+            d['annotations'] = annotations
+            # d['meta'] = json.loads(d['meta'])
             data.append(d)
         return data
 
 
 class CSVPainter(JSONPainter):
 
-    def paint(self, documents):
-        data = super().paint(documents)
+    def paint(self, serializer_data, label_serializer_data):
+        data = super().paint(serializer_data, label_serializer_data)
         res = []
         for d in data:
             annotations = d.pop('annotations')
             for a in annotations:
                 res.append({**d, **a})
         return res
-
 
 
 def iterable_to_io(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):

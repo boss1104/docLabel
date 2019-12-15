@@ -103,9 +103,15 @@ class DocumentSerializer(serializers.ModelSerializer):
                 annotations = annotations.filter(user=user)
             except UserModel.DoesNotExist:
                 raise serializers.ValidationError("Request data missing!")
-        else:
+        elif role.name == settings.ROLE_ANNOTATOR:
             # if not project.collaborative_annotation:
             annotations = annotations.filter(user=request.user)
+        elif role.name == settings.ROLE_PROJECT_ADMIN:
+            user_id = request.GET.get("user", None)
+            if user_id:
+                user = UserModel.objects.get(pk=request.GET.get("user", None))
+                annotations = annotations.filter(user=user)
+
         serializer = serializer(annotations, many=True, context={"request": request})
         return serializer.data
 

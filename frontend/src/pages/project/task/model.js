@@ -14,25 +14,22 @@ const Model = {
         const action = yield take('project/saveCurrentProject');
         projectId = action.payload.id;
       }
-      try {
-        const response = yield call(fetchTask, { projectId, ...payload });
+      const { params, data } = payload;
+      const response = yield call(fetchTask, { projectId, params, data });
 
-        const ret = {
-          list: arrayToObject(response.results, 'id'),
-          pagination: {
-            total: response.count,
-            next: response.next && getPageQuery(response.next),
-            previous: response.previous && getPageQuery(response.previous),
-          },
-        };
-        yield put({
-          type: 'save',
-          payload: ret,
-        });
-        return ret;
-      } catch (error) {
-        return error.data;
-      }
+      const ret = {
+        list: arrayToObject(response.results, 'id'),
+        pagination: {
+          total: response.count,
+          next: response.next && getPageQuery(response.next),
+          previous: response.previous && getPageQuery(response.previous),
+        },
+      };
+      yield put({
+        type: 'save',
+        payload: ret,
+      });
+      return ret;
     },
 
     *remove({ payload }, { call, put, select, take }) {

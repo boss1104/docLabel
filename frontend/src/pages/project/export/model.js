@@ -10,7 +10,8 @@ const Model = {
         const action = yield take('project/saveCurrentProject');
         projectId = action.payload.id;
       }
-      const res = yield call(download, { projectId, type: payload });
+      const { format, userId } = payload;
+      const res = yield call(download, { projectId, format, userId });
 
       return res;
     },

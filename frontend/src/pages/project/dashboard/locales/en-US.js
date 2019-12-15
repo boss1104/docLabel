@@ -4,4 +4,5 @@ export default {
   'dashboard.user-title': 'Annotations/User',
   'dashboard.labels': 'Labels',
   'dashboard.labels-title': 'Annotations/Label',
+  'dashboard.tasks': 'Tasks',
 };
