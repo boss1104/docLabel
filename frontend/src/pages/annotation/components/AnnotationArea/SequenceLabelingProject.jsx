@@ -113,7 +113,7 @@ function SequenceLabelingProject(prs) {
                           className={styles.content}
                           style={{ borderColor: props.tag.background_color }}
                         >
-                          {props.content}
+                          <div className={styles.textContent}>{props.content}</div>
                         </div>
                       </div>{' '}
                     </React.Fragment>

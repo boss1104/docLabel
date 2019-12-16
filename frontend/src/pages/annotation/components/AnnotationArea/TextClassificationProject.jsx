@@ -84,7 +84,7 @@ function TextClassificationProject({
       </Card>
       <Card>
         <Row type="flex" justify="center">
-          <Col>{task && <Typography.Title level={3}>{task.text}</Typography.Title>}</Col>
+          <Col>{task && <div className={styles.textContent}>{task.text}</div>}</Col>
         </Row>
       </Card>
     </React.Fragment>
