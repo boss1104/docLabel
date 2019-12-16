@@ -8,7 +8,7 @@ import uploadSeq2seqCsv from '@/assets/examples/upload_seq2seq.csv';
 import uploadSeq2seqXlsx from '@/assets/examples/upload_seq2seq.xlsx';
 import uploadSequenceLabelingTxt from '@/assets/examples/upload_sequence_labeling.txt';
 import uploadSequenceLabelingJsonl from '@/assets/examples/upload_sequence_labeling.jsonl';
-import uploadSequenceLabelingConll from '@/assets/examples/upload_sequence_labeling.conll';
+// import uploadSequenceLabelingConll from '@/assets/examples/upload_sequence_labeling.conll';
 
 export const TextClassificationProject = {
   plain: {
@@ -30,10 +30,10 @@ export const SequenceLabelingProject = {
     label: 'Plain',
     format: uploadSequenceLabelingTxt,
   },
-  conll: {
-    label: 'Conll',
-    format: uploadSequenceLabelingConll,
-  },
+  // conll: {
+  //   label: 'Conll',
+  //   format: uploadSequenceLabelingConll,
+  // },
   json: {
     label: 'JSONL',
     format: uploadSequenceLabelingJsonl,

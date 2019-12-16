@@ -3,8 +3,9 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { FormattedMessage } from 'umi-plugin-react/locale';
 
-import { Avatar, Card, Col, Skeleton, Row, Statistic, Button, Modal, message } from 'antd';
+import { Avatar, Card, Col, Skeleton, Row, Statistic, Button, Modal, message, Alert } from 'antd';
 
+import { Link } from 'umi';
 import styles from './index.less';
 import Pie from './components/Pie';
 import { PROJECT_TYPE } from '@/pages/constants';
@@ -57,7 +58,7 @@ const ExtraContent = ({ currentProject, showConfirm, userNum, taskNum, labelNum 
       </div>
     ) : (
       <div className={styles.publishButton}>
-        <Button type="primary" size="large" onClick={showConfirm}>
+        <Button type="primary" size="large" onClick={showConfirm} icon="play-circle">
           Publish project
         </Button>
       </div>
@@ -65,11 +66,7 @@ const ExtraContent = ({ currentProject, showConfirm, userNum, taskNum, labelNum 
   </div>
 );
 
-const Dashboard = connect(({ project, dashboard, loading }) => ({
-  currentProject: project.currentProject,
-  dashboard,
-  statisticsLoading: loading.effects['dashboard/fetchStatistics'],
-}))(props => {
+const Dashboard = props => {
   const {
     dispatch,
     dashboard: {
@@ -111,7 +108,8 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
   const showConfirm = () => {
     Modal.confirm({
       title: 'Do you want to publish this project?',
-      content: 'Please make sure import tasks and create labels before publishing',
+      content:
+        'Please make sure that you has already imported project tasks and created labels before publishing',
       onOk: changePublished,
       onCancel() {},
     });
@@ -132,6 +130,10 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
     y: value,
   }));
 
+  const showTaskAlert = true;
+
+  const showLabelAlert = true;
+
   return (
     <div className={styles.main}>
       <PageHeaderWrapper
@@ -147,66 +149,101 @@ const Dashboard = connect(({ project, dashboard, loading }) => ({
         }
         // support ant tab
       >
-        <Row gutter={24}>
-          <Col
-            xl={16}
-            lg={24}
-            sm={24}
-            xs={24}
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            <ContributionCard
-              labelData={labelData}
-              userData={userData}
-              docStat={docStat}
-              loading={statisticsLoading}
-            />
-          </Col>
-          <Col
-            xl={8}
-            lg={24}
-            sm={24}
-            xs={24}
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            <Card
-              title={<FormattedMessage id="dashboard.progress" defaultMessage="Project progress" />}
-              bodyStyle={{
-                textAlign: 'center',
-                fontSize: 0,
+        {currentProject.public && (
+          <Row gutter={24}>
+            <Col
+              xl={16}
+              lg={24}
+              sm={24}
+              xs={24}
+              style={{
+                marginBottom: 24,
               }}
-              bordered={false}
-              loading={statisticsLoading}
             >
-              <Row
-                style={{
-                  padding: '16px 0',
+              <ContributionCard
+                labelData={labelData}
+                userData={userData}
+                docStat={docStat}
+                loading={statisticsLoading}
+              />
+            </Col>
+            <Col
+              xl={8}
+              lg={24}
+              sm={24}
+              xs={24}
+              style={{
+                marginBottom: 24,
+              }}
+            >
+              <Card
+                title={
+                  <FormattedMessage id="dashboard.progress" defaultMessage="Project progress" />
+                }
+                bodyStyle={{
+                  textAlign: 'center',
+                  fontSize: 0,
                 }}
+                bordered={false}
+                loading={statisticsLoading}
               >
-                <Pie
-                  animate={false}
-                  color="#2FC25B"
-                  percent={percent}
-                  title={
-                    <FormattedMessage id="dashboard.progress.chart" defaultMessage="Progress" />
-                  }
-                  total={`${percent}%`}
-                  height={128}
-                  lineWidth={2}
-                />
-              </Row>
-            </Card>
-          </Col>
-        </Row>
-        {currentProject.public && <div>Daily graph | Weekly graph</div>}
-        {!currentProject.public && <div>Link to add tasks, add labels</div>}
+                <Row
+                  style={{
+                    padding: '16px 0',
+                  }}
+                >
+                  <Pie
+                    animate={false}
+                    color="#2FC25B"
+                    percent={percent}
+                    title={
+                      <FormattedMessage id="dashboard.progress.chart" defaultMessage="Progress" />
+                    }
+                    total={`${percent}%`}
+                    height={128}
+                    lineWidth={2}
+                  />
+                </Row>
+              </Card>
+            </Col>
+          </Row>
+        )}
+        {!currentProject.public && (
+          <div>
+            {showTaskAlert && (
+              <Alert
+                showIcon
+                type="info"
+                message="Add a task to project"
+                description={
+                  <Link to={`/projects/${currentProject && currentProject.id}/task`}>
+                    Go to Tasks
+                  </Link>
+                }
+              />
+            )}
+            {showLabelAlert && (
+              <Alert
+                showIcon
+                type="info"
+                message="Define the label for tasks"
+                description={
+                  <Link to={`/projects/${currentProject && currentProject.id}/label`}>
+                    Go to Labels
+                  </Link>
+                }
+                style={{ marginTop: 16 }}
+              />
+            )}
+          </div>
+        )}
       </PageHeaderWrapper>
     </div>
   );
-});
+};
 
-export default Dashboard;
+export default connect(({ project, dashboard, loading }) => ({
+  currentProject: project.currentProject,
+  dashboard,
+  statisticsLoading: loading.effects['dashboard/fetchStatistics'],
+}))(Dashboard);
