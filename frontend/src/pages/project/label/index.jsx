@@ -9,15 +9,7 @@ import { PROJECT_TYPE } from '@/pages/constants';
 
 // TODO: make color random
 
-export default connect(({ project, label, loading }) => ({
-  currentProject: project.currentProject,
-  label,
-  loading: loading.effects['label/fetch'],
-  createLoading: loading.effects['label/add'],
-  updateLoading: loading.effects['label/update'],
-}))(props => {
-  // Props
-  const { dispatch, updateLoading, createLoading, loading, label, currentProject } = props;
+function LabelPage({ dispatch, updateLoading, createLoading, loading, label, currentProject }) {
   const { list: dataSource } = label;
   const projectId = currentProject.id;
   // States
@@ -229,4 +221,12 @@ export default connect(({ project, label, loading }) => ({
       )}
     </PageHeaderWrapper>
   );
-});
+}
+
+export default connect(({ project, label, loading }) => ({
+  currentProject: project.currentProject,
+  label,
+  loading: loading.effects['label/fetch'],
+  createLoading: loading.effects['label/add'],
+  updateLoading: loading.effects['label/update'],
+}))(LabelPage);

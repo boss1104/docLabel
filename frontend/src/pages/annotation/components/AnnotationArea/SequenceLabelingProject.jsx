@@ -24,6 +24,7 @@ function SequenceLabelingProject(prs) {
         start_offset: difference.start,
         end_offset: difference.end,
         label: difference.tag.id,
+        tokens: difference.tokens,
       });
     } else {
       const [difference] = annoList.filter(val => !newVal.includes(val));
@@ -46,6 +47,7 @@ function SequenceLabelingProject(prs) {
     return list.map(val => ({
       start: val.start_offset,
       end: val.end_offset,
+      tokens: val.tokens,
       tag: labelList[val.label],
       id: val.id,
     }));

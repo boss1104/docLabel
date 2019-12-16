@@ -279,6 +279,7 @@ class DocumentAnnotationSerializer(AnnotationSerializer):
 
 class SequenceAnnotationSerializer(AnnotationSerializer):
     # label = ProjectFilteredPrimaryKeyRelatedField(queryset=Label.objects.all())
+    tokens = serializers.JSONField()
 
     class Meta(AnnotationSerializer.Meta):
         model = SequenceAnnotation
@@ -286,7 +287,7 @@ class SequenceAnnotationSerializer(AnnotationSerializer):
             "label",
             "start_offset",
             "end_offset",
-            "text",
+            "tokens",
         )
 
 

@@ -8,8 +8,20 @@ const { Option } = Select;
 const shortKeys = 'abcdefghijklmnopqrstuvwxyz';
 const SHORT_KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-export default Form.create()(props => {
-  const { form, modalVisible, setModalVisible, handleSubmit, loading, onCreate } = props;
+const defaultTextColors = [
+  '#4D4D4D',
+  '#333333',
+  '#000000',
+  '#999999',
+  '#666666',
+  '#808080',
+  '#D9E3F0',
+  '#CCCCCC',
+  '#F44E3B',
+  '#FE9200',
+];
+function CreateForm({ form, modalVisible, setModalVisible, handleSubmit, loading, onCreate }) {
+  console.log('[DEBUG]: CreateForm -> form', form.getFieldsValue());
   const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
@@ -23,11 +35,8 @@ export default Form.create()(props => {
       if (err) {
         console.log(err);
       } else {
-        if (onOK) {
-          setModalVisible(false);
-          form.resetFields();
-        }
         handleSubmit(fieldsValue);
+        form.resetFields();
       }
     });
   };
@@ -46,11 +55,11 @@ export default Form.create()(props => {
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
-      sm: { span: 4 },
+      sm: { span: 5 },
     },
     wrapperCol: {
       xs: { span: 24 },
-      sm: { span: 20 },
+      sm: { span: 19 },
     },
   };
 
@@ -62,20 +71,22 @@ export default Form.create()(props => {
       },
       sm: {
         span: 20,
-        offset: 4,
+        offset: 5,
       },
     },
   };
+
+  const getButonStyle = () => ({
+    backgroundColor: `${getFieldValue('background_color')}`,
+    color: `${getFieldValue('text_color')}`,
+  });
 
   return (
     <Modal
       title="Add Label"
       visible={modalVisible}
-      okText="Submit and Close"
-      cancelText="Close"
+      footer={null}
       confirmLoading={loading}
-      okButtonProps={{ disabled: hasErrors(getFieldsError()) }}
-      onOk={() => handleOk(true)}
       onCancel={() => setModalVisible(false)}
     >
       <Form
@@ -98,23 +109,13 @@ export default Form.create()(props => {
             rules: [{ required: true, message: 'Text required' }],
           })(<Input placeholder="Label text" />)}
         </FormItem>
-        <Row>
-          <Col sm={8}>
-            <FormItem
-              label="Shortcut"
-              // validateStatus={hasFieldError('suffix_key') ? 'error' : ''}
-              // help={hasFieldError('suffix_key') || ''}
-              {...{
-                labelCol: {
-                  xs: { span: 24 },
-                  sm: { span: 12 },
-                },
-                wrapperCol: {
-                  xs: { span: 24 },
-                  sm: { span: 12 },
-                },
-              }}
-            >
+        <FormItem
+          label="Shortcut"
+          help={hasFieldError('suffix_key') || ''}
+          validateStatus={hasFieldError('suffix_key') ? 'error' : ''}
+        >
+          <Row type="flex">
+            <Col>
               {getFieldDecorator('prefix_key', {
                 initialValue: '',
               })(
@@ -125,23 +126,8 @@ export default Form.create()(props => {
                   <Option value="ctrl shift">Ctrl + Shift</Option>
                 </Select>,
               )}
-            </FormItem>
-          </Col>
-          <Col sm={{ span: 8, offset: 2 }}>
-            <FormItem
-              // validateStatus={getFieldError('suffix_key') ? 'error' : ''}
-              // help={getFieldError('suffix_key') || ''}
-              {...{
-                labelCol: {
-                  xs: { span: 0 },
-                  sm: { span: 0 },
-                },
-                wrapperCol: {
-                  xs: { span: 24 },
-                  sm: { span: 24 },
-                },
-              }}
-            >
+            </Col>
+            <Col>
               {getFieldDecorator('suffix_key', {
                 rules: [{ required: true, message: 'Hotkey required' }],
               })(
@@ -153,28 +139,23 @@ export default Form.create()(props => {
                   ))}
                 </Select>,
               )}
-            </FormItem>
-          </Col>
-          <Col sm={6}></Col>
-        </Row>
-
-        <FormItem
-          label="Color"
-          validateStatus={hasFieldError('background_color') ? 'error' : ''}
-          help={hasFieldError('background_color') || ''}
-        >
-          {getFieldDecorator('background_color', {
-            initialValue: '#209cee',
-            rules: [{ required: true, message: 'Color required' }],
-          })(
-            <Button
-              onClick={() => setVisible(!visible)}
-              style={{ backgroundColor: getFieldValue('background_color') }}
-            >
-              {getFieldValue('text') || 'Text'}
-            </Button>,
-          )}
-          {visible && (
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="Colors">
+          <Button onClick={() => setVisible(!visible)} style={getButonStyle()}>
+            {getFieldValue('text') || 'Text'}
+          </Button>
+        </FormItem>
+        <div style={{ display: visible ? 'block' : 'none' }}>
+          <FormItem
+            label="Background"
+            validateStatus={hasFieldError('background_color') ? 'error' : ''}
+            help={hasFieldError('background_color') || ''}
+          >
+            {getFieldDecorator('background_color', {
+              initialValue: '#FF6900',
+            })(<div />)}
             <TwitterPicker
               triangle="hide"
               onChange={color =>
@@ -183,8 +164,27 @@ export default Form.create()(props => {
                 })
               }
             />
-          )}
-        </FormItem>
+          </FormItem>
+          <FormItem
+            label="Text color"
+            validateStatus={hasFieldError('text_color') ? 'error' : ''}
+            help={hasFieldError('text_color') || ''}
+          >
+            {getFieldDecorator('text_color', {
+              initialValue: '#FFFFFF',
+            })(<div />)}
+            <TwitterPicker
+              triangle="hide"
+              colors={defaultTextColors}
+              onChange={color =>
+                setFieldsValue({
+                  text_color: color.hex,
+                })
+              }
+            />
+          </FormItem>
+        </div>
+
         <FormItem {...tailFormItemLayout}>
           <Button
             htmlType="submit"
@@ -198,4 +198,6 @@ export default Form.create()(props => {
       </Form>
     </Modal>
   );
-});
+}
+
+export default Form.create()(CreateForm);
