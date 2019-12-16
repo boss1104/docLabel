@@ -235,6 +235,7 @@ class SequenceAnnotation(Annotation):
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
     start_offset = models.IntegerField()
     end_offset = models.IntegerField()
+    text = models.TextField()
 
     def clean(self):
         if self.start_offset >= self.end_offset:

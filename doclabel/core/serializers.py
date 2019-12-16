@@ -286,6 +286,7 @@ class SequenceAnnotationSerializer(AnnotationSerializer):
             "label",
             "start_offset",
             "end_offset",
+            "text",
         )
 
 
