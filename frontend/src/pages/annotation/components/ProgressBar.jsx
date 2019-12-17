@@ -68,7 +68,7 @@ function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, ta
               <Progress
                 percent={Math.floor(((totalTask - remaining) / totalTask) * 100)}
                 format={() => `${totalTask - remaining}/${totalTask}`}
-                status="active"
+                status="normal"
                 strokeColor="#00a854"
                 strokeWidth={15}
               />

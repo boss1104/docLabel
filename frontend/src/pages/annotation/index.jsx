@@ -99,7 +99,9 @@ const Annotation = connect(({ project, task, label, loading }) => ({
 
   React.useEffect(() => {
     if (Object.keys(currentProject).length) {
-      setAnnotationValue(currentProject.users[0].id);
+      if (isApprover) {
+        setAnnotationValue(currentProject.users[0].id);
+      }
     }
   }, [currentProject]);
 
@@ -118,13 +120,17 @@ const Annotation = connect(({ project, task, label, loading }) => ({
 
   React.useEffect(() => {
     const queryStatistics = async () => {
+      const userPayload = isApprover ? { user: annotationValue } : {};
+
       const res = await dispatch({
         type: 'dashboard/fetchStatistics',
         payload: {
           include: 'user_progress',
-          user: annotationValue,
+          ...userPayload,
         },
       });
+
+      console.log('[DEBUG]: queryStatistics -> res', res);
       const { total, remaining: resRemaining } = res;
       setTotalTask(total);
       setRemaining(resRemaining);
