@@ -312,7 +312,15 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 REST_SESSION_LOGIN = False
 
-SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": ["user", "repo", "user:email"]}}
+SOCIALACCOUNT_PROVIDERS = {
+    "github": {"SCOPE": ["user", "repo", "user:email"]},
+    "google": {
+        "SCOPE": [
+            "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+        ],
+        "AUTH_PARAMS": {"access_type": "offline"},
+    },
+}
 
 # django-compressor
 # ------------------------------------------------------------------------------

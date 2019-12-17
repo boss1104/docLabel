@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_auth.registration.views import SocialLoginView
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 from .serializers import CustomUserDetailsSerializer
+from .adapters import GoogleOAuth2AdapterIdToken
 
 User = get_user_model()
 
@@ -22,7 +22,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class GoogleLogin(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
+    adapter_class = GoogleOAuth2AdapterIdToken
+    callback_url = "http://localhost:8001/app/user/oauth/google"
+    # callback_url = getattr(settings, 'SOCIAL_LOGIN_GOOGLE_CALLBACK_URL', 'localhost:8000')
+    client_class = OAuth2Client
 
 
 class GitHubLogin(SocialLoginView):

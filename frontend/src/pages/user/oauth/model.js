@@ -1,4 +1,4 @@
-import { githubOAuth } from './service';
+import { githubOAuth, googleOAuth } from './service';
 
 const Model = {
   namespace: 'oauth',
@@ -8,6 +8,13 @@ const Model = {
   effects: {
     *githubOAuth({ payload }, { call, put }) {
       const res = yield call(githubOAuth, payload);
+      yield put({
+        type: 'login/changeLoginStatus',
+        payload: res,
+      });
+    },
+    *googleOAuth({ payload }, { call, put }) {
+      const res = yield call(googleOAuth, payload);
       yield put({
         type: 'login/changeLoginStatus',
         payload: res,

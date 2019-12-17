@@ -104,8 +104,18 @@ class Login extends Component {
 
   getUrl = () => {
     const { key } = this.state;
-    const { authorizationUri, scope, clientId } = loginProviderSettings[key];
-    return `${authorizationUri}?scope=${scope}&client_id=${clientId}`;
+    const { authorizationUri, scope, clientId, redirectUri } = loginProviderSettings[key];
+    if (key === 'github') {
+      return `${authorizationUri}?scope=${scope}&client_id=${clientId}`;
+    }
+
+    if (key === 'google') {
+      return (
+        `${authorizationUri}?scope=${scope}&client_id=${clientId}&redirect_uri=${redirectUri}` +
+        '&response_type=code&access_type=offline'
+      );
+    }
+    return '';
   };
 
   render() {

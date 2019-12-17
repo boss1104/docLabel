@@ -40,29 +40,28 @@ export const ROLE_LABELS = {
 
 export const loginProviderSettings = {
   google: {
-    authorizationUri:
-      'https://google.com/login/oauth/authorize?scope=user&client_id=821fd7d157afbca77993',
-    scope: 'user:email',
-    clientId: '821fd7d157afbca77993',
-    clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
-    state: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae821fd7d157afbca77993',
-    redirectUri: 'http://localhost:8001/app/user/oauth/github',
+    authorizationUri: 'https://accounts.google.com/o/oauth2/v2/auth',
+    scope:
+      'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+    clientId: '330749056763-076b62f8he375ko10pshrdsa2ap2qoe1.apps.googleusercontent.com',
+    clientSecret: '7B8sNcYXdK406jTSLD2YxY6P',
+    redirectUri: 'http://localhost:8001/app/user/oauth/google',
   },
   github: {
     authorizationUri: 'https://github.com/login/oauth/authorize',
     scope: 'user:email',
     clientId: '821fd7d157afbca77993',
     clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
-    state: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae821fd7d157afbca77993',
     redirectUri: 'http://localhost:8001/app/user/oauth/github',
   },
   facebook: {
     authorizationUri:
       'https://facebook.com/login/oauth/authorize?scope=user&client_id=821fd7d157afbca77993',
-    scope: 'user:email',
+    scope:
+      'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+
     clientId: '821fd7d157afbca77993',
     clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
-    state: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae821fd7d157afbca77993',
 
     redirectUri: 'http://localhost:8001/app/user/oauth/github',
   },
