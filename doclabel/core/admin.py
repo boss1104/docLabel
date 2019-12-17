@@ -59,7 +59,7 @@ class Seq2seqAnnotationAdmin(admin.ModelAdmin):
 
 
 class PdfAnnotationAdmin(admin.ModelAdmin):
-    list_display = ("document", "label", "user")
+    list_display = ("id", "document", "label", "user")
     ordering = ("document",)
     search_fields = ("document",)
 

@@ -37,7 +37,7 @@ const menuDataRender = menuList =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
+    copyright="2019 ICT"
     links={[
       {
         key: 'Ant Design Pro',
@@ -182,6 +182,7 @@ const AnnotationLayout = connect(({ global, settings, loading }) => ({
       {...props}
       {...settings}
       disableMobile
+      contentStyle={{ margin: 0 }}
     >
       {!isLoading && (
         <Authorized authority={authorized.authority} noMatch={noMatch}>
