@@ -150,63 +150,75 @@ const Dashboard = props => {
         // support ant tab
       >
         {currentProject.public && (
-          <Row gutter={24}>
-            <Col
-              xl={16}
-              lg={24}
-              sm={24}
-              xs={24}
-              style={{
-                marginBottom: 24,
-              }}
-            >
-              <ContributionCard
-                labelData={labelData}
-                userData={userData}
-                docStat={docStat}
-                loading={statisticsLoading}
-              />
-            </Col>
-            <Col
-              xl={8}
-              lg={24}
-              sm={24}
-              xs={24}
-              style={{
-                marginBottom: 24,
-              }}
-            >
-              <Card
-                title={
-                  <FormattedMessage id="dashboard.progress" defaultMessage="Project progress" />
-                }
-                bodyStyle={{
-                  textAlign: 'center',
-                  fontSize: 0,
+          <React.Fragment>
+            <Alert
+              showIcon
+              type="info"
+              description={
+                <Link to={`/annotation/${currentProject && currentProject.id}`}>
+                  Go to Annotation
+                </Link>
+              }
+              style={{ marginBottom: 24 }}
+            />
+            <Row gutter={24}>
+              <Col
+                xl={16}
+                lg={24}
+                sm={24}
+                xs={24}
+                style={{
+                  marginBottom: 24,
                 }}
-                bordered={false}
-                loading={statisticsLoading}
               >
-                <Row
-                  style={{
-                    padding: '16px 0',
+                <ContributionCard
+                  labelData={labelData}
+                  userData={userData}
+                  docStat={docStat}
+                  loading={statisticsLoading}
+                />
+              </Col>
+              <Col
+                xl={8}
+                lg={24}
+                sm={24}
+                xs={24}
+                style={{
+                  marginBottom: 24,
+                }}
+              >
+                <Card
+                  title={
+                    <FormattedMessage id="dashboard.progress" defaultMessage="Project progress" />
+                  }
+                  bodyStyle={{
+                    textAlign: 'center',
+                    fontSize: 0,
                   }}
+                  bordered={false}
+                  loading={statisticsLoading}
                 >
-                  <Pie
-                    animate={false}
-                    color="#2FC25B"
-                    percent={percent}
-                    title={
-                      <FormattedMessage id="dashboard.progress.chart" defaultMessage="Progress" />
-                    }
-                    total={`${percent}%`}
-                    height={128}
-                    lineWidth={2}
-                  />
-                </Row>
-              </Card>
-            </Col>
-          </Row>
+                  <Row
+                    style={{
+                      padding: '16px 0',
+                    }}
+                  >
+                    <Pie
+                      animate={false}
+                      color="#2FC25B"
+                      percent={percent}
+                      title={
+                        <FormattedMessage id="dashboard.progress.chart" defaultMessage="Progress" />
+                      }
+                      total={`${percent}%`}
+                      height={128}
+                      lineWidth={2}
+                    />
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
+          </React.Fragment>
         )}
         {!currentProject.public && (
           <div>
@@ -232,7 +244,7 @@ const Dashboard = props => {
                     Go to Labels
                   </Link>
                 }
-                style={{ marginTop: 16 }}
+                style={{ marginTop: 24 }}
               />
             )}
           </div>

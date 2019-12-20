@@ -9,6 +9,7 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
+import { router } from 'umi';
 import Authorized, { reloadAuthorized } from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -111,11 +112,17 @@ const AnnotationLayout = connect(({ global, settings, loading }) => ({
 
   const fetchProject = async () => {
     if (projectId) {
-      await dispatch({
+      const res = await dispatch({
         type: 'project/fetchProject',
         payload: projectId,
       });
-      reloadAuthorized();
+
+      if (res && !res.public) {
+        router.push('/home');
+      } else {
+        reloadAuthorized();
+      }
+
       setIsReady(true);
     }
   };
