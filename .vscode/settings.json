@@ -9,5 +9,6 @@
     "--max-line-length=100",
     "--ignore==E203,W503,W504,F401"
     // "--ignore=E402,F841,,E302,E305,"
-  ]
+  ],
+  "eslint.workingDirectories": ["./frontend"]
 }

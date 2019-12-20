@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout, List, Row, Col, Typography, Tag, Popconfirm, Icon, Collapse, Button } from 'antd';
 import styles from './style.less';
+import LabelPreview from '../../LabelPreview';
 
 function Sidebar({
   annoList = [],
@@ -53,9 +54,7 @@ function Sidebar({
                     </Typography.Text>
                   </Col>
                   <Col>
-                    <Tag color={val.background_color} style={{ color: val.text_color }}>
-                      <Typography.Text strong>{val.text}</Typography.Text>
-                    </Tag>
+                    <LabelPreview label={val} />
                   </Col>
                 </Row>
               }
@@ -72,7 +71,7 @@ function Sidebar({
                     }}
                     className={styles.sidebarItem}
                   >
-                    <Row gutter={[0, 24]} style={{ flex: 1 }} align="middle">
+                    <Row gutter={[12, 24]} style={{ flex: 1 }} align="middle">
                       <Col>
                         {content.text ? (
                           <Typography.Text code mark strong className={styles.contentMark}>
@@ -87,25 +86,34 @@ function Sidebar({
                           </div>
                         ) : null}
                       </Col>
+                      {content.comment ? (
+                        <Col>
+                          <Typography.Paragraph ellipsis style={{ marginBottom: 0 }}>
+                            {content.comment}
+                          </Typography.Paragraph>
+                        </Col>
+                      ) : null}
                       {/*  */}
-                      <Row type="flex" justify="space-between">
-                        <Col>
-                          <Typography.Text code className={styles.labelPage}>
-                            Page {position.pageNumber}
-                          </Typography.Text>
-                        </Col>
-                        <Col>
-                          {!isDisabled && (
-                            <Popconfirm
-                              title="Are you sure delete this annotation?"
-                              onConfirm={() => handleDeleteAnno(id)}
-                              placement="topRight"
-                            >
-                              <Button icon="delete" shape="circle-outline" />
-                            </Popconfirm>
-                          )}
-                        </Col>
-                      </Row>
+                      <Col>
+                        <Row type="flex" justify="space-between">
+                          <Col>
+                            <Typography.Text code className={styles.labelPage}>
+                              Page {position.pageNumber}
+                            </Typography.Text>
+                          </Col>
+                          <Col>
+                            {!isDisabled && (
+                              <Popconfirm
+                                title="Are you sure delete this annotation?"
+                                onConfirm={() => handleDeleteAnno(id)}
+                                placement="topRight"
+                              >
+                                <Button icon="delete" shape="circle-outline" />
+                              </Popconfirm>
+                            )}
+                          </Col>
+                        </Row>
+                      </Col>
                     </Row>
                   </List.Item>
                 )}

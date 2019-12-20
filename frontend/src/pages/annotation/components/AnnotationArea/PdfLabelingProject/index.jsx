@@ -20,11 +20,10 @@ const HighlightPopup = ({ label }) => {
   if (label && label.text) {
     return (
       <div className={styles.popup}>
-        <div
-          className={styles.highlightPopup}
-          style={{ backgroundColor: label.background_color, color: label.text_color }}
-        >
-          <Typography.Text strong>{label.text}</Typography.Text>
+        <div className={styles.highlightPopup} style={{ backgroundColor: label.background_color }}>
+          <Typography.Text strong style={{ color: label.text_color }}>
+            {label.text}
+          </Typography.Text>
         </div>
         <div className={styles.arrow} style={{ borderColor: label.background_color }} />
       </div>
@@ -35,9 +34,15 @@ const HighlightPopup = ({ label }) => {
 
 const DEFAULT_URL = 'https://arxiv.org/pdf/1708.08021.pdf';
 
-const PdfLabelingProject = connect(({ settings }) => ({
-  dark: settings.navTheme === 'dark',
-}))(({ labelList, annoList = [], task, handleRemoveLabel, handleAddLabel, dark, pageNumber }) => {
+function PdfLabelingProject({
+  labelList,
+  annoList = [],
+  task,
+  handleRemoveLabel,
+  handleAddLabel,
+  dark,
+  pageNumber,
+}) {
   const [activeKey, setActiveKey] = React.useState('');
   const [currentAnno, setCurrentAnno] = React.useState(null);
   const { isDisabled } = React.useContext(AnnotatationContext);
@@ -133,9 +138,10 @@ const PdfLabelingProject = connect(({ settings }) => ({
                         <Tip
                           labelList={labelList}
                           onOpen={transformSelection}
-                          onConfirm={label => {
+                          onConfirm={(label, comment) => {
+                            const contentMod = { ...content, comment };
                             if (Object.keys(label).length) {
-                              addHighlight({ content, position }, label);
+                              addHighlight({ content: contentMod, position }, label);
                               hideTipAndSelection();
                             }
                           }}
@@ -204,6 +210,8 @@ const PdfLabelingProject = connect(({ settings }) => ({
       </Layout>
     </Card>
   );
-});
+}
 
-export default PdfLabelingProject;
+export default connect(({ settings }) => ({
+  dark: settings.navTheme === 'dark',
+}))(PdfLabelingProject);

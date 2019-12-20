@@ -72,8 +72,10 @@
     }
 
     .sidebarItem {
-      border-bottom: 1px solid @border-color-base;
       cursor: pointer;
+      &:hover {
+        background-color: @primary-1;
+      }
 
       .dataImage {
         max-width: 352px;
@@ -83,9 +85,6 @@
 
       .contentMark {
         font-size: 18px;
-        mark {
-          display: block;
-        }
       }
 
       .labelPage {
