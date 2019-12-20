@@ -7,7 +7,7 @@ import PageLoading from '@/components/PageLoading';
 const SecurityLayout = props => {
   const [isReady, setIsReady] = React.useState(false);
   const { dispatch, children, loading, currentUser, location } = props;
-  const isHome = location.pathname === '/home' || location.pathname === '/';
+  const isHome = ['/home', '/explore', '/'].includes(location.pathname);
 
   React.useEffect(() => {
     const fetchCurrentUser = async () => {

@@ -15,20 +15,17 @@ import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { router } from 'umi';
+import { stringify } from 'querystring';
 import styles from './index.less';
 import { PROJECT_TYPE, ROLE_LABELS, PAGE_SIZE } from '@/pages/constants';
 
-const Projects = connect(({ loading, projects }) => ({
-  projects,
-  loading: loading.models.projects,
-}))(props => {
-  const {
-    dispatch,
-    projects: { list, pagination },
-    loading,
-    location: { query },
-  } = props;
-
+function Projects({
+  dispatch,
+  projects: { list, pagination },
+  loading,
+  location: { query },
+  currentUser,
+}) {
   const [visible, setVisible] = React.useState(false);
   const [selectedRole, setSelectedRole] = React.useState('annotator');
   const [selectedProject, setSelectedProject] = React.useState({});
@@ -51,6 +48,7 @@ const Projects = connect(({ loading, projects }) => ({
   };
 
   const isProjectGuest = project => project.current_users_role.is_guest;
+  const isLogin = currentUser && currentUser.id;
 
   return (
     <Card title="Explore">
@@ -139,8 +137,15 @@ const Projects = connect(({ loading, projects }) => ({
                           type="notification"
                           theme="twoTone"
                           onClick={() => {
-                            setVisible(true);
-                            setSelectedProject(item);
+                            if (isLogin) {
+                              setVisible(true);
+                              setSelectedProject(item);
+                            } else {
+                              const queryString = stringify({
+                                redirect: window.location.href,
+                              });
+                              router.replace(`/user/login?${queryString}`);
+                            }
                           }}
                         />
                       </Tooltip>
@@ -188,6 +193,10 @@ const Projects = connect(({ loading, projects }) => ({
       />
     </Card>
   );
-});
+}
 
-export default React.memo(Projects);
+export default connect(({ loading, projects, user }) => ({
+  projects,
+  loading: loading.models.projects,
+  currentUser: user.currentUser,
+}))(Projects);

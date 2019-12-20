@@ -29,15 +29,17 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
+
 const menuDataRender = (menuList, isLogin) =>
   menuList.map($item => {
     const item = { ...$item };
-    if (!isLogin && item.name !== 'home') {
+    const isHome = ['/home', '/explore', '/'].includes(item.path);
+    if (!isLogin && !isHome) {
       item.hideInMenu = true;
     }
     const localItem = {
       ...item,
-      children: item.children ? menuDataRender(item.children, isLogin) : [],
+      children: item.children ? menuDataRender(item.children, isLogin, isHome) : [],
     };
 
     return Authorized.check(item.authority, localItem, null);
