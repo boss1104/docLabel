@@ -13,12 +13,7 @@ const getOtherUsers = (allUsers, roleMappings) => {
   return allUsers.filter(user => !currentUserIds.has(user.id));
 };
 
-const Contributor = connect(({ contributor, loading, project }) => ({
-  contributor,
-  loading: loading.models.contributor,
-  currentProject: project.currentProject,
-}))(props => {
-  const { dispatch, contributor, loading, currentProject } = props;
+function Contributor({ dispatch, contributor, loading, currentProject }) {
   const { roles, users, projectRoles, notifications } = contributor;
   // States
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -75,7 +70,8 @@ const Contributor = connect(({ contributor, loading, project }) => ({
       });
       message.success('Successfully changed role');
     } catch (error) {
-      message.error('Error');
+      console.log('[DEBUG]: switchRole -> error', error.data);
+      message.error(error.data.non_field_errors);
     }
   };
 
@@ -224,6 +220,10 @@ const Contributor = connect(({ contributor, loading, project }) => ({
       />
     </PageHeaderWrapper>
   );
-});
+}
 
-export default Contributor;
+export default connect(({ contributor, loading, project }) => ({
+  contributor,
+  loading: loading.models.contributor,
+  currentProject: project.currentProject,
+}))(Contributor);

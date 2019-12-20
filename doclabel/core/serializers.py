@@ -350,6 +350,15 @@ class RoleMappingSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         project_id = self.context["request"].parser_context["kwargs"]["project_id"]
         user = attrs.get("user")
+        # Check user role is admin
+        if (
+            self.instance.role.name == settings.ROLE_PROJECT_ADMIN
+            and self.instance.user.is_superuser
+        ):
+            raise serializers.ValidationError(
+                "Can not change role of super project admin."
+            )
+        # Check exists user
         try:
             RoleMapping.objects.get(user=user, project=project_id)
             raise serializers.ValidationError(
