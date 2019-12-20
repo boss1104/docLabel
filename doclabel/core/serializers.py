@@ -111,6 +111,8 @@ class DocumentSerializer(serializers.ModelSerializer):
             if user_id:
                 user = UserModel.objects.get(pk=request.GET.get("user", None))
                 annotations = annotations.filter(user=user)
+            else:
+                annotations = annotations.filter(user=request.user)
 
         serializer = serializer(annotations, many=True, context={"request": request})
         return serializer.data
