@@ -20,7 +20,10 @@ const HighlightPopup = ({ label }) => {
   if (label && label.text) {
     return (
       <div className={styles.popup}>
-        <div className={styles.highlightPopup} style={{ backgroundColor: label.background_color }}>
+        <div
+          className={styles.highlightPopup}
+          style={{ backgroundColor: label.background_color, color: label.text_color }}
+        >
           <Typography.Text strong>{label.text}</Typography.Text>
         </div>
         <div className={styles.arrow} style={{ borderColor: label.background_color }} />

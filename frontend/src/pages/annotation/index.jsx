@@ -91,6 +91,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       Object.entries(res.list).forEach(([key, val]) => {
         anno[key] = val.annotations;
       });
+      console.log('[DEBUG]: anno', anno);
       setAnnotations(anno);
     } catch (error) {
       console.log('TCL: fetch -> error', error);

@@ -56,6 +56,7 @@ function TextClassificationProject({
                     <Col key={id}>
                       {labelList[label] && (
                         <Tag
+                          style={{ color: labelList[label].text_color }}
                           key={id}
                           color={labelList[label].background_color}
                           closable

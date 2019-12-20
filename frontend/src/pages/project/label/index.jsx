@@ -140,7 +140,9 @@ function LabelPage({ dispatch, updateLoading, createLoading, loading, label, cur
     {
       title: 'Preview',
       dataIndex: 'background_color',
-      render: (text, record) => <Button style={{ backgroundColor: text }}>{record.text}</Button>,
+      render: (text, record) => (
+        <Button style={{ backgroundColor: text, color: record.text_color }}>{record.text}</Button>
+      ),
     },
     // {
     //   title: 'text_color',

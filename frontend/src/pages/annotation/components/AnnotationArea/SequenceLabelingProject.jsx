@@ -106,6 +106,7 @@ function SequenceLabelingProject(prs) {
                         <Tag
                           className={styles.text}
                           closable
+                          style={{ color: props.tag.text_color }}
                           color={props.tag.background_color}
                           onClick={() => props.onClick({ start: props.start, end: props.end })}
                         >

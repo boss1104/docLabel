@@ -53,7 +53,7 @@ function Sidebar({
                     </Typography.Text>
                   </Col>
                   <Col>
-                    <Tag color={val.background_color}>
+                    <Tag color={val.background_color} style={{ color: val.text_color }}>
                       <Typography.Text strong>{val.text}</Typography.Text>
                     </Tag>
                   </Col>
