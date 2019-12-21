@@ -210,7 +210,6 @@ class Register extends Component {
             force: true,
           });
         }
-
         callback();
       }
     }

@@ -304,7 +304,8 @@ SOCIALACCOUNT_ADAPTER = "doclabel.users.adapters.SocialAccountAdapter"
 # django-rest_auth
 # ------------------------------------------------------------------------------
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "doclabel.users.serializers.CustomUserDetailsSerializer"
+    "USER_DETAILS_SERIALIZER": "doclabel.users.serializers.CustomUserDetailsSerializer",
+    "PASSWORD_RESET_SERIALIZER": "doclabel.users.serializers.PasswordResetSerializer",
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {

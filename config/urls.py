@@ -65,6 +65,12 @@ urlpatterns = [
     path("api-docs/", include_docs_urls(title="Doclabel REST API", public=False)),
     path("api-auth/", include("rest_framework.urls")),
     path("accounts/", include("allauth.urls")),
+    # this url is used to generate email content
+    re_path(
+        r"^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
+        TemplateView.as_view(template_name="password_reset_confirm.html"),
+        name="password_reset_confirm",
+    ),
     path("api/", include("rest_auth.urls")),
     path("api/facebook/", FacebookLogin.as_view(), name="fb_login"),
     path("api/github/", GitHubLogin.as_view(), name="github_login"),

@@ -34,6 +34,16 @@ export default [
         component: './user/oauth',
       },
       {
+        name: 'forgot-password',
+        path: '/user/forgot-password',
+        component: './user/auth/ForgotPassword',
+      },
+      {
+        name: 'confirm-password',
+        path: '/user/confirm-password/:uid/:token',
+        component: './user/auth/ConfirmPassword',
+      },
+      {
         component: './exception/404',
       },
     ],

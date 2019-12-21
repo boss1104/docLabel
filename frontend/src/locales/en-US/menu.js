@@ -8,6 +8,8 @@ export default {
   'menu.register': 'Register',
   'menu.register-result': 'Register result',
   'menu.register-confirm': 'Confirm email',
+  'menu.forgot-password': 'Forgot password',
+  'menu.confirm-password': 'Confirm password',
   'menu.dashboard': 'Dashboard',
   'menu.task': 'Tasks',
   'menu.label': 'Labels',
