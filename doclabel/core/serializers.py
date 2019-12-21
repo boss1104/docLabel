@@ -3,6 +3,7 @@ from django.conf import settings
 from rest_framework import serializers
 from rest_polymorphic.serializers import PolymorphicSerializer
 from rest_framework.exceptions import ValidationError
+from django.core.validators import URLValidator
 from rest_framework.validators import UniqueTogetherValidator
 from django.core.files.storage import FileSystemStorage
 from doclabel.users.serializers import CustomUserDetailsSerializer
@@ -87,6 +88,13 @@ class DocumentSerializer(serializers.ModelSerializer):
         fs = FileSystemStorage(location=settings.MEDIA_ROOT + "/pdf_documents/")
         if fs.exists(instance.text):
             return request.build_absolute_uri("/media/pdf_documents/" + instance.text)
+        val = URLValidator()
+        try:
+            val(instance.text)
+            return instance.text
+        except ValidationError:
+            pass
+
         return None
 
     def get_annotations(self, instance):

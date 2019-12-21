@@ -4,7 +4,8 @@ import { connect } from 'dva';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import uuid from 'uuid';
-import { darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { docco, darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
 import {
   TextClassificationProject,
   SequenceLabelingProject,
@@ -21,12 +22,6 @@ const PROJECT_TYPES = {
 };
 
 const FormItem = Form.Item;
-
-const CodeBlock = ({ language, value }) => (
-  <SyntaxHighlighter language={language} style={darcula}>
-    {value}
-  </SyntaxHighlighter>
-);
 
 const ExcelBlock = ({ data }) => {
   const dataSource = data[0].data;
@@ -66,12 +61,18 @@ const ExcelBlock = ({ data }) => {
   );
 };
 
-const CreateForm = connect(({ loading }) => ({
-  loading: loading.models.task,
-}))(({ modalVisible, setModalVisible, form, currentProject, onAddCompleted }) => {
+function CreateForm({
+  modalVisible,
+  setModalVisible,
+  form,
+  currentProject,
+  onAddCompleted,
+  isDark,
+}) {
   const [uploading, setUploading] = React.useState(false);
   const format = form.getFieldValue('format');
   const projectType = currentProject.project_type;
+  const style = isDark ? darcula : docco;
 
   const uploadProps = {
     name: 'file',
@@ -92,32 +93,60 @@ const CreateForm = connect(({ loading }) => ({
         setUploading(false);
         message.success(`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
+        setUploading(false);
         message.error(`${info.file.name} file upload failed.`);
       }
+    },
+  };
+
+  const getBlockCodeFormat = $format => {
+    switch ($format) {
+      case 'plain':
+      case 'pdf':
+      case 'csv':
+        return (
+          <SyntaxHighlighter language="plaintext" style={style}>
+            {projectType ? PROJECT_TYPES[projectType][format].format : ''}
+          </SyntaxHighlighter>
+        );
+      case 'json':
+        return (
+          <SyntaxHighlighter language="json" style={style}>
+            {projectType ? PROJECT_TYPES[projectType][format].format : ''}
+          </SyntaxHighlighter>
+        );
+      case 'excel':
+        return <ExcelBlock data={projectType && PROJECT_TYPES[projectType][format].format} />;
+
+      default:
+        return null;
+    }
+  };
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 3 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 21 },
     },
   };
 
   return (
     <Modal
       destroyOnClose
-      title="New Task"
+      title="Add new Task"
       visible={modalVisible}
       footer={null}
       width={600}
       onCancel={() => setModalVisible(false)}
     >
       <Spin spinning={!!uploading}>
-        <Form layout="horizontal">
-          <Typography.Title level={4}>Upload a file to annotate text.</Typography.Title>
-          <FormItem
-            labelCol={{
-              span: 3,
-            }}
-            wrapperCol={{
-              span: 17,
-            }}
-            label="Format: "
-          >
+        <Form layout="horizontal" {...formItemLayout}>
+          <Typography.Title level={4}></Typography.Title>
+          <FormItem label="Format">
             {form.getFieldDecorator('format', {
               initialValue: 'json',
             })(
@@ -131,35 +160,12 @@ const CreateForm = connect(({ loading }) => ({
               </Radio.Group>,
             )}
           </FormItem>
-          <div style={{ margin: '24px 0' }}>
-            {format &&
-              (format === 'excel' ? (
-                <ExcelBlock data={projectType && PROJECT_TYPES[projectType][format].format} />
-              ) : (
-                <CodeBlock
-                  value={projectType ? PROJECT_TYPES[projectType][format].format : ''}
-                  language={format}
-                />
-              ))}
-          </div>
-          <FormItem
-            labelCol={{
-              span: 3,
-            }}
-            wrapperCol={{
-              span: 17,
-            }}
-            label="File"
-          >
+          <FormItem label="Sample">
+            <div>{format && getBlockCodeFormat(format)}</div>
+          </FormItem>
+          <FormItem label="File">
             {form.getFieldDecorator('file', {
               valuePropName: 'file',
-              // getValueFromEvent: e => {
-              //   console.log('Upload event:', e);
-              //   if (Array.isArray(e)) {
-              //     return e;
-              //   }
-              //   return e && e.fileList;
-              // },
             })(
               <Upload {...uploadProps}>
                 <Button>
@@ -172,6 +178,10 @@ const CreateForm = connect(({ loading }) => ({
       </Spin>
     </Modal>
   );
-});
+}
 
-export default Form.create()(CreateForm);
+export default Form.create()(
+  connect(({ settings }) => ({
+    isDark: settings.navTheme === 'dark',
+  }))(CreateForm),
+);

@@ -228,17 +228,17 @@ class PdfLabelingStorage(BaseStorage):
     
     @transaction.atomic
     def save(self, user):
-        saved_labels = {label.text: label for label in self.project.labels.all()}
+        # saved_labels = {label.text: label for label in self.project.labels.all()}
         for data in self.data:
             docs = self.save_doc(data)
-            labels = self.extract_label(data)
-            unique_labels = self.extract_unique_labels(labels)
-            unique_labels = self.exclude_created_labels(unique_labels, saved_labels)
-            unique_labels = self.to_serializer_format(unique_labels, saved_labels, self.project.id)
-            new_labels = self.save_label(unique_labels)
-            saved_labels = self.update_saved_labels(saved_labels, new_labels)
-            annotations = self.make_annotations(docs, labels, saved_labels)
-            self.save_annotation(annotations, user)
+            # labels = self.extract_label(data)
+            # unique_labels = self.extract_unique_labels(labels)
+            # unique_labels = self.exclude_created_labels(unique_labels, saved_labels)
+            # unique_labels = self.to_serializer_format(unique_labels, saved_labels, self.project.id)
+            # new_labels = self.save_label(unique_labels)
+            # saved_labels = self.update_saved_labels(saved_labels, new_labels)
+            # annotations = self.make_annotations(docs, labels, saved_labels)
+            # self.save_annotation(annotations, user)
 
     @classmethod
     def extract_unique_labels(cls, labels):
