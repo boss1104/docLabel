@@ -1,13 +1,6 @@
 import React from 'react';
 import { Spin, Layout, Card, Typography } from 'antd';
-import {
-  PdfLoader,
-  PdfHighlighter,
-  // Tip,
-  Highlight,
-  Popup,
-  AreaHighlight,
-} from 'react-pdf-highlighter';
+import { PdfHighlighter, Highlight, Popup, AreaHighlight } from 'react-pdf-highlighter';
 
 // import testHighlights from './testHighlights';
 import { connect } from 'dva';
@@ -15,6 +8,7 @@ import Sidebar from './Sidebar';
 import styles from './style.less';
 import Tip from './Tip';
 import { AnnotatationContext } from '../../AnnotationContext';
+import PdfLoader from '@/components/PdfAnnotation/PdfLoader';
 
 const HighlightPopup = ({ label }) => {
   if (label && label.text) {

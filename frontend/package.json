@@ -48,6 +48,7 @@
   ],
   "dependencies": {
     "@ant-design/pro-layout": "^4.9.11",
+    "pdfjs-dist": "2.0.489",
     "@antv/data-set": "^0.10.2",
     "antd": "^3.26.3",
     "bizcharts": "^3.5.6",
