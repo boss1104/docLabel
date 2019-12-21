@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_polymorphic.serializers import PolymorphicSerializer
 from rest_framework.exceptions import ValidationError
 from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError as ValidationErrorCore
 from rest_framework.validators import UniqueTogetherValidator
 from django.core.files.storage import FileSystemStorage
 from doclabel.users.serializers import CustomUserDetailsSerializer
@@ -92,8 +93,8 @@ class DocumentSerializer(serializers.ModelSerializer):
         try:
             val(instance.text)
             return instance.text
-        except ValidationError:
-            pass
+        except ValidationErrorCore:
+            return None
 
         return None
 

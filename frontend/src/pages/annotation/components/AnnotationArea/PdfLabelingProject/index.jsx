@@ -107,7 +107,14 @@ function PdfLabelingProject({
       <Layout className={styles.main}>
         <Layout.Content className={styles.content}>
           {task && (
-            <PdfLoader url={task.file_url} beforeLoad={<Spin spinning />}>
+            <PdfLoader
+              url={task.file_url}
+              beforeLoad={
+                <div className={styles.loading}>
+                  <Spin spinning />
+                </div>
+              }
+            >
               {pdfDocument => (
                 <PdfHighlighter
                   pdfDocument={pdfDocument}
