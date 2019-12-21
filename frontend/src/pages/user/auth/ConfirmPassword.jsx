@@ -81,7 +81,7 @@ function ConfirmPassword({ dispatch, form, loading, match }) {
               });
             }}
           >
-            <FormItem>
+            <FormItem hasFeedback>
               {getFieldDecorator('new_password1', {
                 rules: [
                   {
@@ -98,7 +98,7 @@ function ConfirmPassword({ dispatch, form, loading, match }) {
                 ],
               })(<Input size="large" type="password" placeholder="New password" />)}
             </FormItem>
-            <FormItem>
+            <FormItem hasFeedback>
               {getFieldDecorator('new_password2', {
                 rules: [
                   {

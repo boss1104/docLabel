@@ -16,3 +16,10 @@ export async function changeAvatar({ data }) {
     data,
   });
 }
+
+export async function changePassword({ data }) {
+  return request('/api/password/change/', {
+    method: 'POST',
+    data,
+  });
+}

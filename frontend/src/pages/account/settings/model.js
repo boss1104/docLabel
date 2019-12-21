@@ -1,10 +1,8 @@
-import { updateAccount, changeAvatar } from './service';
+import { updateAccount, changeAvatar, changePassword } from './service';
 
 const Model = {
   namespace: 'accountSettings',
-  state: {
-    isLoading: false,
-  },
+  state: {},
   effects: {
     *updateAccount({ payload }, { call, put }) {
       const res = yield call(updateAccount, { data: payload });
@@ -18,7 +16,6 @@ const Model = {
       return ret;
     },
     *changeAvatar({ payload }, { call, put }) {
-      console.log('[DEBUG]: *changeAvatar -> payload', payload);
       const res = yield call(changeAvatar, { data: payload });
 
       yield put({
@@ -28,10 +25,14 @@ const Model = {
 
       return res;
     },
+    *changePassword({ payload }, { call }) {
+      const res = yield call(changePassword, { data: payload });
+      return res;
+    },
   },
   reducers: {
     changeLoading(state, action) {
-      return { ...state, isLoading: action.payload };
+      return { ...state, ...action.payload };
     },
   },
 };
