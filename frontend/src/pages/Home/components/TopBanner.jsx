@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Row, Col, Typography } from 'antd';
 import { Parallax } from 'react-parallax';
 
+import { Link } from 'umi';
 import styles from './index.less';
 import logo from '@/assets/logo.svg';
 
@@ -31,13 +32,15 @@ function TopBanner(props) {
                 </Col>
                 <Col className={styles.btnExplore}>
                   <Button size="large" type="primary">
-                    Explore
+                    <Link to="/explore">Explore</Link>
                   </Button>
                 </Col>
                 <Col className={styles.btnGithub}>
-                  <Button size="large" type="default" icon="github">
-                    Github
-                  </Button>
+                  <a href="https://github.com/sonstephendo/doclabel">
+                    <Button size="large" type="default" icon="github">
+                      Github
+                    </Button>
+                  </a>
                 </Col>
               </Row>
             </Col>

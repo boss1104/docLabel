@@ -33,44 +33,32 @@
 }
 
 .featureCards {
-  height: 350px;
   padding: 48px;
   text-align: center;
 
   .cardCover {
     padding: 24px;
     font-size: 64px;
+    img {
+      width: 120px;
+      height: 120px;
+    }
   }
-
-  // .featureTitle {
-  // }
 }
 
 .projectsBanner {
   // position: relative;
-  height: 450px;
   :global {
     .ant-carousel .slick-slide {
       height: 450px;
-      // overflow: hidden;
       text-align: center;
-      background: #364d79;
+      background: #fff;
     }
     .ant-carousel .slick-dots li.slick-active button {
       background: #000;
     }
     .ant-carousel .slick-dots li button {
       background: #000;
-    }
-  }
-
-  .card {
-    width: 100%;
-    height: 450px;
-    background-color: none;
-
-    .cardCover {
-      height: 300px;
     }
   }
 }

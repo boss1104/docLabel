@@ -1,15 +1,17 @@
+import NamedEntityRecognition from '@/assets/types/Named_Entity_Recognition.png';
+import PDFLabeling from '@/assets/types/PDF_Labeling.png';
+import SentimentAnalysis from '@/assets/types/Sentiment_Analysis.png';
+import Translation from '@/assets/types/Translation.png';
+import { Card, Carousel, Icon, Typography, Row, Col } from 'antd';
 import React from 'react';
-import { Button, Carousel, Card, Icon } from 'antd';
 import styles from './index.less';
-
-const { Meta } = Card;
 
 function SamplePrevArrow(props) {
   const { className, style, onClick } = props;
   return (
     <div
       className={className}
-      style={{ ...style, display: 'block', zIndex: 1, left: 15, top: '80%' }}
+      style={{ ...style, display: 'block', zIndex: 1, left: 15 }}
       onClick={onClick}
     >
       <Icon
@@ -29,7 +31,7 @@ function SampleNextArrow(props) {
   return (
     <div
       className={className}
-      style={{ ...style, display: 'block', zIndex: 1, right: 15, top: '80%' }}
+      style={{ ...style, display: 'block', zIndex: 1, right: 15 }}
       onClick={onClick}
     >
       <Icon
@@ -48,27 +50,27 @@ function ProjectsBanner(props) {
   const data = [
     {
       key: '#1',
-      image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
-      title: 'Team Collaboration',
-      description: 'Annotation with your teammates',
+      image: SentimentAnalysis,
+      title: 'Sentiment Analysis',
+      description: 'Sentiment Analysis',
     },
     {
       key: '#2',
-      image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
-      title: 'Team Collaboration 2',
-      description: 'Annotation with your teammates 2',
+      image: NamedEntityRecognition,
+      title: 'Named Entity Recognition',
+      description: 'Named Entity Recognition',
     },
     {
       key: '#3',
-      image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
-      title: 'Team Collaboration 3',
-      description: 'Annotation with your teammates 3',
+      image: Translation,
+      title: 'Translation',
+      description: 'Translation',
     },
     {
       key: '#4',
-      image: 'https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg',
-      title: 'Team Collaboration 4',
-      description: 'Annotation with your teammates 4',
+      image: PDFLabeling,
+      title: 'PDF Labeling',
+      description: 'PDF Labeling',
     },
   ];
 
@@ -87,21 +89,23 @@ function ProjectsBanner(props) {
     <div className={styles.projectsBanner}>
       <Carousel {...settings}>
         {data.map(item => (
-          <React.Fragment key={item.key}>
-            <Card
-              className={styles.card}
-              hoverable
-              cover={
-                <img
-                  className={styles.cardCover}
-                  alt="example"
-                  src="https://zos.alipayobjects.com/rmsportal/hzPBTkqtFpLlWCi.jpg"
-                />
-              }
-            >
-              <Meta title={item.title} description={item.description} />
-            </Card>
-          </React.Fragment>
+          <div>
+            <Row key={item.key} type="flex" justify="space-around" align="middle" gutter={24}>
+              <Col xs={24} md={12}>
+                <img alt="example" src={item.image} style={{ height: 400, float: 'right' }} />
+              </Col>
+              <Col xs={24} md={12}>
+                <div style={{ textAlign: 'left' }}>
+                  <Typography.Title level={2} strong>
+                    {item.title}
+                  </Typography.Title>
+                  <Typography.Paragraph ellipsis={{ rows: 2 }}>
+                    {item.description}
+                  </Typography.Paragraph>
+                </div>
+              </Col>
+            </Row>
+          </div>
         ))}
       </Carousel>
     </div>
