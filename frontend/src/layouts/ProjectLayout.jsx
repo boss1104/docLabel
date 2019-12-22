@@ -7,7 +7,7 @@ import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import { Icon, Result, Button, Spin } from 'antd';
+import { Icon, Result, Button, Spin, List, Typography } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { router } from 'umi';
 import Authorized, { reloadAuthorized } from '@/utils/Authorized';
@@ -150,10 +150,26 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
 
   const isLoading = loading || !isReady;
 
+  const data = [
+    'Racing car sprays burning fuel into crowd.',
+    'Japanese princess to wed commoner.',
+    'Australian walks 100km after outback crash.',
+    'Man charged over missing wedding girl.',
+    'Los Angeles battles huge wildfires.',
+  ];
+
   return (
     <ProLayout
       logo={logo}
       onCollapse={handleMenuCollapse}
+      title="Remax"
+      links={[
+        <>
+          <Link to="/account/center">
+            <Icon type="arrow-left" /> Center
+          </Link>
+        </>,
+      ]}
       menuDataRender={menuDataRender}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {

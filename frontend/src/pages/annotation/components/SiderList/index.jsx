@@ -143,80 +143,93 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
         )}
       </Spin>
 
-      <section>
-        <Spin spinning={taskLoading} size="small">
-          {/* <div className={styles.search}>
+      <Spin spinning={taskLoading} size="small">
+        {/* <div className={styles.search}>
             <Search size="large" placeholder="Search task" onSearch={handleOnSearch} />
           </div> */}
-          <div className={styles.about}>
-            {`About ${pagination.total} tasks. (page ${page} of ${pageSize})`}
-          </div>
-          <Menu
-            theme={dark ? 'dark' : 'light'}
-            mode="inline"
-            selectedKeys={[`${pageNumber}`]}
-            onClick={({ key }) => {
-              if (onChangeKey) onChangeKey(key);
-            }}
-          >
-            <Menu.Divider />
-            {list &&
-              Object.keys(list).map((key, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Menu.Item key={index}>
-                  <Row gutter={16} type="flex">
-                    <Col span={2}>
-                      {annotationsList[index] && annotationsList[index].length !== 0 && (
-                        <Icon type="check" />
-                      )}
-                    </Col>
-                    <Col span={22}>
-                      <Typography.Paragraph ellipsis>{list[key].text}</Typography.Paragraph>
-                    </Col>
-                  </Row>
-                </Menu.Item>
-              ))}
-            {!isApprover && (
-              <div className={styles.buttonSubmit}>
-                <Button
-                  icon="submit"
-                  type="primary"
-                  size="large"
-                  block
-                  onClick={showConfirm}
-                  disabled={isSubmitDisabled || isFinished}
-                  loading={submitLoading}
-                >
-                  {isFinished ? 'Finished' : 'Submit'}
-                </Button>
-              </div>
-            )}
-            {isApprover && (
-              <Select
-                showSearch
-                placeholder="Select a annotation"
-                onChange={value => {
-                  setAnnotationValue(value);
-                  // fetch
-                }}
-                value={annotationValue}
-                // onFocus={onFocus}
-                // onBlur={onBlur}
-                // onSearch={onSearch}
+        <div className={styles.about}>
+          {`About ${pagination.total} tasks. (page ${page} of ${pageSize})`}
+        </div>
+        <Menu
+          theme={dark ? 'dark' : 'light'}
+          mode="inline"
+          selectedKeys={[`${pageNumber}`]}
+          onClick={({ key }) => {
+            if (onChangeKey) onChangeKey(key);
+          }}
+        >
+          <Menu.Divider />
+          {list &&
+            Object.keys(list).map((key, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Menu.Item key={index}>
+                <Row gutter={16} type="flex">
+                  <Col span={2}>
+                    {annotationsList[index] && annotationsList[index].length !== 0 && (
+                      <Icon type="check" />
+                    )}
+                  </Col>
+                  <Col span={22}>
+                    <Typography.Paragraph ellipsis>{list[key].text}</Typography.Paragraph>
+                  </Col>
+                </Row>
+              </Menu.Item>
+            ))}
+          {!isApprover && (
+            <div className={styles.buttonSubmit}>
+              <Button
+                icon="submit"
+                type="primary"
                 size="large"
-                className={styles.contibutors}
+                block
+                onClick={showConfirm}
+                disabled={isSubmitDisabled || isFinished}
+                loading={submitLoading}
               >
-                {getAnnotators().map(item => (
-                  <Select.Option value={item.id} key={item.id}>
-                    <span className={styles.username}>{item.username}</span>
-                    <span> - {item.full_name}</span>
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          </Menu>
-        </Spin>
-      </section>
+                {isFinished ? 'Finished' : 'Submit'}
+              </Button>
+            </div>
+          )}
+          {isApprover && (
+            <Select
+              showSearch
+              placeholder="Select a annotation"
+              onChange={value => {
+                setAnnotationValue(value);
+                // fetch
+              }}
+              value={annotationValue}
+              // onFocus={onFocus}
+              // onBlur={onBlur}
+              // onSearch={onSearch}
+              size="large"
+              className={styles.contibutors}
+            >
+              {getAnnotators().map(item => (
+                <Select.Option value={item.id} key={item.id}>
+                  <span className={styles.username}>{item.username}</span>
+                  <span> - {item.full_name}</span>
+                </Select.Option>
+              ))}
+            </Select>
+          )}
+        </Menu>
+      </Spin>
+      <div className="ant-pro-sider-menu-links">
+        <Menu
+          theme={dark ? 'dark' : 'light'}
+          className="ant-pro-sider-menu-link-menu"
+          selectedKeys={[]}
+          openKeys={[]}
+          mode="inline"
+        >
+          <Menu.Item>
+            <Link to="/explore">
+              <Icon type="arrow-left" /> Explore
+            </Link>
+          </Menu.Item>
+        </Menu>
+      </div>
     </Sider>
   );
 });
