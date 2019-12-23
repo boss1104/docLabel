@@ -31,32 +31,37 @@ function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, ta
                 visible={visible}
                 footer={null}
                 onCancel={() => setVisible(false)}
+                centered
               >
                 <div style={{ margin: '0 24px', overflow: 'auto' }}>
                   <Markdown markdownSrc={currentProject.guideline} />
                 </div>
               </Modal>
             </Col>
-            <Col>
+            {/* <Col>
               <Tooltip title="Document Meta">
                 <Button icon="inbox" size="large" />
               </Tooltip>
-            </Col>
+            </Col> */}
             {isAnnotationApprover && (
               <Col>
-                <Tooltip title={isApproved ? 'Approved' : 'UnApproved'}>
-                  <Popconfirm
-                    title="Are you sure approve this task?"
-                    placement="topLeft"
-                    onConfirm={onClickApproved}
+                <Tooltip title={isApproved ? 'Approved' : 'Unapproved'}>
+                  <Button
+                    icon={isApproved ? 'check-circle' : 'question-circle'}
+                    size="large"
+                    style={isApproved ? { color: '#00a854' } : {}}
+                    type={isApproved ? 'primary' : 'warning'}
                     disabled={isApproved}
-                  >
-                    <Button
-                      icon={isApproved ? 'check-circle' : 'question-circle'}
-                      size="large"
-                      style={isApproved ? { color: '#00a854' } : {}}
-                    />
-                  </Popconfirm>
+                    onClick={() =>
+                      Modal.confirm({
+                        title: 'Are you want to approve this task?',
+                        content: 'After approved, you could not change the result.',
+                        onOk: onClickApproved,
+                        centered: true,
+                        okText: 'Confirm',
+                      })
+                    }
+                  />
                 </Tooltip>
               </Col>
             )}

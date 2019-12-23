@@ -91,7 +91,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       Object.entries(res.list).forEach(([key, val]) => {
         anno[key] = val.annotations;
       });
-      console.log('[DEBUG]: anno', anno);
       setAnnotations(anno);
     } catch (error) {
       console.log('TCL: fetch -> error', error);
@@ -131,7 +130,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         },
       });
 
-      console.log('[DEBUG]: queryStatistics -> res', res);
       const { total, remaining: resRemaining } = res;
       setTotalTask(total);
       setRemaining(resRemaining);
@@ -281,7 +279,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     Object.keys(newAnno).forEach(key => {
       newAnno[key] = newAnno[key].map(item => ({ ...item, finished: true }));
     });
-    console.log('[DEBUG]: newAnno', newAnno);
     setAnnotations(newAnno);
   };
 
@@ -306,7 +303,7 @@ const Annotation = connect(({ project, task, label, loading }) => ({
         console.log('[DEBUG]: error', error);
       }
     } else {
-      message.warn('Annotation did not confirm yet!');
+      message.warn('Annotator has not confirm yet!');
     }
   }, [taskId, annotations, annotationValue]);
 

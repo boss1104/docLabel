@@ -90,6 +90,8 @@ const SiderList = connect(({ project, task, loading, settings }) => ({
       title: 'Are you sure to submit this task ?',
       content: 'You can not change the answers after submit.',
       onOk: submitTaskCompleted,
+      centered: true,
+      okText: 'Submit',
     });
   };
 
