@@ -361,7 +361,7 @@ class RoleMappingSerializer(serializers.ModelSerializer):
         user = attrs.get("user")
         # Check user role is admin
         if (
-            self.instance.role.name == settings.ROLE_PROJECT_ADMIN
+            self.instance and self.instance.role.name == settings.ROLE_PROJECT_ADMIN
             and self.instance.user.is_superuser
         ):
             raise serializers.ValidationError(
