@@ -7,7 +7,7 @@ import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import React from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import { Icon, Result, Button } from 'antd';
+import { Icon, Result, Button, message } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { router } from 'umi';
 import Authorized, { reloadAuthorized } from '@/utils/Authorized';
@@ -119,6 +119,7 @@ const AnnotationLayout = connect(({ global, settings, loading }) => ({
 
       if (res && !res.public) {
         router.push('/home');
+        message.warn('Project is not ready!');
       } else {
         reloadAuthorized();
       }
