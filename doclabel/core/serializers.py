@@ -155,23 +155,21 @@ class ProjectSerializer(serializers.ModelSerializer):
         docs_stat = {}
         remaining = 0
         total = 0
-        for doc in docs.all():
-            annotation = annotation_class.objects.filter(
-                document_id=doc, finished=True
-            ).aggregate(Count("user", distinct=True))["user__count"]
-            doc_remaining = (
-                0
-                if annotation >= annotator_per_example
-                else annotator_per_example - annotation
-            )
-            remaining += doc_remaining
-            total += annotator_per_example
-            docs_stat[doc.id] = {
-                "id": doc.id,
-                "text": doc.text,
-                "annotation": annotation,
-                "remaining": doc_remaining,
-            }
+        # General case
+        total = docs.count() * annotator_per_example
+        done = annotation_class.objects.filter(
+            document_id__in=docs.all(), finished=True
+        ).aggregate(Count("user", distinct=True))["user__count"]
+        remaining = docs.count() * (
+            0 if done >= annotator_per_example else annotator_per_example - done
+        )
+        # for doc in docs.all():
+        # docs_stat[doc.id] = {
+        #     "id": doc.id,
+        #     "text": doc.text,
+        #     "annotation": annotation,
+        #     "remaining": doc_remaining,
+        # }
         request = self.context["request"]
         role_project = request.GET.get("role_project")
 
@@ -361,7 +359,8 @@ class RoleMappingSerializer(serializers.ModelSerializer):
         user = attrs.get("user")
         # Check user role is admin
         if (
-            self.instance and self.instance.role.name == settings.ROLE_PROJECT_ADMIN
+            self.instance
+            and self.instance.role.name == settings.ROLE_PROJECT_ADMIN
             and self.instance.user.is_superuser
         ):
             raise serializers.ValidationError(
