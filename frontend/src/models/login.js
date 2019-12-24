@@ -1,7 +1,8 @@
-import { routerRedux } from 'dva/router';
 import { accountLogin, accountLogout } from '@/services/login';
 import { setAuthorization, setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
+import { router } from 'umi';
+import { getPageQuery } from '@/utils/utils';
 
 const Model = {
   namespace: 'login',
@@ -20,23 +21,22 @@ const Model = {
       /**
        * Redirect
        */
-      // const urlParams = new URL(window.location.href);
-      // const params = getPageQuery();
-      // let { redirect } = params;
-      // if (redirect) {
-      //   const redirectUrlParams = new URL(redirect);
-      //   if (redirectUrlParams.origin === urlParams.origin) {
-      //     redirect = redirect.substr(urlParams.origin.length + 4);
-      //     if (redirect.match(/^\/.*#/)) {
-      //       redirect = redirect.substr(redirect.indexOf('#') + 1);
-      //     }
-      //   } else {
-      //     window.location.href = redirect;
-      //     return;
-      //   }
-      // }
-      // yield put(routerRedux.replace(redirect || '/'));
-      yield put(routerRedux.replace('/'));
+      const urlParams = new URL(window.location.href);
+      const params = getPageQuery();
+      let { redirect } = params;
+      if (redirect) {
+        const redirectUrlParams = new URL(redirect);
+        if (redirectUrlParams.origin === urlParams.origin) {
+          redirect = redirect.substr(urlParams.origin.length + 4);
+          if (redirect.match(/^\/.*#/)) {
+            redirect = redirect.substr(redirect.indexOf('#') + 1);
+          }
+        } else {
+          window.location.href = redirect;
+          return;
+        }
+      }
+      router.replace(redirect || '/');
     },
 
     *logout(_, { call, put }) {

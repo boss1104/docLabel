@@ -22,14 +22,7 @@ const getSidebarTotal = (total, limit) => {
 
 const getSidebarPage = (offset, limit) => (limit !== 0 ? Math.ceil(offset / limit) + 1 : 0);
 
-const Annotation = connect(({ project, task, label, loading }) => ({
-  currentProject: project.currentProject,
-  task,
-  taskLoading: loading.effects['task/fetch'],
-  label,
-  labelLoading: loading.effects['label/fetch'],
-  annoLoading: loading.models.annotation,
-}))(props => {
+function Annotation(props) {
   const {
     dispatch,
     currentProject,
@@ -40,7 +33,6 @@ const Annotation = connect(({ project, task, label, loading }) => ({
     location: { query },
     annoLoading,
   } = props;
-
   /**
    * States
    */
@@ -408,6 +400,13 @@ const Annotation = connect(({ project, task, label, loading }) => ({
       </Layout>
     </AnnotatationProvider>
   );
-});
+}
 
-export default Annotation;
+export default connect(({ project, task, label, loading }) => ({
+  currentProject: project.currentProject,
+  task,
+  taskLoading: loading.effects['task/fetch'],
+  label,
+  labelLoading: loading.effects['label/fetch'],
+  annoLoading: loading.models.annotation,
+}))(Annotation);

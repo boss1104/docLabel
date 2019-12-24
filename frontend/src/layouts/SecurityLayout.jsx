@@ -2,7 +2,7 @@ import { connect } from 'dva';
 import { stringify } from 'querystring';
 import React from 'react';
 import { Redirect } from 'umi';
-import PageLoading from '@/components/PageLoading';
+import { PageLoading } from '@ant-design/pro-layout';
 
 const SecurityLayout = props => {
   const [isReady, setIsReady] = React.useState(false);

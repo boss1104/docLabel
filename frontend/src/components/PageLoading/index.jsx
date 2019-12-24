@@ -1,16 +1,5 @@
-import React from 'react';
-import { Spin } from 'antd'; // loading components from code split
-// https://umijs.org/plugin/umi-plugin-react.html#dynamicimport
+import { PageLoading } from '@ant-design/pro-layout';
 
-const PageLoading = () => (
-  <div
-    style={{
-      paddingTop: 100,
-      textAlign: 'center',
-    }}
-  >
-    <Spin size="large" />
-  </div>
-);
+// https://umijs.org/plugin/umi-plugin-react.html#dynamicimport
 
 export default PageLoading;

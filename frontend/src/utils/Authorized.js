@@ -10,5 +10,7 @@ const reloadAuthorized = () => {
   Authorized = RenderAuthorize(getAuthority());
 };
 
+window.reloadAuthorized = reloadAuthorized;
+
 export { reloadAuthorized };
 export default Authorized;

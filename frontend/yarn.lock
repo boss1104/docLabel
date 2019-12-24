@@ -70,6 +70,28 @@
     umi-utils "^1.5.1"
     yargs-parser "^15.0.0"
 
+"@ant-design/pro-layout@^4.10.0":
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/@ant-design/pro-layout/-/pro-layout-4.10.0.tgz#3c7fc18c6f1a8051b797507fe29a3befe9a4ab67"
+  integrity sha512-2s7sfTTN4uOZevy+Rm0117cujX6To1w7al7Tm+4yqHBm87/UkJbsPJGIwX2kZsiIm41h/98He4cgvmA6oXryPw==
+  dependencies:
+    antd "^3.26.3"
+    classnames "^2.2.6"
+    history "^4.10.1"
+    lodash.isequal "^4.5.0"
+    memoize-one "^5.1.1"
+    omit.js "^1.0.0"
+    path-to-regexp "2.4.0"
+    qs "^6.9.0"
+    rc-resize-observer "^0.1.3"
+    react-copy-to-clipboard "^5.0.1"
+    react-helmet "^5.2.1"
+    react-responsive "^8.0.1"
+    react-router-dom "5.1.2"
+    unstated-next "^1.1.0"
+    use-merge-value "^1.0.1"
+    warning "^4.0.3"
+
 "@ant-design/pro-layout@^4.7.3":
   version "4.8.1"
   resolved "https://registry.yarnpkg.com/@ant-design/pro-layout/-/pro-layout-4.8.1.tgz#74681d9d9f2d59f3d48f3f1f84c9b0f69fa215d7"
@@ -87,29 +109,6 @@
     react-helmet "^5.2.1"
     react-responsive "^8.0.1"
     react-router-dom "5.1.2"
-    warning "^4.0.3"
-
-"@ant-design/pro-layout@^4.9.11":
-  version "4.9.11"
-  resolved "https://registry.yarnpkg.com/@ant-design/pro-layout/-/pro-layout-4.9.11.tgz#05a1adb985eebd59fe00f81d9242cc8e3efda86a"
-  integrity sha512-QnJv9YkDk0gbtcFCckbUldt50ZjeVsNRNK7Xt5VV+HEmrX6RuYaY8gDatznHkU1hjHcUXwo7e7h5G7fRdOQv2g==
-  dependencies:
-    antd "^3.23.6"
-    classnames "^2.2.6"
-    hash.js "^1.1.7"
-    history "^4.10.1"
-    lodash "^4.17.10"
-    memoize-one "^5.1.1"
-    omit.js "^1.0.0"
-    path-to-regexp "2.4.0"
-    qs "^6.9.0"
-    rc-resize-observer "^0.1.3"
-    react-copy-to-clipboard "^5.0.1"
-    react-helmet "^5.2.1"
-    react-responsive "^8.0.1"
-    react-router-dom "5.1.2"
-    unstated-next "^1.1.0"
-    use-merge-value "^1.0.1"
     warning "^4.0.3"
 
 "@antv/adjust@~0.1.0":
@@ -1278,14 +1277,6 @@
     core-js "^2.6.5"
     regenerator-runtime "^0.13.2"
 
-"@babel/runtime@7.0.0-beta.46":
-  version "7.0.0-beta.46"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.46.tgz#466a9c0498f6d12d054a185981eef742d59d4871"
-  integrity sha512-/3a3USMKk54BEHhDgY8rtxtaQOs4bp4aQwo6SDtdwmrXmgSgEusWuXNX5oIs/nwzmTD9o8wz2EyAjA+uHDMmJA==
-  dependencies:
-    core-js "^2.5.3"
-    regenerator-runtime "^0.11.1"
-
 "@babel/runtime@7.4.5":
   version "7.4.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.5.tgz#582bb531f5f9dc67d2fcb682979894f75e253f12"
@@ -1894,11 +1885,6 @@
     "@types/react" "*"
     hoist-non-react-statics "^3.3.0"
 
-"@types/isomorphic-fetch@^0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.34.tgz#3c3483e606c041378438e951464f00e4e60706d6"
-  integrity sha1-PDSD5gbAQTeEOOlRRk8A5OYHBtY=
-
 "@types/isomorphic-fetch@^0.0.35":
   version "0.0.35"
   resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
@@ -2034,7 +2020,7 @@
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
-"@types/react-router-dom@^4.2.7", "@types/react-router-dom@^4.3.1":
+"@types/react-router-dom@^4.3.1":
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-4.3.5.tgz#72f229967690c890d00f96e6b85e9ee5780db31f"
   integrity sha512-eFajSUASYbPHg2BDM1G8Btx+YqGgvROPIg6sBhl3O4kbDdYXdFdfrgQFf/pcBuQVObjfT9AL/dd15jilR5DIEA==
@@ -2051,16 +2037,6 @@
     "@types/history" "*"
     "@types/react" "*"
     "@types/react-router" "*"
-
-"@types/react-router-redux@^5.0.13":
-  version "5.0.18"
-  resolved "https://registry.yarnpkg.com/@types/react-router-redux/-/react-router-redux-5.0.18.tgz#5f28d5f7387fa71e33f602ccf9269e1609d47b8b"
-  integrity sha512-5SI69Virpmo+5HXWXKIzSt5hsnV7TTidL3Ddmbi+PH1CIdi40wthJwjFoqiE+gRQANur5WhjEtfyPorJ4zymHA==
-  dependencies:
-    "@types/history" "*"
-    "@types/react" "*"
-    "@types/react-router" "*"
-    redux ">= 3.7.2"
 
 "@types/react-router@*":
   version "5.1.2"
@@ -2085,10 +2061,18 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@^16.9.1", "@types/react@^16.9.16":
+"@types/react@^16.9.1":
   version "16.9.16"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.16.tgz#4f12515707148b1f53a8eaa4341dae5dfefb066d"
   integrity sha512-dQ3wlehuBbYlfvRXfF5G+5TbZF3xqgkikK7DWAsQXe2KnzV+kjD4W2ea+ThCrKASZn9h98bjjPzoTYzfRqyBkw==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
+
+"@types/react@^16.9.17":
+  version "16.9.17"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.17.tgz#58f0cc0e9ec2425d1441dd7b623421a867aa253e"
+  integrity sha512-UP27In4fp4sWF5JgyV6pwVPAQM83Fj76JOcg02X5BZcpSu5Wx+fP9RMqc2v0ssBoQIFvD5JdKY41gjJJKmw6Bg==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -3082,6 +3066,66 @@ antd@^3.26.3:
     css-animation "^1.5.0"
     dom-closest "^0.2.0"
     enquire.js "^2.1.6"
+    lodash "^4.17.13"
+    moment "^2.24.0"
+    omit.js "^1.0.2"
+    prop-types "^15.7.2"
+    raf "^3.4.1"
+    rc-animate "^2.10.2"
+    rc-calendar "~9.15.7"
+    rc-cascader "~0.17.4"
+    rc-checkbox "~2.1.6"
+    rc-collapse "~1.11.3"
+    rc-dialog "~7.6.0"
+    rc-drawer "~3.1.1"
+    rc-dropdown "~2.4.1"
+    rc-editor-mention "^1.1.13"
+    rc-form "^2.4.10"
+    rc-input-number "~4.5.0"
+    rc-mentions "~0.4.0"
+    rc-menu "~7.5.1"
+    rc-notification "~3.3.1"
+    rc-pagination "~1.20.11"
+    rc-progress "~2.5.0"
+    rc-rate "~2.5.0"
+    rc-resize-observer "^0.1.0"
+    rc-select "~9.2.0"
+    rc-slider "~8.7.1"
+    rc-steps "~3.5.0"
+    rc-switch "~1.9.0"
+    rc-table "~6.10.5"
+    rc-tabs "~9.7.0"
+    rc-time-picker "~3.7.1"
+    rc-tooltip "~3.7.3"
+    rc-tree "~2.1.0"
+    rc-tree-select "~2.9.1"
+    rc-trigger "^2.6.2"
+    rc-upload "~2.9.1"
+    rc-util "^4.16.1"
+    react-lazy-load "^3.0.13"
+    react-lifecycles-compat "^3.0.4"
+    react-slick "~0.25.2"
+    resize-observer-polyfill "^1.5.1"
+    shallowequal "^1.1.0"
+    warning "~4.0.3"
+
+antd@^3.26.4:
+  version "3.26.4"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-3.26.4.tgz#7caef11896eb9b1ec2b1d8c41c92f7c60ef8e52b"
+  integrity sha512-3kv0jpOPw/HzIGUAQO9wpoF0KZiGJa/jz5KC2ICkjaU1p9mlpq/ZkbW7cFY5P/iWrMvaa1rFYjcU6To4ietNKw==
+  dependencies:
+    "@ant-design/create-react-context" "^0.2.4"
+    "@ant-design/icons" "~2.1.1"
+    "@ant-design/icons-react" "~2.0.1"
+    "@types/react-slick" "^0.23.4"
+    array-tree-filter "^2.1.0"
+    babel-runtime "6.x"
+    classnames "~2.2.6"
+    copy-to-clipboard "^3.2.0"
+    css-animation "^1.5.0"
+    dom-closest "^0.2.0"
+    enquire.js "^2.1.6"
+    is-mobile "^2.1.0"
     lodash "^4.17.13"
     moment "^2.24.0"
     omit.js "^1.0.2"
@@ -5029,7 +5073,7 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
-core-js@^2.4.0, core-js@^2.5.3, core-js@^2.6.5:
+core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.10.tgz#8a5b8391f8cc7013da703411ce5b585706300d7f"
   integrity sha512-I39t74+4t+zau64EN1fE5v2W31Adtc/REhzWN+gWRRXg6WH5qAsZm62DHpQ1+Yhe4047T55jvzz7MUqF/dBBlA==
@@ -6190,20 +6234,6 @@ dva-core@2.0.1:
     redux-saga "^0.16.0"
     warning "^3.0.0"
 
-dva-core@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/dva-core/-/dva-core-1.4.0.tgz#30aed800b97f07f768e42049094ee3150f48c5d3"
-  integrity sha512-g1CnnF80+oGTUv9qZCc5vndkPHwoODiAGzdcGFMbT78+SmrbYgbvO5wyRBGvebmLYyaTJt4tLqvHIP+UYJoxkQ==
-  dependencies:
-    "@babel/runtime" "7.0.0-beta.46"
-    flatten "^1.0.2"
-    global "^4.3.2"
-    invariant "^2.2.1"
-    is-plain-object "^2.0.3"
-    redux "^3.7.1"
-    redux-saga "^0.16.0"
-    warning "^3.0.0"
-
 dva-immer@0.4.5:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/dva-immer/-/dva-immer-0.4.5.tgz#71a520b09bc95c8a718e756dae43ebc6852932f9"
@@ -6218,25 +6248,6 @@ dva-loading@3.0.6:
   integrity sha512-OhrKWY2v4XuFu7IyKvKw4yQN1lQHi7Bab+qupBbvRrjjBcOzc+OTNrI5v0Smc/wnitCG06i7wdxWloLM9P9Wng==
   dependencies:
     "@babel/runtime" "^7.0.0"
-
-dva@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/dva/-/dva-2.4.1.tgz#a3eeb07bb8bc6e2ff9ffe31799d03cb69e45f5fd"
-  integrity sha512-ggj/P4lYa+7GBZuNua2Sn8rDjhbb2Mjt9THUKlunSYSBwIVU5xFIBkCB87JBPc274ojL9h/hKOmVFVFlWzlRpg==
-  dependencies:
-    "@babel/runtime" "7.0.0-beta.46"
-    "@types/isomorphic-fetch" "^0.0.34"
-    "@types/react-router-dom" "^4.2.7"
-    "@types/react-router-redux" "^5.0.13"
-    dva-core "^1.4.0"
-    global "^4.3.2"
-    history "^4.6.3"
-    invariant "^2.2.2"
-    isomorphic-fetch "^2.2.1"
-    react-redux "5.0.7"
-    react-router-dom "^4.1.2"
-    react-router-redux "5.0.0-alpha.9"
-    redux "^3.7.2"
 
 dva@^2.6.0-beta.16:
   version "2.6.0-beta.17"
@@ -8601,7 +8612,7 @@ highlight.js@~9.15.0, highlight.js@~9.15.1:
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.15.10.tgz#7b18ed75c90348c045eef9ed08ca1319a2219ad2"
   integrity sha512-RoV7OkQm0T3os3Dd2VHLNMoaoDVx77Wygln3n9l5YV172XonWG6rgQD3XnF/BuFFZw9A0TJgmMSO8FEWQgvcXw==
 
-history@^4.10.1, history@^4.6.3, history@^4.7.2, history@^4.9.0:
+history@^4.10.1, history@^4.7.2, history@^4.9.0:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/history/-/history-4.10.1.tgz#33371a65e3a83b267434e2b3f3b1b4c58aad4cf3"
   integrity sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew==
@@ -9277,7 +9288,7 @@ intl@1.2.5:
   resolved "https://registry.yarnpkg.com/intl/-/intl-1.2.5.tgz#82244a2190c4e419f8371f5aa34daa3420e2abde"
   integrity sha1-giRKIZDE5Bn4Nx9ao02qNCDiq94=
 
-invariant@^2.0.0, invariant@^2.1.1, invariant@^2.2.0, invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
+invariant@^2.1.1, invariant@^2.2.0, invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -9556,7 +9567,7 @@ is-interactive@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-interactive/-/is-interactive-1.0.0.tgz#cea6e6ae5c870a7b0a0004070b7b587e0252912e"
   integrity sha512-2HvIEKRoqS62guEC+qBjpvRubdX910WCMuJTZ+I9yvqKU2/12eSL549HMwtabb4oupdj2sMP50k+XJfB/8JE6w==
 
-is-mobile@2.1.0:
+is-mobile@2.1.0, is-mobile@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/is-mobile/-/is-mobile-2.1.0.tgz#4c0cab72f3358dd9986007389b30729fae80da0b"
   integrity sha512-M5OhlZwh+aTlmRUvDg0Wq3uWVNa+w4DyZ2SjbrS+BhSLu9Po+JXHendC305ZEu+Hh7lywb19Zu4kYXu3L1Oo8A==
@@ -10836,11 +10847,6 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash-es@^4.17.5, lodash-es@^4.2.1:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
-  integrity sha512-rlrc3yU3+JNOpZ9zj5pQtxnx2THmvRykwL4Xlxoa8I9lHBlVbbyPhgyPMioxVZ4NqyxaVVtaJnzsyOidQIhyyQ==
-
 lodash._getnative@^3.0.0:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz#570bc7dede46d61cdcde687d65d3eecbaa3aaff5"
@@ -10990,7 +10996,7 @@ lodash@4.17.13:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.13.tgz#0bdc3a6adc873d2f4e0c4bac285df91b64fc7b93"
   integrity sha512-vm3/XWXfWtRua0FkUyEHBZy8kCPjErNBT9fJx8Zvs+U6zjqPbTUOpkaoum3O5uiA8sm+yNMHXfYkTUHFoMxFNA==
 
-"lodash@>=3.5 <5", lodash@^4.0.1, lodash@^4.15.0, lodash@^4.16.5, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1:
+"lodash@>=3.5 <5", lodash@^4.0.1, lodash@^4.15.0, lodash@^4.16.5, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -14681,18 +14687,6 @@ react-pointable@^1.1.1:
   resolved "https://registry.yarnpkg.com/react-pointable/-/react-pointable-1.1.3.tgz#7895ace940a08e12ca620f6d191f1d3831484bfc"
   integrity sha512-7skalWy38NLyKk1HcITmuloqCe2INPh69cFHbN7NcCn+Wfb0Ha4XGwGN0iVa4ZzqIHSqFRYOmV0loYNHrZ5/Sg==
 
-react-redux@5.0.7:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.7.tgz#0dc1076d9afb4670f993ffaef44b8f8c1155a4c8"
-  integrity sha512-5VI8EV5hdgNgyjfmWzBbdrqUkrVRKlyTKk1sGH3jzM2M2Mhj/seQgPXaz6gVAj2lz/nz688AdTqMO18Lr24Zhg==
-  dependencies:
-    hoist-non-react-statics "^2.5.0"
-    invariant "^2.0.0"
-    lodash "^4.17.5"
-    lodash-es "^4.17.5"
-    loose-envify "^1.1.0"
-    prop-types "^15.6.0"
-
 react-redux@^7.1.0:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.1.1.tgz#ce6eee1b734a7a76e0788b3309bf78ff6b34fa0a"
@@ -14743,7 +14737,7 @@ react-router-dom@5.1.2:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-router-dom@^4.1.2, react-router-dom@^4.3.1:
+react-router-dom@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.3.1.tgz#4c2619fc24c4fa87c9fd18f4fb4a43fe63fbd5c6"
   integrity sha512-c/MlywfxDdCp7EnB7YfPMOfMD3tOtIjrQlj/CKfNMBxdmpJP8xcz5P/UAFn3JbnQCNUxsHyVVqllF9LhgVyFCA==
@@ -14754,15 +14748,6 @@ react-router-dom@^4.1.2, react-router-dom@^4.3.1:
     prop-types "^15.6.1"
     react-router "^4.3.1"
     warning "^4.0.1"
-
-react-router-redux@5.0.0-alpha.9:
-  version "5.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-5.0.0-alpha.9.tgz#825431516e0e6f1fd93b8807f6bd595e23ec3d10"
-  integrity sha512-euSgNIANnRXr4GydIuwA7RZCefrLQzIw5WdXspS8NPYbV+FxrKSS9MKG7U9vb6vsKHONnA4VxrVNWfnMUnUQAw==
-  dependencies:
-    history "^4.7.2"
-    prop-types "^15.6.0"
-    react-router "^4.2.0"
 
 react-router@5.1.2:
   version "5.1.2"
@@ -14780,7 +14765,7 @@ react-router@5.1.2:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-router@^4.2.0, react-router@^4.3.1:
+react-router@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/react-router/-/react-router-4.3.1.tgz#aada4aef14c809cb2e686b05cee4742234506c4e"
   integrity sha512-yrvL8AogDh2X42Dt9iknk4wF4V8bWREPirFfS9gLU1huk6qK41sg7Z/1S81jjTrGHxa3B8R3J6xIkDAA6CVarg==
@@ -15029,23 +15014,13 @@ redux-saga@^0.16.0:
   resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-0.16.2.tgz#993662e86bc945d8509ac2b8daba3a8c615cc971"
   integrity sha512-iIjKnRThI5sKPEASpUvySemjzwqwI13e3qP7oLub+FycCRDysLSAOwt958niZW6LhxfmS6Qm1BzbU70w/Koc4w==
 
-"redux@>= 3.7.2", redux@^4.0.0, redux@^4.0.1, redux@^4.0.4:
+redux@^4.0.0, redux@^4.0.1, redux@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.4.tgz#4ee1aeb164b63d6a1bcc57ae4aa0b6e6fa7a3796"
   integrity sha512-vKv4WdiJxOWKxK0yRoaK3Y4pxxB0ilzVx6dszU2W8wLxlb2yikRph4iV/ymtdJ6ZxpBLFbyrxklnT5yBbQSl3Q==
   dependencies:
     loose-envify "^1.4.0"
     symbol-observable "^1.2.0"
-
-redux@^3.7.1, redux@^3.7.2:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
-  integrity sha512-pNqnf9q1hI5HHZRBkj3bAngGZW/JMCmexDlOxw4XagXY2o1327nHH54LoTjiPJ0gizoqPDRqWyX/00g0hD6w+A==
-  dependencies:
-    lodash "^4.2.1"
-    lodash-es "^4.2.1"
-    loose-envify "^1.1.0"
-    symbol-observable "^1.0.3"
 
 reflect.ownkeys@^0.2.0:
   version "0.2.0"
@@ -15078,7 +15053,7 @@ regenerator-runtime@0.13.2:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
   integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
 
-regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
+regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
@@ -17116,7 +17091,7 @@ sylvanas@^0.4.0:
     import-fresh "^3.1.0"
     prettier "^1.17.1"
 
-symbol-observable@^1.0.3, symbol-observable@^1.1.0, symbol-observable@^1.2.0:
+symbol-observable@^1.1.0, symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
   integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
@@ -17892,10 +17867,10 @@ umi-plugin-pro@^1.0.2:
   resolved "https://registry.yarnpkg.com/umi-plugin-pro/-/umi-plugin-pro-1.0.2.tgz#489468e4e5973953c7a3a35a09bcc47174c2d9d2"
   integrity sha512-q69UnPSzGxksikwH/VFZ90Q2s7b64EOHQKMAEVDPBfc8jsbD1zZwDVOwH5/b3EH7WlcelyVNa4/UOO2RTkWl3g==
 
-umi-plugin-react@^1.14.9:
-  version "1.14.9"
-  resolved "https://registry.yarnpkg.com/umi-plugin-react/-/umi-plugin-react-1.14.9.tgz#b4b763f0a2c834c6ce66160e95bd0957139ab208"
-  integrity sha512-iZTit34wBDGtNGYv83UxtMWBHrVSjJC1INyp1sd8I7LV3tbEu+bcPcwtgrbqGYffJLa9kBRGTo/GtVXPOITPow==
+umi-plugin-react@^1.14.10:
+  version "1.14.10"
+  resolved "https://registry.yarnpkg.com/umi-plugin-react/-/umi-plugin-react-1.14.10.tgz#f555ac8ab96dbfccf025b1cc4bd2eb83eb5ca06f"
+  integrity sha512-M+gELGVW6wKSdI6jWRgfi7vQTtMRS9JtFqQEAgNtaXjVdb3je5SH0aM3/1F4xiJ/xUi+Hrt80KkVQMRZXwGrFA==
   dependencies:
     antd "3.x"
     antd-mobile "2.x"
@@ -17911,16 +17886,29 @@ umi-plugin-react@^1.14.9:
     umi-plugin-hd "1.7.0-beta.2"
     umi-plugin-locale "2.11.3"
     umi-plugin-polyfills "1.4.2"
-    umi-plugin-routes "1.8.3"
-    umi-plugin-ui "1.4.9"
+    umi-plugin-routes "1.8.4"
+    umi-plugin-ui "1.4.10"
     umi-utils "1.7.2"
     webpack "4.41.1"
     workbox-webpack-plugin "3.6.3"
 
-umi-plugin-routes@1.8.3:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/umi-plugin-routes/-/umi-plugin-routes-1.8.3.tgz#9b136407a0087799a3e902e20d73247e81240ce1"
-  integrity sha512-I7JYbuNzkciaKbAAEotcoaIjEX5sHeu4sRqdURBIAQk20ez24t5ZioQNW4q668Zt+2PgfYzJOhmELDMLWjcH5w==
+umi-plugin-routes@1.8.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/umi-plugin-routes/-/umi-plugin-routes-1.8.4.tgz#349cf2f0c5f4b59b8096a3fef6b0337c06d430c0"
+  integrity sha512-U1YPjPOFhQaNvJfxwWUERxH/KkCb4M5nDy8/9bFrmyBmR11B2ThXxFEF40liyH7VrTybh2khIEzLF23UhglY3Q==
+
+umi-plugin-ui@1.4.10:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/umi-plugin-ui/-/umi-plugin-ui-1.4.10.tgz#b7ae2f7142106fc9a0af627c77ad0bdcfc40457d"
+  integrity sha512-Vl/LgM2auEae+YjQ5aPBGwksKpNqazEOcroo89ALhrYHEa7EEbGAPS6WCnxD7TKO58+2KnhedibCEbWauIKUGw==
+  dependencies:
+    got "9.6.0"
+    immer "^5.0.0"
+    is-mobile "2.1.0"
+    mkdirp "^0.5.1"
+    sockjs-client "1.3.0"
+    styled-components "^4.4.0"
+    umi-ui-tasks "1.3.7"
 
 umi-plugin-ui@1.4.9:
   version "1.4.9"
@@ -17935,10 +17923,10 @@ umi-plugin-ui@1.4.9:
     styled-components "^4.4.0"
     umi-ui-tasks "1.3.6"
 
-umi-request@^1.2.15:
-  version "1.2.15"
-  resolved "https://registry.yarnpkg.com/umi-request/-/umi-request-1.2.15.tgz#fbd93ad0256c702e48eca73ac10d0db670c67145"
-  integrity sha512-zgncuyUDYBVIevQ5QrSFDKdFgcpv/Xznq3x+pE8lNg4Jyjmy77OzsayK8YrD50qPzG9lmqTUgp7VN7v9y6w7bw==
+umi-request@^1.2.16:
+  version "1.2.16"
+  resolved "https://registry.yarnpkg.com/umi-request/-/umi-request-1.2.16.tgz#b17af482c7c07d813fd16df2f583051491bba981"
+  integrity sha512-UiktwKNZG9LhyCstM0uarL4/+YcShpaZjkKSxmH0nWaoB0Uq1t4LUF/JBTZHTl7pQ713hBWvB34nrI1cbQT60Q==
   dependencies:
     isomorphic-fetch "^2.2.1"
     qs "^6.9.1"
@@ -17970,10 +17958,10 @@ umi-test@1.9.0:
     umi-utils "1.7.2"
     yargs-parser "13.1.1"
 
-umi-types@^0.5.8:
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/umi-types/-/umi-types-0.5.8.tgz#1ea497f36a9e275d61c232c8be66759d290a872d"
-  integrity sha512-gyN5rcmV2NnK5/n4GtWRTAXMnKcEGx2bTCZJ3iS1vsv6NFWTt3RUoJAh9kCYxWnJfALsHqtP7uDC9034k4/tAw==
+umi-types@^0.5.9:
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/umi-types/-/umi-types-0.5.9.tgz#27133d58997e0827f2afbe6bee665c31a49eb2ad"
+  integrity sha512-at5c8skl2Ho72T+s1VAFCo4YL95QE/VtKi9+CPVsrAMlIZJanBQaFTMLpAbSYn4kc7gcOEw3T3HgRAs90NgeIg==
   dependencies:
     "@types/cheerio" "^0.22.10"
     "@types/debug" "^4.1.5"
@@ -17990,6 +17978,18 @@ umi-ui-tasks@1.3.6:
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/umi-ui-tasks/-/umi-ui-tasks-1.3.6.tgz#f78072638ac27788f8be19d96dd6055f7ce42e07"
   integrity sha512-hK4z9EhZTLAIIBNN+L100T8Q6pCshHOp+eCC2Ssv0mcY2ko7c+t7p6PQfO1dSbVb71rpdtfIfry6xH/2oizQtg==
+  dependencies:
+    binary-mirror-config "1.20.3"
+    cross-spawn "^6.0.5"
+    mkdirp "^0.5.1"
+    portfinder "^1.0.24"
+    rimraf "^3.0.0"
+    umi-webpack-bundle-analyzer "^3.5.0"
+
+umi-ui-tasks@1.3.7:
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/umi-ui-tasks/-/umi-ui-tasks-1.3.7.tgz#390123f769f919fcd0850d9d3dbad9afd4c4df3e"
+  integrity sha512-EUjMqkk4e81d8KY5YY2K1kGKPhwiV3qznvq/nNSQJPdhLu8/0tZfRh5hZzCfeMnRv+nqmxSrkkc40nMXSf2TVQ==
   dependencies:
     binary-mirror-config "1.20.3"
     cross-spawn "^6.0.5"
