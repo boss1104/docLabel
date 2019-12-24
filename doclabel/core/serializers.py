@@ -9,7 +9,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from django.core.files.storage import FileSystemStorage
 from doclabel.users.serializers import CustomUserDetailsSerializer
 from notifications.models import Notification
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from .models import Label, Project, Document, RoleMapping, Role
 from .models import (
@@ -156,20 +156,20 @@ class ProjectSerializer(serializers.ModelSerializer):
         remaining = 0
         total = 0
         # General case
+        aggregatation = {}
+        for val in instance.users.values_list("id", flat=True):
+            aggregatation["count_" + str(val)] = Count(
+                "document", distinct=True, filter=Q(user_id=val)
+            )
         total = docs.count() * annotator_per_example
-        done = annotation_class.objects.filter(
-            document_id__in=docs.all(), finished=True
-        ).aggregate(Count("user", distinct=True))["user__count"]
-        remaining = docs.count() * (
-            0 if done >= annotator_per_example else annotator_per_example - done
+        done = sum(
+            annotation_class.objects.filter(document_id__in=docs.all())
+            .aggregate(**aggregatation)
+            .values()
         )
-        # for doc in docs.all():
-        # docs_stat[doc.id] = {
-        #     "id": doc.id,
-        #     "text": doc.text,
-        #     "annotation": annotation,
-        #     "remaining": doc_remaining,
-        # }
+        remaining = total - done
+
+        docs_stat["count"] = docs.count() * instance.users.count()
         request = self.context["request"]
         role_project = request.GET.get("role_project")
 
@@ -180,7 +180,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             ).aggregate(Count("document", distinct=True))["document__count"]
             remaining = total - done
 
-        return {"total": total, "remaining": remaining, "doc_stat": docs_stat}
+        return {"total": total, "remaining": remaining, "docs_stat": docs_stat}
 
     def get_current_users_role(self, instance):
         role_abstractor = {

@@ -1,15 +1,13 @@
-import React from 'react';
-import { connect } from 'dva';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { FormattedMessage } from 'umi-plugin-react/locale';
-
-import { Avatar, Card, Col, Skeleton, Row, Statistic, Button, Modal, message, Alert } from 'antd';
-
-import { Link } from 'umi';
-import styles from './index.less';
-import Pie from './components/Pie';
 import { PROJECT_TYPE } from '@/pages/constants';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Alert, Avatar, Button, Card, Col, message, Modal, Row, Skeleton, Statistic } from 'antd';
+import { connect } from 'dva';
+import React from 'react';
+import { Link } from 'umi';
+import { FormattedMessage } from 'umi-plugin-react/locale';
 import ContributionCard from './components/ContributionCard';
+import Pie from './components/Pie';
+import styles from './index.less';
 
 const PageHeaderContent = ({ currentProject }) => {
   const loading = currentProject && Object.keys(currentProject).length;
@@ -70,7 +68,7 @@ const Dashboard = props => {
   const {
     dispatch,
     dashboard: {
-      statistics: { total = 1, remaining = 0, doc_stat: docStat = {}, label = {}, user = {} },
+      statistics: { total = 1, remaining = 0, docs_stat: docStat = {}, label = {}, user = {} },
     },
     statisticsLoading,
     currentProject,
@@ -79,7 +77,7 @@ const Dashboard = props => {
   /**
    * Init variables
    */
-  const percent = Math.floor(((total - remaining) / total) * 100);
+  const percent = Math.min(Math.floor(((total - remaining) / total) * 100), 100);
 
   /**
    * Handlers

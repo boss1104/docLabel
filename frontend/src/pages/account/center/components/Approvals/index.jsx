@@ -54,7 +54,7 @@ const Approvals = connect(({ user, accountCenter, loading }) => ({
         }}
         renderItem={item => {
           const stat = item.project_stat;
-          const taskNumber = stat && stat.doc_stat && `${Object.keys(stat.doc_stat).length}`;
+          const taskNumber = stat && stat.docs_stat && `${stat.docs_stat.count}`;
           const completeStatus = `${stat.total - stat.remaining}/${stat.total}`;
           const contributors = item && item.users && Object.keys(item.users).length;
           return (

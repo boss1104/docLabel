@@ -183,24 +183,26 @@ class StatisticsAPI(APIView):
         docs_stat = {}
         remaining = 0
         total = 0
-        for doc in docs.all():
-            annotation = annotation_class.objects.filter(
-                document_id=doc, finished=True
-            ).aggregate(Count("user", distinct=True))["user__count"]
-            doc_remaining = (
-                0
-                if annotation >= annotator_per_example
-                else annotator_per_example - annotation
+        aggregatation = {}
+        for val in project.users.values_list("id", flat=True):
+            aggregatation["count_" + str(val)] = Count(
+                "document", distinct=True, filter=Q(user_id=val)
             )
-            remaining += doc_remaining
-            total += annotator_per_example
-            docs_stat[doc.id] = {
-                "id": doc.id,
-                "text": doc.text,
-                "annotation": annotation,
-                "remaining": doc_remaining,
-            }
-        return {"total": total, "remaining": remaining, "doc_stat": docs_stat}
+        total = docs.count() * annotator_per_example
+        done = sum(
+            annotation_class.objects.filter(document_id__in=docs.all())
+            .aggregate(**aggregatation)
+            .values()
+        )
+        remaining = total - done
+        # for doc in docs.all():
+        #     docs_stat[doc.id] = {
+        #         "id": doc.id,
+        #         "text": doc.text,
+        #         "annotation": annotation,
+        #         "remaining": doc_remaining,
+        #     }
+        return {"total": total, "remaining": remaining, "docs_stat": docs_stat}
 
     def label_per_data(self, project):
         annotation_class = project.get_annotation_class()

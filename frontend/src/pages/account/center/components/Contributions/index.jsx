@@ -55,7 +55,7 @@ const Contributions = connect(({ user, accountCenter, loading }) => ({
         renderItem={item => {
           const stat = item.project_stat;
           const isDone = stat.remaining === 0;
-          const taskNumber = stat && stat.doc_stat && `${Object.keys(stat.doc_stat).length}`;
+          const taskNumber = stat && stat.docs_stat && `${stat.docs_stat.count}`;
           const completeStatus = `${stat.total - stat.remaining}/${stat.total}`;
           return (
             <List.Item key={item.id}>
