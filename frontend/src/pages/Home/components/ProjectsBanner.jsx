@@ -89,8 +89,8 @@ function ProjectsBanner(props) {
     <div className={styles.projectsBanner}>
       <Carousel {...settings}>
         {data.map(item => (
-          <div>
-            <Row key={item.key} type="flex" justify="space-around" align="middle" gutter={48}>
+          <div key={item.key}>
+            <Row type="flex" justify="space-around" align="middle" gutter={48}>
               <Col xs={24} md={12}>
                 <img alt="example" src={item.image} style={{ height: 400, float: 'right' }} />
               </Col>
