@@ -180,28 +180,26 @@ class StatisticsAPI(APIView):
         docs = project.documents
         annotator_per_example = project.annotator_per_example
         annotation_class = project.get_annotation_class()
-        docs_stat = {}
-        remaining = 0
-        total = 0
         aggregatation = {}
-        for val in project.users.values_list("id", flat=True):
-            aggregatation["count_" + str(val)] = Count(
-                "document", distinct=True, filter=Q(user_id=val)
+        for val in docs.all().values_list("id", flat=True):
+            aggregatation[str(val)] = Count(
+                "user", distinct=True, filter=Q(document_id=val)
             )
+        annotation_docs = annotation_class.objects.filter(
+            document_id__in=docs.all()
+        ).aggregate(**aggregatation)
         total = docs.count() * annotator_per_example
-        done = sum(
-            annotation_class.objects.filter(document_id__in=docs.all())
-            .aggregate(**aggregatation)
-            .values()
-        )
+        done = sum(annotation_docs.values())
         remaining = total - done
-        # for doc in docs.all():
-        #     docs_stat[doc.id] = {
-        #         "id": doc.id,
-        #         "text": doc.text,
-        #         "annotation": annotation,
-        #         "remaining": doc_remaining,
-        #     }
+
+        docs_stat = {}
+        for doc in docs.all():
+            docs_stat[doc.id] = {
+                "id": doc.id,
+                "text": doc.text,
+                "total": annotator_per_example,
+                "remaining": annotator_per_example - annotation_docs[str(doc.id)],
+            }
         return {"total": total, "remaining": remaining, "docs_stat": docs_stat}
 
     def label_per_data(self, project):
@@ -559,7 +557,7 @@ class TextDownloadAPI(APIView):
         # json1 format - "labels": [[0, 15, "PERSON"], ..]
         # json format-"annotations":[{"label": 5,"start_offset": 0, "end_offset": 2, "user": 1},..]
         data = painter.paint(serializer_data, label_serializer_data)
-             
+
         return Response(data)
 
     def select_painter(self, format):

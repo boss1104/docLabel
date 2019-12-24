@@ -1,0 +1,44 @@
+@import '~antd/es/style/themes/default.less';
+
+.numberInfo {
+  .numberInfoTitle {
+    color: @text-color;
+    font-size: @font-size-lg;
+    transition: all 0.3s;
+  }
+
+  .numberInfoValue {
+    margin-top: 4px;
+    overflow: hidden;
+    font-size: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    & > span {
+      display: inline-block;
+      height: 32px;
+      margin-right: 32px;
+      color: @heading-color;
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    .suffix {
+      margin-left: 4px;
+      color: @text-color;
+      font-size: 16px;
+      font-style: normal;
+    }
+  }
+
+  .numberInfoChart {
+    margin-top: -14px;
+  }
+}
+.numberInfolight {
+  .numberInfoValue {
+    & > span {
+      color: @text-color;
+    }
+  }
+}

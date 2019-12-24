@@ -1,18 +1,13 @@
-import { Card, Col, Row, Tabs, Icon, Carousel } from 'antd';
-import { FormattedMessage } from 'umi-plugin-react/locale';
+import { Card, Col, Row, Tabs } from 'antd';
 import React from 'react';
-import styles from './ContributionCard.less';
+import { FormattedMessage } from 'umi-plugin-react/locale';
 import Bar from './Bar';
-import NumberInfo from './NumberInfo';
-import Pie from './Pie';
+import styles from './ContributionCard.less';
+import TaskInfo from './TaskInfo';
 
 const ContributionCard = ({ loading, userData, labelData, docStat }) => {
   const isReady = !loading && docStat && Object.keys(docStat).length;
 
-  const getPercent = (remaining, annotation) =>
-    Math.floor((annotation / (remaining + annotation)) * 100);
-
-  const getTitle = () => {};
   return (
     <Card
       loading={loading}
@@ -80,48 +75,14 @@ const ContributionCard = ({ loading, userData, labelData, docStat }) => {
             tab={<FormattedMessage id="dashboard.tasks" defaultMessage="Task Progress" />}
             key="tasks"
           >
-            <Tabs onChange={() => {}}>
+            <Row gutter={[8, 8]} type="flex" style={{ padding: '0 24px' }}>
               {isReady &&
                 Object.entries(docStat).map(([key, val]) => (
-                  <Tabs.TabPane
-                    tab={
-                      <Row
-                        gutter={8}
-                        style={{
-                          width: 138,
-                          margin: '8px 0',
-                        }}
-                        type="flex"
-                      >
-                        <Col span={12}>
-                          <NumberInfo
-                            title={val.text.length > 7 ? `${val.text.slice(0, 7)}...` : val.text}
-                            gap={2}
-                            total={`${getPercent(val.remaining, val.annotation)}%`}
-                            // theme={currentKey !== data.name ? 'light' : undefined}
-                          />
-                        </Col>
-                        <Col
-                          span={12}
-                          style={{
-                            paddingTop: 36,
-                          }}
-                        >
-                          <Pie
-                            animate={false}
-                            inner={0.55}
-                            tooltip={false}
-                            margin={[0, 0, 0, 0]}
-                            percent={getPercent(val.remaining, val.annotation)}
-                            height={64}
-                          />
-                        </Col>
-                      </Row>
-                    }
-                    key={key}
-                  />
+                  <Col key={key} xs={12} sm={8} xxl={6}>
+                    <TaskInfo task={val} />
+                  </Col>
                 ))}
-            </Tabs>
+            </Row>
           </Tabs.TabPane>
         </Tabs>
       </div>
