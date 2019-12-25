@@ -2,26 +2,21 @@ import NamedEntityRecognition from '@/assets/types/Named_Entity_Recognition.png'
 import PDFLabeling from '@/assets/types/PDF_Labeling.png';
 import SentimentAnalysis from '@/assets/types/Sentiment_Analysis.png';
 import Translation from '@/assets/types/Translation.png';
-import { Card, Carousel, Icon, Typography, Row, Col } from 'antd';
+import { Carousel, Icon, Typography, Row, Col } from 'antd';
 import React from 'react';
+import classNames from 'classnames';
+
 import styles from './index.less';
 
 function SamplePrevArrow(props) {
   const { className, style, onClick } = props;
   return (
     <div
-      className={className}
-      style={{ ...style, display: 'block', zIndex: 1, left: 15 }}
+      className={classNames(className, styles.arrow)}
+      style={{ ...style, left: 25 }}
       onClick={onClick}
     >
-      <Icon
-        type="left-circle"
-        style={{
-          fontSize: 32,
-          color: '#434343',
-          opacity: 0.3,
-        }}
-      />
+      <Icon type="left" />
     </div>
   );
 }
@@ -30,18 +25,11 @@ function SampleNextArrow(props) {
   const { className, style, onClick } = props;
   return (
     <div
-      className={className}
-      style={{ ...style, display: 'block', zIndex: 1, right: 15 }}
+      className={classNames(className, styles.arrow)}
+      style={{ ...style, right: 25 + 8 }}
       onClick={onClick}
     >
-      <Icon
-        type="right-circle"
-        style={{
-          fontSize: 32,
-          color: '#434343',
-          opacity: 0.3,
-        }}
-      />
+      <Icon type="right" />
     </div>
   );
 }
@@ -90,18 +78,28 @@ function ProjectsBanner(props) {
       <Carousel {...settings}>
         {data.map(item => (
           <div key={item.key}>
-            <Row type="flex" justify="space-around" align="middle" gutter={48}>
+            <Row
+              type="flex"
+              justify="space-around"
+              align="middle"
+              gutter={[48, 48]}
+              style={{ padding: 24 }}
+            >
               <Col xs={24} md={12}>
-                <img alt="example" src={item.image} style={{ height: 400, float: 'right' }} />
+                <img
+                  alt="example"
+                  src={item.image}
+                  style={{ height: 'auto', width: '100%', float: 'right', objectFit: 'cover' }}
+                />
               </Col>
               <Col xs={24} md={12}>
                 <div style={{ textAlign: 'left' }}>
-                  <Typography.Title level={2} strong>
+                  <Typography.Title level={1} strong>
                     {item.title}
                   </Typography.Title>
-                  <Typography.Paragraph ellipsis={{ rows: 2 }}>
-                    {item.description}
-                  </Typography.Paragraph>
+                  <Typography.Title level={4} strong>
+                    {item.title}
+                  </Typography.Title>
                 </div>
               </Col>
             </Row>

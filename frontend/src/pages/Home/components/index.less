@@ -48,17 +48,28 @@
 
 .projectsBanner {
   // position: relative;
+  padding: 0 48px;
   :global {
     .ant-carousel .slick-slide {
       height: 450px;
       text-align: center;
-      background: #fff;
+      background: @component-background;
     }
     .ant-carousel .slick-dots li.slick-active button {
-      background: #000;
+      background: @text-color-secondary;
     }
     .ant-carousel .slick-dots li button {
-      background: #000;
+      background: @text-color-secondary;
     }
+  }
+}
+
+.arrow {
+  z-index: 1;
+  display: 'block';
+  i {
+    color: @text-color-secondary;
+    font-size: 32px;
+    opacity: 0.5;
   }
 }

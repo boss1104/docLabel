@@ -1,35 +1,40 @@
 @import '~antd/es/style/themes/default.less';
 
-.main {
-  display: flex;
-  justify-content: center;
-  min-height: ~'calc(100vh - 64px)' !important;
+.content {
+  position: relative;
+  // max-width: 1400px;
+  // height: ~'calc(100vh - 64px)';
+  // min-height: ~'calc(100vh - 64px)';
+  // padding: 24px;
+  // padding-left: 256px;
+  // overflow: initial;
 
-  .content {
-    position: relative;
-    // max-width: 1400px;
-    height: ~'calc(100vh - 64px)';
-    min-height: ~'calc(100vh - 64px)';
-    // padding: 24px;
-    // padding-left: 256px;
-    overflow: initial;
-
-    :global {
-      .ant-pagination-simple-pager {
-        height: 40px;
-        input {
-          pointer-events: none;
-        }
-      }
-
-      .ant-empty-normal {
-        margin: 0;
+  :global {
+    .ant-pagination-simple-pager {
+      height: 40px;
+      input {
+        pointer-events: none;
       }
     }
-  }
-  @media screen and (min-width: @screen-xl) {
-    .content {
-      margin-left: 320px;
+
+    .ant-empty-normal {
+      margin: 0;
     }
   }
+}
+
+.menuList {
+  :global {
+    .ant-menu-item:first-child {
+      height: auto;
+    }
+    .ant-select-selection-selected-value {
+      float: unset;
+      text-align: center;
+    }
+  }
+}
+
+.menuListNone {
+  display: none;
 }

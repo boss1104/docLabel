@@ -150,25 +150,14 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
 
   const isLoading = loading || !isReady;
 
-  const data = [
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-  ];
-
   return (
     <ProLayout
       logo={logo}
       onCollapse={handleMenuCollapse}
-      title="Remax"
       links={[
-        <>
-          <Link to="/account/center">
-            <Icon type="arrow-left" /> Center
-          </Link>
-        </>,
+        <Link to="/account/center">
+          <Icon type="arrow-left" /> Center
+        </Link>,
       ]}
       menuDataRender={menuDataRender}
       menuItemRender={(menuItemProps, defaultDom) => {
@@ -201,6 +190,7 @@ const ProjectLayout = connect(({ global, settings, loading }) => ({
       {...props}
       {...settings}
       layout="sidemenu"
+      fixedHeader={false}
     >
       {!isLoading && (
         <Authorized authority={authorized.authority} noMatch={noMatch}>

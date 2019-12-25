@@ -3,8 +3,7 @@ import React from 'react';
 const AnnotatationContext = React.createContext({});
 
 const AnnotatationProvider = props => {
-  const { dispatch } = props;
-  const { annoList = [], isApprover } = props.value;
+  const { dispatch, annoList = [], isApprover, currentProject } = props.value;
 
   React.useEffect(() => {
     const queryLabel = async () => {
@@ -21,9 +20,11 @@ const AnnotatationProvider = props => {
   }, []);
 
   const isDisabled = (annoList[0] && annoList[0].finished) || isApprover;
+  const isProjectAdmin = currentProject && currentProject.current_users_role.is_project_admin;
 
   const getContext = () => ({
     isDisabled,
+    isProjectAdmin,
   });
 
   return (

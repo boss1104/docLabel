@@ -1,17 +1,25 @@
-import React from 'react';
+/**
+ * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
+ * You can view component api by:
+ * https://github.com/ant-design/ant-design-pro-layout
+ */
+import logo from '@/assets/logo.svg';
+import RightContent from '@/components/GlobalHeader/RightContent';
+import { isAntDesignPro } from '@/utils/utils';
+import ProLayout, { DefaultFooter, PageLoading } from '@ant-design/pro-layout';
+import { Icon, message, notification, Spin, Input } from 'antd';
 import { connect } from 'dva';
-import { Layout, Spin, notification, message } from 'antd';
-import { router } from 'umi';
-
-import styles from './index.less';
+import React, { useMemo, useState, useCallback, useRef } from 'react';
+import { Link, router } from 'umi';
+import PdfLabelingProject from './components/AnnotationArea/PdfLabelingProject';
+import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
+import SequenceLabelingProject from './components/AnnotationArea/SequenceLabelingProject';
+import TextClassificationProject from './components/AnnotationArea/TextClassificationProject';
+import { AnnotatationProvider } from './components/AnnotationContext';
+import ProgressBar from './components/ProgressBar';
 import SiderList from './components/SiderList';
 import TaskPagination from './components/TaskPagination';
-import ProgressBar from './components/ProgressBar';
-import TextClassificationProject from './components/AnnotationArea/TextClassificationProject';
-import SequenceLabelingProject from './components/AnnotationArea/SequenceLabelingProject';
-import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
-import PdfLabelingProject from './components/AnnotationArea/PdfLabelingProject';
-import { AnnotatationProvider } from './components/AnnotationContext';
+import styles from './index.less';
 
 const getSidebarTotal = (total, limit) => {
   if (total !== 0 && limit !== 0) {
@@ -21,6 +29,58 @@ const getSidebarTotal = (total, limit) => {
 };
 
 const getSidebarPage = (offset, limit) => (limit !== 0 ? Math.ceil(offset / limit) + 1 : 0);
+
+const defaultFooterDom = (
+  <DefaultFooter
+    copyright="2019 ICT"
+    links={[
+      {
+        key: 'Ant Design Pro',
+        title: 'Ant Design Pro',
+        href: 'https://pro.ant.design',
+        blankTarget: true,
+      },
+      {
+        key: 'github',
+        title: <Icon type="github" />,
+        href: 'https://github.com/ant-design/ant-design-pro',
+        blankTarget: true,
+      },
+      {
+        key: 'Ant Design',
+        title: 'Ant Design',
+        href: 'https://ant.design',
+        blankTarget: true,
+      },
+    ]}
+  />
+);
+
+const footerRender = () => {
+  if (!isAntDesignPro()) {
+    return defaultFooterDom;
+  }
+
+  return (
+    <>
+      {defaultFooterDom}
+      <div
+        style={{
+          padding: '0px 24px 24px',
+          textAlign: 'center',
+        }}
+      >
+        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+          <img
+            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
+            width="82px"
+            alt="netlify logo"
+          />
+        </a>
+      </div>
+    </>
+  );
+};
 
 function Annotation(props) {
   const {
@@ -32,10 +92,8 @@ function Annotation(props) {
     labelLoading,
     location: { query },
     annoLoading,
+    settings,
   } = props;
-  /**
-   * States
-   */
 
   const [annotations, setAnnotations] = React.useState({});
   const [sidebarTotal, setSidebarTotal] = React.useState(0);
@@ -53,6 +111,22 @@ function Annotation(props) {
   const hasData = currentProject && Object.keys(currentProject).length;
   const isApprover = hasData && currentProject.current_users_role.is_annotation_approver;
   const isNotApprover = hasData && !currentProject.current_users_role.is_annotation_approver;
+  const [collapsed, setCollapsed] = useState(false);
+
+  const getContext = () => ({
+    isApprover,
+    isNotApprover,
+    annoList: annotations[taskId],
+    annotations,
+    taskList,
+    annotationValue,
+    setAnnotationValue,
+    pagination,
+    sidebarTotal,
+    sidebarPage,
+    remaining,
+    collapsed,
+  });
 
   const queryTask = async data => {
     try {
@@ -134,10 +208,6 @@ function Annotation(props) {
       });
     };
   }, [annotations]);
-
-  const handleChangeKey = key => {
-    setPageNumber(Number(key));
-  };
 
   const handleChangeSearch = value => {
     setSearchQuery(value);
@@ -266,14 +336,6 @@ function Annotation(props) {
     setAnnotations({ ...annotations, [taskId]: newAnno });
   };
 
-  const handleOnSubmit = () => {
-    const newAnno = { ...annotations };
-    Object.keys(newAnno).forEach(key => {
-      newAnno[key] = newAnno[key].map(item => ({ ...item, finished: true }));
-    });
-    setAnnotations(newAnno);
-  };
-
   const handleClickApproved = React.useCallback(async () => {
     const isFinished = annotations[taskId] && annotations[taskId][0].finished;
     if (isFinished) {
@@ -298,6 +360,22 @@ function Annotation(props) {
       message.warn('Annotator has not confirm yet!');
     }
   }, [taskId, annotations, annotationValue]);
+
+  const submitTaskCompleted = async () => {
+    try {
+      await dispatch({
+        type: 'annotation/markCompleted',
+      });
+      message.success('Successfully submitted');
+      const newAnno = { ...annotations };
+      Object.keys(newAnno).forEach(key => {
+        newAnno[key] = newAnno[key].map(item => ({ ...item, finished: true }));
+      });
+      setAnnotations(newAnno);
+    } catch (error) {
+      message.error('Something wrong! Try again');
+    }
+  };
 
   const getAnnotationArea = projectType => {
     switch (projectType) {
@@ -353,29 +431,82 @@ function Annotation(props) {
     }
   };
 
-  const getContext = () => ({
-    isApprover,
-    isNotApprover,
-    annoList: annotations[taskId],
-  });
+  const getMenuDataRender = useMemo(() => {
+    const tasksData = taskLoading
+      ? [
+          {
+            key: 'loading',
+            path: 'loading',
+            name: 'loading',
+          },
+        ]
+      : [
+          {
+            key: 'about',
+            path: 'about',
+            name: 'about',
+          },
+          ...Object.values(taskList).map((item, index) => ({
+            key: `${index}`,
+            path: `${item.id}`,
+            name: `${item.id}`,
+          })),
+        ];
+    return [
+      {
+        key: 'info',
+        path: 'info',
+        name: 'info',
+      },
+      {
+        key: 'field',
+        path: 'field',
+        name: 'field',
+      },
+      ...tasksData,
+    ];
+  }, [taskList, taskLoading]);
+
+  const getSelectedKeys = useCallback(() => [`${pageNumber}`], [pageNumber]);
 
   return (
-    <AnnotatationProvider value={getContext()} {...props}>
-      <Layout hasSider className={styles.main}>
-        <SiderList
-          remaining={remaining}
-          onChangeKey={handleChangeKey}
-          onSearchChange={handleChangeSearch}
-          pageSize={sidebarTotal}
-          page={sidebarPage}
-          pageNumber={pageNumber}
-          annotations={annotations}
-          annoList={annotations[taskId]}
-          onSubmit={handleOnSubmit}
-          annotationValue={annotationValue}
-          setAnnotationValue={setAnnotationValue}
-        />
-        <Layout.Content className={styles.content}>
+    <AnnotatationProvider value={{ ...props, ...getContext() }}>
+      <ProLayout
+        logo={logo}
+        title={settings.title}
+        // location={{
+        //   pathname: '/annotation/',
+        // }}
+        onCollapse={$collapsed => {
+          setCollapsed($collapsed);
+        }}
+        collapsed={collapsed}
+        siderWidth={320}
+        menuDataRender={() => getMenuDataRender}
+        selectedKeys={getSelectedKeys()}
+        menuItemRender={itemProps => (
+          <SiderList onSubmit={submitTaskCompleted} itemProps={itemProps} />
+        )}
+        menuProps={{
+          onClick: ({ key }) => Number.isInteger(Number(key)) && setPageNumber(Number(key)),
+        }}
+        menuRender={($props, dom) => {
+          if (!$props.collapsed) {
+            return <div className={styles.menuList}>{dom}</div>;
+          }
+          return <div className={styles.menuListNone}>{dom}</div>;
+        }}
+        links={[
+          <Link to="/explore">
+            <Icon type="arrow-left" /> Explore
+          </Link>,
+        ]}
+        rightContentRender={rightProps => <RightContent {...rightProps} />}
+        navTheme={settings.navTheme}
+        // footerRender={footerRender}
+        // contentStyle={{ margin: 0 }}
+      >
+        <div className={styles.content}>
           <Spin spinning={labelLoading || taskLoading} size="small">
             <ProgressBar
               totalTask={totalTask}
@@ -396,17 +527,20 @@ function Annotation(props) {
               pagination={pagination}
             />
           </Spin>
-        </Layout.Content>
-      </Layout>
+        </div>
+      </ProLayout>
     </AnnotatationProvider>
   );
 }
 
-export default connect(({ project, task, label, loading }) => ({
+export default connect(({ project, task, label, loading, settings }) => ({
   currentProject: project.currentProject,
+  projectLoading: loading.effects['project/fetchProject'],
   task,
   taskLoading: loading.effects['task/fetch'],
   label,
   labelLoading: loading.effects['label/fetch'],
   annoLoading: loading.models.annotation,
+  settings,
+  submitLoading: loading.effects['annotation/markCompleted'],
 }))(Annotation);

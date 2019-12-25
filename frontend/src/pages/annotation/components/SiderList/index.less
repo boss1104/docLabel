@@ -1,12 +1,6 @@
 @import '~antd/es/style/themes/default.less';
 
-.siderList {
-  position: fixed;
-  left: 0;
-  height: ~'calc(100vh - 64px)';
-  overflow: auto;
-  background-color: @layout-sider-background-light;
-
+.menuList {
   :global {
     .ant-menu-inline > .ant-menu-item {
       height: @layout-trigger-height;
@@ -17,24 +11,6 @@
       float: unset;
       text-align: center;
     }
-  }
-
-  .contibutors {
-    width: 100%;
-    margin: 24px 0;
-  }
-
-  .search {
-    padding: 16px;
-  }
-
-  .username {
-    font-weight: 500;
-  }
-
-  .about {
-    padding-top: 16px;
-    text-align: center;
   }
 }
 
