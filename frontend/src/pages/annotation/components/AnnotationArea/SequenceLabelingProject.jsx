@@ -102,16 +102,20 @@ function SequenceLabelingProject(prs) {
                   })}
                   renderMark={props => (
                     <React.Fragment key={props.key}>
-                      <div className={styles.labelText}>
-                        <Tag
+                      <div
+                        className={styles.labelText}
+                        onClick={() => props.onClick({ start: props.start, end: props.end })}
+                        title="Click to remove"
+                      >
+                        <div
                           className={styles.text}
-                          closable
-                          style={{ color: props.tag.text_color }}
-                          color={props.tag.background_color}
-                          onClick={() => props.onClick({ start: props.start, end: props.end })}
+                          style={{
+                            color: props.tag.text_color,
+                            backgroundColor: props.tag.background_color,
+                          }}
                         >
                           {props.tag.text}
-                        </Tag>
+                        </div>
                         <div
                           className={styles.content}
                           style={{ borderColor: props.tag.background_color }}
