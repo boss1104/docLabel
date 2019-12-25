@@ -1,22 +1,25 @@
-import React from 'react';
-import { Row, Col, Spin, Card, Typography, Tag } from 'antd';
-import { TokenAnnotator } from 'react-text-annotate';
+import { Card, Col, Row, Spin, Tag, Typography } from 'antd';
 import classNames from 'classnames';
+import React from 'react';
+import { TokenAnnotator } from 'react-text-annotate';
+import { AnnotatationContext } from '../AnnotationContext';
 import LabelList from '../LabelList';
 import LabelPreview from '../LabelPreview';
 import styles from './SequenceLabelingProject.less';
-import { useWhyDidYouUpdate } from '@/hooks';
-import { AnnotatationContext } from '../AnnotationContext';
 
 function SequenceLabelingProject(prs) {
-  const { annoList = [], labelList = [], loading, task, handleRemoveLabel, handleAddLabel } = prs;
-  const { isDisabled } = React.useContext(AnnotatationContext);
-
+  const {
+    isDisabled,
+    annoList = [],
+    labelList = [],
+    handleRemoveLabel,
+    handleAddLabel,
+    task,
+    annoLoading: loading,
+  } = React.useContext(AnnotatationContext);
   const [tag, setTag] = React.useState(null);
-  // useWhyDidYouUpdate('SequenceLabelingProject', prs);
-  // console.log('Render');
+
   const handleChange = newVal => {
-    console.log('[DEBUG]: SequenceLabelingProject -> newVal', newVal);
     const isAdd = annoList.length < newVal.length;
     if (isAdd) {
       const [difference] = newVal.filter(val => !val.id);
@@ -27,8 +30,10 @@ function SequenceLabelingProject(prs) {
         tokens: difference.tokens,
       });
     } else {
-      const [difference] = annoList.filter(val => !newVal.includes(val));
-      handleRemoveLabel(difference.id);
+      const annoListTemp = annoList.map(item => item.id);
+      const newValTemp = newVal.map(item => item.id);
+      const [id] = annoListTemp.filter(val => !newValTemp.includes(val));
+      handleRemoveLabel(id);
     }
   };
 
@@ -102,20 +107,19 @@ function SequenceLabelingProject(prs) {
                   })}
                   renderMark={props => (
                     <React.Fragment key={props.key}>
-                      <div
-                        className={styles.labelText}
-                        onClick={() => props.onClick({ start: props.start, end: props.end })}
-                        title="Click to remove"
-                      >
-                        <div
+                      <div className={styles.labelText} title="Click to remove">
+                        <Tag
                           className={styles.text}
-                          style={{
-                            color: props.tag.text_color,
-                            backgroundColor: props.tag.background_color,
+                          style={{ color: props.tag.text_color }}
+                          color={props.tag.background_color}
+                          closable
+                          onClose={e => {
+                            e.preventDefault();
+                            props.onClick({ start: props.start, end: props.end });
                           }}
                         >
                           {props.tag.text}
-                        </div>
+                        </Tag>
                         <div
                           className={styles.content}
                           style={{ borderColor: props.tag.background_color }}

@@ -1,32 +1,29 @@
-import React from 'react';
-import { Row, Col, Empty, Spin, Card, Typography, List, Input, Button } from 'antd';
+import { Button, Card, Col, Empty, Input, List, Row, Spin, Typography } from 'antd';
 import classNames from 'classnames';
-import styles from './Seq2seqProject.less';
+import React from 'react';
 import { AnnotatationContext } from '../AnnotationContext';
+import styles from './Seq2seqProject.less';
 
 const { TextArea } = Input;
 
-function Seq2seqProject({
-  annoList = [],
-  labelList = [],
-  handleRemoveLabel,
-  handleAddLabel,
-  handleEditLabel,
-  loading,
-  task,
-}) {
-  const [value, setValue] = React.useState('');
-  const [newAnno, setNewAnno] = React.useState('');
-  const [editedAnno, setEditedAnno] = React.useState(null);
+function Seq2seqProject(props) {
+  const {
+    isDisabled,
+    annoList = [],
+    handleRemoveLabel,
+    handleAddLabel,
+    handleEditLabel,
+    task,
+    annoLoading: loading,
+  } = React.useContext(AnnotatationContext);
 
-  const { isDisabled } = React.useContext(AnnotatationContext);
+  const [newAnno, setNewAnno] = React.useState('');
+  const [value, setValue] = React.useState('');
+  const [editedAnno, setEditedAnno] = React.useState(null);
 
   /**
    * Handlers
    */
-  const handleOnChange = e => {
-    setValue(e.target.value);
-  };
 
   const handleEditing = item => {
     setEditedAnno(item);
@@ -52,7 +49,6 @@ function Seq2seqProject({
   };
 
   const handleCancelEdit = e => {
-    e.preventDefault();
     if (e.keyCode === 27) {
       setEditedAnno(null);
       setValue('');
@@ -98,7 +94,7 @@ function Seq2seqProject({
                 {item === editedAnno ? (
                   <TextArea
                     value={value}
-                    onChange={handleOnChange}
+                    onChange={e => setValue(e.target.value)}
                     autoSize={{ minRows: 2, maxRows: 5 }}
                     onPressEnter={() => handleDoneEdit(value)}
                     onBlur={() => handleDoneEdit(value)}

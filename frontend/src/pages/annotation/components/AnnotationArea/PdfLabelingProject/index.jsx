@@ -1,14 +1,12 @@
-import React from 'react';
-import { Spin, Layout, Card, Typography } from 'antd';
-import { PdfHighlighter, Highlight, Popup, AreaHighlight } from 'react-pdf-highlighter';
-
-// import testHighlights from './testHighlights';
+import PdfLoader from '@/components/PdfAnnotation/PdfLoader';
+import { Card, Layout, Spin, Typography } from 'antd';
 import { connect } from 'dva';
+import React, { useContext } from 'react';
+import { AreaHighlight, Highlight, PdfHighlighter, Popup } from 'react-pdf-highlighter';
+import { AnnotatationContext } from '../../AnnotationContext';
 import Sidebar from './Sidebar';
 import styles from './style.less';
 import Tip from './Tip';
-import { AnnotatationContext } from '../../AnnotationContext';
-import PdfLoader from '@/components/PdfAnnotation/PdfLoader';
 
 const HighlightPopup = ({ label }) => {
   if (label && label.text) {
@@ -26,17 +24,15 @@ const HighlightPopup = ({ label }) => {
   return null;
 };
 
-const DEFAULT_URL = 'https://arxiv.org/pdf/1708.08021.pdf';
-
-function PdfLabelingProject({
-  labelList,
-  annoList = [],
-  task,
-  handleRemoveLabel,
-  handleAddLabel,
-  dark,
-  pageNumber,
-}) {
+function PdfLabelingProject({ dark }) {
+  const {
+    labelList,
+    annoList = [],
+    annoLoading: loading,
+    task,
+    handleRemoveLabel,
+    handleAddLabel,
+  } = useContext(AnnotatationContext);
   const [activeKey, setActiveKey] = React.useState('');
   const [currentAnno, setCurrentAnno] = React.useState(null);
   const { isDisabled } = React.useContext(AnnotatationContext);

@@ -1,19 +1,20 @@
-import React from 'react';
-import { Row, Col, Tag, Empty, Spin, Card, Typography } from 'antd';
+import { Card, Col, Empty, Row, Spin, Tag, Typography } from 'antd';
 import classNames from 'classnames';
+import React from 'react';
+import { AnnotatationContext } from '../AnnotationContext';
 import LabelList from '../LabelList';
 import styles from './TextClassificationProject.less';
-import { AnnotatationContext } from '../AnnotationContext';
 
-function TextClassificationProject({
-  annoList = [],
-  labelList = [],
-  handleRemoveLabel,
-  handleAddLabel,
-  loading,
-  task,
-}) {
-  const { isDisabled } = React.useContext(AnnotatationContext);
+function TextClassificationProject(props) {
+  const {
+    isDisabled,
+    annoList = [],
+    labelList = [],
+    handleRemoveLabel,
+    handleAddLabel,
+    task,
+    annoLoading: loading,
+  } = React.useContext(AnnotatationContext);
 
   const handleChooseLabel = labelKey => {
     const currentAnno = annoList;

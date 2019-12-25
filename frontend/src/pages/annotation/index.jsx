@@ -6,10 +6,10 @@
 import logo from '@/assets/logo.svg';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro } from '@/utils/utils';
-import ProLayout, { DefaultFooter, PageLoading } from '@ant-design/pro-layout';
-import { Icon, message, notification, Spin, Input } from 'antd';
+import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
+import { Icon, message, notification, Spin } from 'antd';
 import { connect } from 'dva';
-import React, { useMemo, useState, useCallback, useRef } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, router } from 'umi';
 import PdfLabelingProject from './components/AnnotationArea/PdfLabelingProject';
 import Seq2seqProject from './components/AnnotationArea/Seq2seqProject';
@@ -112,21 +112,6 @@ function Annotation(props) {
   const isApprover = hasData && currentProject.current_users_role.is_annotation_approver;
   const isNotApprover = hasData && !currentProject.current_users_role.is_annotation_approver;
   const [collapsed, setCollapsed] = useState(false);
-
-  const getContext = () => ({
-    isApprover,
-    isNotApprover,
-    annoList: annotations[taskId],
-    annotations,
-    taskList,
-    annotationValue,
-    setAnnotationValue,
-    pagination,
-    sidebarTotal,
-    sidebarPage,
-    remaining,
-    collapsed,
-  });
 
   const queryTask = async data => {
     try {
@@ -380,52 +365,13 @@ function Annotation(props) {
   const getAnnotationArea = projectType => {
     switch (projectType) {
       case 'TextClassificationProject':
-        return (
-          <TextClassificationProject
-            labelList={labelList}
-            annoList={annotations[taskId]}
-            loading={annoLoading}
-            task={taskId ? taskList[taskId] : null}
-            handleRemoveLabel={handleRemoveLabel}
-            handleAddLabel={handleAddLabel}
-          />
-        );
+        return <TextClassificationProject />;
       case 'SequenceLabelingProject':
-        return (
-          <SequenceLabelingProject
-            labelList={labelList}
-            annoList={annotations[taskId]}
-            loading={annoLoading}
-            task={taskId ? taskList[taskId] : null}
-            handleRemoveLabel={handleRemoveLabel}
-            handleAddLabel={handleAddLabel}
-          />
-        );
-
+        return <SequenceLabelingProject />;
       case 'Seq2seqProject':
-        return (
-          <Seq2seqProject
-            labelList={labelList}
-            annoList={annotations[taskId]}
-            loading={annoLoading}
-            task={taskId ? taskList[taskId] : null}
-            handleRemoveLabel={handleRemoveLabel}
-            handleAddLabel={handleAddLabel}
-            handleEditLabel={handleEditLabel}
-          />
-        );
+        return <Seq2seqProject />;
       case 'PdfLabelingProject':
-        return (
-          <PdfLabelingProject
-            labelList={labelList}
-            annoList={annotations[taskId]}
-            loading={annoLoading}
-            task={taskId ? taskList[taskId] : null}
-            handleRemoveLabel={handleRemoveLabel}
-            handleAddLabel={handleAddLabel}
-            pageNumber={pageNumber}
-          />
-        );
+        return <PdfLabelingProject />;
       default:
         return null;
     }
@@ -467,23 +413,39 @@ function Annotation(props) {
     ];
   }, [taskList, taskLoading]);
 
-  const getSelectedKeys = useCallback(() => [`${pageNumber}`], [pageNumber]);
+  const getContext = () => ({
+    isApprover,
+    isNotApprover,
+    annoList: annotations[taskId],
+    annotations,
+    taskList,
+    labelList,
+    task: taskId ? taskList[taskId] : null,
+    annotationValue,
+    setAnnotationValue,
+    pagination,
+    sidebarTotal,
+    sidebarPage,
+    remaining,
+    collapsed,
+    // function
+    handleRemoveLabel,
+    handleAddLabel,
+    handleEditLabel,
+  });
 
   return (
     <AnnotatationProvider value={{ ...props, ...getContext() }}>
       <ProLayout
         logo={logo}
         title={settings.title}
-        // location={{
-        //   pathname: '/annotation/',
-        // }}
         onCollapse={$collapsed => {
           setCollapsed($collapsed);
         }}
         collapsed={collapsed}
         siderWidth={320}
         menuDataRender={() => getMenuDataRender}
-        selectedKeys={getSelectedKeys()}
+        selectedKeys={[`${pageNumber}`]}
         menuItemRender={itemProps => (
           <SiderList onSubmit={submitTaskCompleted} itemProps={itemProps} />
         )}
@@ -504,7 +466,6 @@ function Annotation(props) {
         rightContentRender={rightProps => <RightContent {...rightProps} />}
         navTheme={settings.navTheme}
         // footerRender={footerRender}
-        // contentStyle={{ margin: 0 }}
       >
         <div className={styles.content}>
           <Spin spinning={labelLoading || taskLoading} size="small">
