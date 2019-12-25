@@ -8,6 +8,7 @@ import styles from './index.less';
 function SiderList({ itemProps, onSubmit }) {
   const {
     currentProject,
+    annotations,
     annoList,
     taskList,
     isApprover,
@@ -152,7 +153,9 @@ function SiderList({ itemProps, onSubmit }) {
 
   return (
     <Row gutter={16} type="flex">
-      <Col span={2}>{annoList && annoList.length !== 0 && <Icon type="check" />}</Col>
+      <Col span={2}>
+        {annotations[name] && annotations[name].length !== 0 && <Icon type="check" />}
+      </Col>
       <Col span={22}>
         <Typography.Paragraph ellipsis>{taskList[name].text}</Typography.Paragraph>
       </Col>
