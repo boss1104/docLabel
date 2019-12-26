@@ -17,7 +17,7 @@ function PdfLoader({ url, children, beforeLoad }) {
       }
     };
     fetchPdf();
-  }, [url]);
+  }, [url, window.innerWidth]);
 
   if (pdfDocument && !isLoading) {
     return children(pdfDocument);

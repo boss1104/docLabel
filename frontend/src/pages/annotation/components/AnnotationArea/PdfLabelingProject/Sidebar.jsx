@@ -1,7 +1,7 @@
-import React from 'react';
-import { Layout, List, Row, Col, Typography, Tag, Popconfirm, Icon, Collapse, Button } from 'antd';
-import styles from './style.less';
+import { Button, Col, Collapse, Layout, List, Popconfirm, Row, Typography } from 'antd';
+import React, { useState } from 'react';
 import LabelPreview from '../../LabelPreview';
+import styles from './style.less';
 
 function Sidebar({
   annoList = [],
@@ -19,6 +19,8 @@ function Sidebar({
     }
   };
 
+  const [collapsed, setCollapsed] = useState(false);
+
   const dataObjectList = {
     ...labelList,
   };
@@ -32,7 +34,18 @@ function Sidebar({
   const loading = !labelList;
 
   return (
-    <Layout.Sider width={400} className={styles.sidebar} theme={dark ? 'dark' : 'light'}>
+    <Layout.Sider
+      width={320}
+      className={styles.sidebar}
+      theme={dark ? 'dark' : 'light'}
+      breakpoint="xxl"
+      collapsedWidth="0"
+      onBreakpoint={broken => {
+        console.log(broken);
+      }}
+      reverseArrow
+      onCollapse={$collapsed => setCollapsed($collapsed)}
+    >
       <div className={styles.title}>
         <Typography.Title level={4}>Annotation Label</Typography.Title>
       </div>
@@ -42,6 +55,7 @@ function Sidebar({
         onChange={key => {
           setActiveKey(key);
         }}
+        expandIconPosition="right"
       >
         {!!Object.keys(dataObjectList).length &&
           Object.values(dataObjectList).map((val, idx) => (
@@ -64,6 +78,7 @@ function Sidebar({
               <List
                 loading={loading}
                 dataSource={val.array}
+                bordered={false}
                 renderItem={({ content, position, label, id, image_url: url }) => (
                   <List.Item
                     onClick={() => {
@@ -71,23 +86,29 @@ function Sidebar({
                     }}
                     className={styles.sidebarItem}
                   >
-                    <Row gutter={[12, 24]} style={{ flex: 1 }} align="middle">
-                      <Col>
-                        {content.text ? (
-                          <Typography.Text code mark strong className={styles.contentMark}>
+                    <Row
+                      gutter={[12, 24]}
+                      type="flex"
+                      style={{ flex: 1, padding: '0 12px' }}
+                      align="middle"
+                      justify="space-between"
+                    >
+                      <Col span={24}>
+                        {content.text && (
+                          <Typography.Text mark strong className={styles.contentMark}>
                             {content.text.length > 90
                               ? `${content.text.slice(0, 90).trim()}…`
                               : `${content.text}`}
                           </Typography.Text>
-                        ) : null}
-                        {content.image ? (
+                        )}
+                        {content.image && (
                           <div className={styles.dataImage}>
                             <img src={url} alt="Screenshot" />
                           </div>
-                        ) : null}
+                        )}
                       </Col>
                       {content.comment ? (
-                        <Col>
+                        <Col span={24}>
                           <Typography.Paragraph ellipsis style={{ marginBottom: 0 }}>
                             {content.comment}
                           </Typography.Paragraph>
@@ -95,24 +116,20 @@ function Sidebar({
                       ) : null}
                       {/*  */}
                       <Col>
-                        <Row type="flex" justify="space-between">
-                          <Col>
-                            <Typography.Text code className={styles.labelPage}>
-                              Page {position.pageNumber}
-                            </Typography.Text>
-                          </Col>
-                          <Col>
-                            {!isDisabled && (
-                              <Popconfirm
-                                title="Are you sure delete this annotation?"
-                                onConfirm={() => handleDeleteAnno(id)}
-                                placement="topRight"
-                              >
-                                <Button icon="delete" shape="circle-outline" />
-                              </Popconfirm>
-                            )}
-                          </Col>
-                        </Row>
+                        <Typography.Text code className={styles.labelPage}>
+                          Page {position.pageNumber}
+                        </Typography.Text>
+                      </Col>
+                      <Col>
+                        {!isDisabled && (
+                          <Popconfirm
+                            title="Are you sure delete this annotation?"
+                            onConfirm={() => handleDeleteAnno(id)}
+                            placement="topRight"
+                          >
+                            <Button icon="delete" shape="circle-outline" type="dashed" />
+                          </Popconfirm>
+                        )}
                       </Col>
                     </Row>
                   </List.Item>

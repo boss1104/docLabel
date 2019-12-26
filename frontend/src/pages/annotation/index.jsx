@@ -5,8 +5,7 @@
  */
 import logo from '@/assets/logo.svg';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro } from '@/utils/utils';
-import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
+import ProLayout from '@ant-design/pro-layout';
 import { Icon, message, notification, Spin } from 'antd';
 import { connect } from 'dva';
 import React, { useMemo, useState } from 'react';
@@ -29,58 +28,6 @@ const getSidebarTotal = (total, limit) => {
 };
 
 const getSidebarPage = (offset, limit) => (limit !== 0 ? Math.ceil(offset / limit) + 1 : 0);
-
-const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2019 ICT"
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <Icon type="github" />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
-);
-
-const footerRender = () => {
-  if (!isAntDesignPro()) {
-    return defaultFooterDom;
-  }
-
-  return (
-    <>
-      {defaultFooterDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
-  );
-};
 
 function Annotation(props) {
   const {
@@ -465,7 +412,7 @@ function Annotation(props) {
         ]}
         rightContentRender={rightProps => <RightContent {...rightProps} />}
         navTheme={settings.navTheme}
-        // footerRender={footerRender}
+        contentStyle={currentProject.project_type === 'PdfLabelingProject' && { margin: 0 }}
       >
         <div className={styles.content}>
           <Spin spinning={labelLoading || taskLoading} size="small">

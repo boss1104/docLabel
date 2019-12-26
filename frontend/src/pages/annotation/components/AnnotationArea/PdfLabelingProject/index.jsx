@@ -1,5 +1,5 @@
 import PdfLoader from '@/components/PdfAnnotation/PdfLoader';
-import { Card, Layout, Spin, Typography } from 'antd';
+import { Layout, Spin, Typography } from 'antd';
 import { connect } from 'dva';
 import React, { useContext } from 'react';
 import { AreaHighlight, Highlight, PdfHighlighter, Popup } from 'react-pdf-highlighter';
@@ -99,9 +99,9 @@ function PdfLabelingProject({ dark }) {
   }, [currentAnno]);
 
   return (
-    <Card>
-      <Layout className={styles.main}>
-        <Layout.Content className={styles.content}>
+    <Layout className={styles.main}>
+      <Layout className={styles.content}>
+        <Layout.Content>
           {task && (
             <PdfLoader
               url={task.file_url}
@@ -194,18 +194,18 @@ function PdfLabelingProject({ dark }) {
             </PdfLoader>
           )}
         </Layout.Content>
-        <Sidebar
-          annoList={annoList}
-          labelList={labelList}
-          handleRemoveLabel={handleRemoveLabel}
-          activeKey={activeKey}
-          setActiveKey={setActiveKey}
-          setCurrentAnno={setCurrentAnno}
-          dark={dark}
-          isDisabled={isDisabled}
-        />
       </Layout>
-    </Card>
+      <Sidebar
+        annoList={annoList}
+        labelList={labelList}
+        handleRemoveLabel={handleRemoveLabel}
+        activeKey={activeKey}
+        setActiveKey={setActiveKey}
+        setCurrentAnno={setCurrentAnno}
+        dark={dark}
+        isDisabled={isDisabled}
+      />
+    </Layout>
   );
 }
 
