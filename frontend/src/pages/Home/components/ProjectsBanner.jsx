@@ -13,7 +13,7 @@ function SamplePrevArrow(props) {
   return (
     <div
       className={classNames(className, styles.arrow)}
-      style={{ ...style, left: 25 }}
+      style={{ ...style, left: -36 }}
       onClick={onClick}
     >
       <Icon type="left" />
@@ -26,7 +26,7 @@ function SampleNextArrow(props) {
   return (
     <div
       className={classNames(className, styles.arrow)}
-      style={{ ...style, right: 25 + 8 }}
+      style={{ ...style, right: -36 + 8 }}
       onClick={onClick}
     >
       <Icon type="right" />
@@ -85,16 +85,12 @@ function ProjectsBanner(props) {
               gutter={[48, 48]}
               style={{ padding: 24 }}
             >
-              <Col xs={24} md={12}>
-                <img
-                  alt="example"
-                  src={item.image}
-                  style={{ height: 'auto', width: '100%', float: 'right', objectFit: 'cover' }}
-                />
+              <Col xs={24} lg={16} xxl={14}>
+                <img alt="example" src={item.image} />
               </Col>
-              <Col xs={24} md={12}>
+              <Col xs={24} lg={8} xxl={10}>
                 <div style={{ textAlign: 'left' }}>
-                  <Typography.Title level={1} strong>
+                  <Typography.Title level={2} strong>
                     {item.title}
                   </Typography.Title>
                   <Typography.Title level={4} strong>

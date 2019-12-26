@@ -19,7 +19,7 @@ function Sidebar({
     }
   };
 
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const dataObjectList = {
     ...labelList,
@@ -44,7 +44,8 @@ function Sidebar({
         console.log(broken);
       }}
       reverseArrow
-      onCollapse={$collapsed => setCollapsed($collapsed)}
+      // collapsed={collapsed}
+      // onCollapse={$collapsed => setCollapsed($collapsed)}
     >
       <div className={styles.title}>
         <Typography.Title level={4}>Annotation Label</Typography.Title>
