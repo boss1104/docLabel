@@ -1,7 +1,7 @@
 import { Card, Col, Empty, Row, Spin, Tag, Typography } from 'antd';
 import classNames from 'classnames';
 import React from 'react';
-import { AnnotatationContext } from '../AnnotationContext';
+import { useAnnotaionContext } from '../AnnotationContext';
 import LabelList from '../LabelList';
 import styles from './TextClassificationProject.less';
 
@@ -14,7 +14,7 @@ function TextClassificationProject(props) {
     handleAddLabel,
     task,
     annoLoading: loading,
-  } = React.useContext(AnnotatationContext);
+  } = useAnnotaionContext();
 
   const handleChooseLabel = labelKey => {
     const currentAnno = annoList;

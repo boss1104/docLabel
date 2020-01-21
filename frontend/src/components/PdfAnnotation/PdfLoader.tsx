@@ -1,4 +1,4 @@
-import pdfjs from 'pdfjs-dist/webpack';
+import pdfjs from 'pdfjs-dist';
 import { useEffect, useState } from 'react';
 
 function PdfLoader({ url, children, beforeLoad }) {

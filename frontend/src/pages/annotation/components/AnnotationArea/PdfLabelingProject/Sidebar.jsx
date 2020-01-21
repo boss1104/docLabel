@@ -41,7 +41,7 @@ function Sidebar({
       breakpoint="xxl"
       collapsedWidth="0"
       onBreakpoint={broken => {
-        console.log(broken);
+        // console.log(broken);
       }}
       reverseArrow
       // collapsed={collapsed}

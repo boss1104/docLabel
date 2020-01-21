@@ -56,8 +56,9 @@ function Annotation(props) {
 
   const taskId = React.useMemo(() => Object.keys(taskList)[pageNumber], [pageNumber, taskList]);
   const hasData = currentProject && Object.keys(currentProject).length;
-  const isApprover = hasData && currentProject.current_users_role.is_annotation_approver;
-  const isNotApprover = hasData && !currentProject.current_users_role.is_annotation_approver;
+  const isApprover = Boolean(hasData) && !!currentProject.current_users_role.is_annotation_approver;
+  const isNotApprover =
+    Boolean(hasData) && !currentProject.current_users_role.is_annotation_approver;
   const [collapsed, setCollapsed] = useState(false);
 
   const queryTask = async data => {
@@ -360,7 +361,28 @@ function Annotation(props) {
     ];
   }, [taskList, taskLoading]);
 
+  React.useEffect(() => {
+    const queryLabel = async () => {
+      await dispatch({
+        type: 'label/fetch',
+      });
+    };
+    queryLabel();
+    return () => {
+      dispatch({
+        type: 'label/reset',
+      });
+    };
+  }, []);
+
+  const isDisabled =
+    (annotations[taskId] && annotations[taskId][0] && annotations[taskId][0].finished) ||
+    isApprover;
+  const isProjectAdmin = currentProject && currentProject.current_users_role.is_project_admin;
+
   const getContext = () => ({
+    isDisabled,
+    isProjectAdmin,
     isApprover,
     isNotApprover,
     annoList: annotations[taskId],

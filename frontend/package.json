@@ -48,7 +48,6 @@
   ],
   "dependencies": {
     "@ant-design/pro-layout": "^4.10.2",
-    "pdfjs-dist": "2.0.489",
     "@antv/data-set": "^0.10.2",
     "antd": "^3.26.4",
     "bizcharts": "^3.5.6",
@@ -61,6 +60,7 @@
     "moment": "^2.24.0",
     "omit.js": "^1.0.2",
     "path-to-regexp": "^3.2.0",
+    "pdfjs-dist": "2.0.489",
     "poplar-annotation": "^2.0.0-beta3",
     "qs": "^6.9.1",
     "react": "^16.12.0",
@@ -82,11 +82,12 @@
     "slash2": "^2.0.0",
     "sunflower-antd": "^0.9.0",
     "umi": "^2.12.7",
+    "umi-plugin-antd-icon-config": "^1.0.2",
     "umi-plugin-antd-theme": "^1.0.15",
     "umi-plugin-pro-block": "^1.3.6",
     "umi-plugin-react": "^1.14.10",
     "umi-request": "^1.2.17",
-    "webpack-theme-color-replacer": "^1.3.3"
+    "use-merge-value": "^1.0.1"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^1.0.15",
@@ -95,6 +96,7 @@
     "@types/history": "^4.7.3",
     "@types/jest": "^24.0.24",
     "@types/lodash": "^4.14.149",
+    "@types/pdfjs-dist": "^2.1.3",
     "@types/qs": "^6.9.0",
     "@types/react": "^16.9.17",
     "@types/react-document-title": "^2.0.3",
@@ -116,6 +118,7 @@
     "import-sort-parser-typescript": "^6.0.0",
     "import-sort-style-module": "^6.0.0",
     "jest-puppeteer": "^4.4.0",
+    "jsdom-global": "^3.0.2",
     "lint-staged": "^9.5.0",
     "mockjs": "^1.1.0",
     "node-fetch": "^2.6.0",

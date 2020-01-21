@@ -2,7 +2,7 @@ import { PROJECT_TYPE } from '@/pages/constants';
 import { Button, Col, Descriptions, Icon, Modal, Row, Select, Typography, Spin } from 'antd';
 import React, { useContext } from 'react';
 import { Link } from 'umi';
-import { AnnotatationContext } from '../AnnotationContext';
+import { useAnnotaionContext } from '../AnnotationContext';
 import styles from './index.less';
 
 function SiderList({ itemProps, onSubmit }) {
@@ -22,7 +22,7 @@ function SiderList({ itemProps, onSubmit }) {
     remaining,
     projectLoading,
     isProjectAdmin,
-  } = useContext(AnnotatationContext);
+  } = useAnnotaionContext();
 
   const { name } = itemProps;
 

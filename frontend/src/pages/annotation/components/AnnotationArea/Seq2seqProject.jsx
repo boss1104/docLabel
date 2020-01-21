@@ -1,7 +1,7 @@
 import { Button, Card, Col, Empty, Input, List, Row, Spin, Typography } from 'antd';
 import classNames from 'classnames';
 import React from 'react';
-import { AnnotatationContext } from '../AnnotationContext';
+import { useAnnotaionContext } from '../AnnotationContext';
 import styles from './Seq2seqProject.less';
 
 const { TextArea } = Input;
@@ -15,7 +15,7 @@ function Seq2seqProject(props) {
     handleEditLabel,
     task,
     annoLoading: loading,
-  } = React.useContext(AnnotatationContext);
+  } = useAnnotaionContext();
 
   const [newAnno, setNewAnno] = React.useState('');
   const [value, setValue] = React.useState('');

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Card, Row, Col, Progress, Modal, Typography, Tooltip, Popconfirm } from 'antd';
 import Markdown from '@/components/Markdown';
-import { AnnotatationContext } from './AnnotationContext';
+import { useAnnotaionContext } from './AnnotationContext';
 
 function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, task }) {
-  const { annoList = [] } = React.useContext(AnnotatationContext);
+  const { annoList = [] } = useAnnotaionContext();
   // Modal
   const [visible, setVisible] = React.useState(false);
 

@@ -1,3 +1,7 @@
+import { Settings } from '@ant-design/pro-layout';
+
+export interface DefaultSettings extends Settings {}
+
 export default {
   navTheme: 'light',
   primaryColor: '#1890ff',
@@ -14,4 +18,4 @@ export default {
   pwa: false,
   iconfontUrl: '',
   basePath: '/app/',
-};
+} as DefaultSettings;

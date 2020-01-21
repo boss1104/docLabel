@@ -1,14 +1,38 @@
+import { Reducer } from 'redux';
+import { Effect } from 'dva';
+
 import { accountLogin, accountLogout } from '@/services/login';
 import { setAuthorization, setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
 import { router } from 'umi';
 import { getPageQuery } from '@/utils/utils';
 
-const Model = {
+export interface LoginModelState {
+  // status?: 'ok' | 'error';
+  // type?: string;
+  // currentAuthority?: 'user' | 'guest' | 'admin';
+  key?: string;
+}
+
+export interface LoginModelType {
+  namespace: string;
+  state: LoginModelState;
+  effects: {
+    login: Effect;
+    logout: Effect;
+  };
+  reducers: {
+    changeLoginStatus: Reducer<LoginModelState>;
+  };
+}
+
+const Model: LoginModelType = {
   namespace: 'login',
+
   state: {
     key: undefined,
   },
+
   effects: {
     *login({ payload }, { call, put }) {
       const res = yield call(accountLogin, payload);
@@ -23,7 +47,7 @@ const Model = {
        */
       const urlParams = new URL(window.location.href);
       const params = getPageQuery();
-      let { redirect } = params;
+      let { redirect } = params as { redirect: string };
       if (redirect) {
         const redirectUrlParams = new URL(redirect);
         if (redirectUrlParams.origin === urlParams.origin) {
@@ -56,6 +80,7 @@ const Model = {
       return res;
     },
   },
+
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthorization(payload.key);

@@ -2,7 +2,7 @@ import { Card, Col, Row, Spin, Tag, Typography } from 'antd';
 import classNames from 'classnames';
 import React from 'react';
 import { TokenAnnotator } from 'react-text-annotate';
-import { AnnotatationContext } from '../AnnotationContext';
+import { useAnnotaionContext } from '../AnnotationContext';
 import LabelList from '../LabelList';
 import LabelPreview from '../LabelPreview';
 import styles from './SequenceLabelingProject.less';
@@ -16,7 +16,7 @@ function SequenceLabelingProject(prs) {
     handleAddLabel,
     task,
     annoLoading: loading,
-  } = React.useContext(AnnotatationContext);
+  } = useAnnotaionContext();
   const [tag, setTag] = React.useState(null);
 
   const handleChange = newVal => {
