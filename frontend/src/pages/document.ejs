@@ -14,11 +14,36 @@
     <noscript>Document annotation system !</noscript>
     <div id="root">
       <style>
+        html,
+        body,
+        #root {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        #root {
+          background-image: url('/home_bg.png');
+          background-repeat: no-repeat;
+          background-size: 100% auto;
+        }
+        .page-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          min-height: 420px;
+          height: 100%;
+        }
         .page-loading-warp {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 120px;
+          padding: 98px;
+        }
+        .page-footer {
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
         .ant-spin {
           position: absolute;
@@ -153,12 +178,23 @@
           }
         }
       </style>
-      <div class="page-loading-warp">
-        <div class="ant-spin ant-spin-lg ant-spin-spinning">
-          <span class="ant-spin-dot ant-spin-dot-spin"
-            ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
-            ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
-          ></span>
+      <div class="page-container">
+        <img src="/pro_icon.svg" alt="logo" width="256" />
+        <div class="page-loading-warp">
+          <div class="ant-spin ant-spin-lg ant-spin-spinning">
+            <span class="ant-spin-dot ant-spin-dot-spin"
+              ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
+              ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
+            ></span>
+          </div>
+        </div>
+        <div class="page-footer">
+          <img
+            src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+            width="32"
+            style="margin-right: 8px;"
+          />
+          Ant Design
         </div>
       </div>
     </div>
