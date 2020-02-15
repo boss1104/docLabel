@@ -2,12 +2,12 @@ import { Alert, Col, Icon, message, Row, Button } from 'antd';
 import { connect } from 'dva';
 import React, { Component } from 'react';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
-import Link from 'umi/link';
+import { Link, router } from 'umi';
 import NewWindow from 'react-new-window';
-import { router } from 'umi';
+
+import { loginProviders, loginProviderSettings } from '@/pages/constants';
 import LoginComponents from './components/Login';
 import styles from './style.less';
-import { loginProviders, loginProviderSettings } from '@/pages/constants';
 
 const { Username, Password, Submit } = LoginComponents;
 

@@ -1,9 +1,8 @@
 import { Button, Form, Input, Popover, Progress, message, DatePicker, Modal } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component } from 'react';
-import Link from 'umi/link';
+import { Link, router } from 'umi';
 import { connect } from 'dva';
-import router from 'umi/router';
 import moment from 'moment';
 import styles from './style.less';
 import { USER_FULLNAME_MAX_LENGTH, USER_NAME_MAX_LENGTH } from './locales/en-US';

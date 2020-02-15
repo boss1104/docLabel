@@ -1,15 +1,15 @@
 import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import { Helmet } from 'react-helmet';
-import Link from 'umi/link';
+import { Link, router } from 'umi';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
-import { router } from 'umi';
+
 import { Icon } from 'antd';
 import SelectLang from '@/components/SelectLang';
+import { getAuthorization } from '@/utils/authority';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
-import { getAuthorization } from '@/utils/authority';
 
 const UserLayout = props => {
   const {

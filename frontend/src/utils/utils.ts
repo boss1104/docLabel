@@ -1,10 +1,13 @@
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
-/* eslint no-useless-escape:0 import/prefer-default-export:0 */
+import { Route } from '@/models/connect';
 
+/* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
-export const isUrl = path => reg.test(path);
-export const isAntDesignPro = () => {
+
+export const isUrl = (path: string) => reg.test(path);
+
+export const isAntDesignPro = (): boolean => {
   if (ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {
     return true;
   }
@@ -17,7 +20,7 @@ export const isAntDesignPro = () => {
  * development environments
  */
 
-export const isAntDesignProOrDev = () => {
+export const isAntDesignProOrDev = (): boolean => {
   const { NODE_ENV } = process.env;
 
   if (NODE_ENV === 'development') {
@@ -26,7 +29,7 @@ export const isAntDesignProOrDev = () => {
 
   return isAntDesignPro();
 };
-export const getPageQuery = href => {
+export const getPageQuery = (href: string) => {
   let url = href;
   if (!href) {
     url = window.location.href;
@@ -40,14 +43,22 @@ export const getPageQuery = href => {
  * @param pathname string
  */
 
-export const getAuthorityFromRouter = (router = [], pathname) => {
-  const authority = router.find(({ path }) => path && pathRegexp(path).exec(pathname));
+export const getAuthorityFromRouter = <T extends Route>(
+  router: T[] = [],
+  pathname: string,
+): T | undefined => {
+  const authority = router.find(
+    ({ routes, path = '/' }) =>
+      (path && pathRegexp(path).exec(pathname)) ||
+      (routes && getAuthorityFromRouter(routes, pathname)),
+  );
   if (authority) return authority;
   return undefined;
 };
 
-export const arrayToObject = (array, keyField) =>
+export const arrayToObject = <T>(array: T[], keyField: string) =>
   array.reduce((obj, item) => {
-    obj[item[keyField]] = item;
-    return obj;
+    const newObj = { ...obj };
+    newObj[item[keyField]] = item;
+    return newObj;
   }, {});

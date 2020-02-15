@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { stringify } from 'querystring';
 import React from 'react';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
-import router from 'umi/router';
+import { router } from 'umi';
 import { getPageQuery } from '@/utils/utils';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';

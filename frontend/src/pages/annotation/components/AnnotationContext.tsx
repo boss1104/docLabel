@@ -14,7 +14,7 @@ export interface AnnotatationContextValue {
   task?: Task;
   annotationValue?: number;
   setAnnotationValue: Dispatch<SetStateAction<number | null>>;
-  pagination: Pagination;
+  pagination?: Pagination;
   sidebarTotal: number;
   sidebarPage: number;
   remaining: number;
@@ -24,6 +24,29 @@ export interface AnnotatationContextValue {
   handleAddLabel: (data: any) => Promise<void>;
   handleEditLabel: (annotationId: any, data: any) => Promise<void>;
 }
+
+// export const AnnotationDefaulValue: AnnotatationContextValue = {
+//   isDisabled: false,
+//   isProjectAdmin: false,
+//   isApprover: false,
+//   isNotApprover: false,
+//   annoList: [],
+//   annotations: [],
+//   taskList: [],
+//   labelList: [],
+//   task: undefined,
+//   annotationValue: undefined,
+//   setAnnotationValue: () => {},
+//   pagination: undefined,
+//   sidebarTotal: 0,
+//   sidebarPage: 0,
+//   remaining: 0,
+//   collapsed: false,
+//   // function
+//   handleRemoveLabel: async () => {},
+//   handleAddLabel: async () => {},
+//   handleEditLabel: async () => {},
+// };
 
 const createAnnotationCtx = <A extends {}>() => {
   const ctx = React.createContext<A | undefined>(undefined);

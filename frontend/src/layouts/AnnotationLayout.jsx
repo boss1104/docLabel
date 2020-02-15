@@ -3,8 +3,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, message, Result } from 'antd';
 import { connect } from 'dva';
 import React from 'react';
-import { router } from 'umi';
-import Link from 'umi/link';
+import { router, Link } from 'umi';
 
 const noMatch = (
   <Result

@@ -5,7 +5,7 @@
  */
 import { extend } from 'umi-request';
 import { message } from 'antd';
-import router from 'umi/router';
+import { router } from 'umi';
 import { getAuthorization, setAuthorization } from '@/utils/authority';
 
 /**
