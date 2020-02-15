@@ -6,9 +6,7 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.conf import settings
 from django.http import HttpRequest
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from google.oauth2 import id_token
 
-# from google.auth.transport import requests
 from allauth.socialaccount.providers.oauth2.views import (
     OAuth2Adapter,
     OAuth2CallbackView,
