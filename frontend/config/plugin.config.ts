@@ -2,10 +2,10 @@
 // eslint-disable-next-line eslint-comments/abdeils - enable - pair;
 
 /* eslint-disable import/no-extraneous-dependencies */
-import generate from '@ant-design/colors/lib/generate';
 import path from 'path';
+import * as IWebpackChainConfig from 'webpack-chain';
 
-function getModulePackageName(module) {
+function getModulePackageName(module: { context: string }) {
   if (!module.context) return null;
   const nodeModulesPath = path.join(__dirname, '../node_modules/');
 
@@ -15,28 +15,17 @@ function getModulePackageName(module) {
 
   const moduleRelativePath = module.context.substring(nodeModulesPath.length);
   const [moduleDirName] = moduleRelativePath.split(path.sep);
-  let packageName = moduleDirName; // handle tree shaking
-
+  let packageName = moduleDirName;
+  // handle tree shaking
   if (packageName && packageName.match('^_')) {
     // eslint-disable-next-line prefer-destructuring
-    packageName = packageName.match(/^_(@?[^@]+)/)[1];
+    packageName = packageName.match(/^_(@?[^@]+)/)![1];
   }
 
   return packageName;
 }
-const getAntdSerials = color => {
-  const lightNum = 9;
-  const devide10 = 10; // 淡化（即less的tint）
 
-  const lightens = new Array(lightNum)
-    .fill(undefined)
-    .map((_, i) => ThemeColorReplacer.varyColor.lighten(color, i / devide10));
-  const colorPalettes = generate(color);
-  const rgb = ThemeColorReplacer.varyColor.toNum3(color.replace('#', '')).join(',');
-  return lightens.concat(colorPalettes).concat(rgb);
-};
-
-export default config => {
+export const webpackPlugin = (config: IWebpackChainConfig) => {
   config.module
     .rule('txt')
     .test(/\.txt$/)
@@ -76,7 +65,7 @@ export default config => {
       minSize: 0,
       cacheGroups: {
         vendors: {
-          test: module => {
+          test: (module: { context: string }) => {
             const packageName = getModulePackageName(module) || '';
 
             if (packageName) {
@@ -93,7 +82,7 @@ export default config => {
             return false;
           },
 
-          name(module) {
+          name(module: { context: string }) {
             const packageName = getModulePackageName(module);
 
             if (packageName) {

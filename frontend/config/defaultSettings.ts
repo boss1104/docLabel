@@ -1,6 +1,9 @@
 import { Settings } from '@ant-design/pro-layout';
 
-export interface DefaultSettings extends Settings {}
+export interface DefaultSettings extends Settings {
+  pwa: boolean;
+  basePath: string;
+}
 
 export default {
   navTheme: 'light',

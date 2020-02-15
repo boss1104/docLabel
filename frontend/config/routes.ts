@@ -1,3 +1,5 @@
+import { IRoute } from 'umi-types';
+
 export default [
   {
     path: '/user',
@@ -186,4 +188,4 @@ export default [
   {
     component: './exception/404',
   },
-];
+] as IRoute[];

@@ -1,17 +1,18 @@
+import { IConfig, IPlugin } from 'umi-types';
 import slash from 'slash2';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
-import themePluginConfig from './themePluginConfig'; // import darkTheme from '@ant-design/dark-theme';
-
-import webpackPlugin from './plugin.config';
+import themePluginConfig from './themePluginConfig';
+import { webpackPlugin } from './plugin.config';
 import routes from './routes';
 
 const { pwa, primaryColor, basePath } = defaultSettings;
-// preview.pro.ant.design only do not use in your production ;
 
+// preview.pro.ant.design only do not use in your production ;
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, TEST } = process.env;
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
-const plugins = [
+const plugins: IPlugin[] = [
+  ['umi-plugin-antd-icon-config', {}],
   [
     'umi-plugin-react',
     {
@@ -114,11 +115,6 @@ if (!TEST && !isAntDesignProPreview && loadTheme) {
 
 export default {
   plugins,
-  block: {
-    // 国内用户可以使用码云
-    // defaultGitUrl: 'https://gitee.com/ant-design/pro-blocks',
-    defaultGitUrl: 'https://github.com/ant-design/pro-blocks',
-  },
   hash: true,
   targets: {
     ie: 11,
@@ -142,7 +138,13 @@ export default {
   cssLoaderOptions: {
     url: false,
     modules: true,
-    getLocalIdent: (context, _, localName) => {
+    getLocalIdent: (
+      context: {
+        resourcePath: string;
+      },
+      _: string,
+      localName: string,
+    ) => {
       if (
         context.resourcePath.includes('node_modules') ||
         context.resourcePath.includes('ant.design.pro.less') ||
@@ -157,8 +159,8 @@ export default {
         const antdProPath = match[1].replace('.less', '');
         const arr = slash(antdProPath)
           .split('/')
-          .map(a => a.replace(/([A-Z])/g, '-$1'))
-          .map(a => a.toLowerCase());
+          .map((a: string) => a.replace(/([A-Z])/g, '-$1'))
+          .map((a: string) => a.toLowerCase());
         return `antd-pro${arr.join('-')}-${localName}`.replace(/--/g, '-');
       }
 
@@ -179,4 +181,4 @@ export default {
       changeOrigin: true,
     },
   },
-};
+} as IConfig;
