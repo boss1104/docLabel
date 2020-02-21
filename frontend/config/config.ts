@@ -168,10 +168,10 @@ export default {
     },
   },
   // cssModulesExcludes: ['./src/pages/Home/less/antMotionStyle.less'],
-  manifest: {
-    basePath,
-  },
-  base: basePath,
+  // manifest: {
+  //   basePath,
+  // },
+  // base: basePath,
   publicPath: '/static/',
   urlLoaderExcludes: [/\.txt$/, /\.jsonl$/, /\.csv$/, /\.xlsx$/, /\.conll$/],
   chainWebpack: webpackPlugin,

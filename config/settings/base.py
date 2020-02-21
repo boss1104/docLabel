@@ -138,13 +138,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # SEE: https://github.com/ottoyiu/django-cors-headers#setup
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -237,7 +239,7 @@ EMAIL_TIMEOUT = 5
 # Django Admin URL.
 ADMIN_URL = "admin/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""Do Hong Son""", "sondh0127@gmail.com")]
+ADMINS = [("""Son Do Hong""", "sondh0127@gmail.com")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 
@@ -317,7 +319,8 @@ SOCIALACCOUNT_PROVIDERS = {
     "github": {"SCOPE": ["user", "repo", "user:email"]},
     "google": {
         "SCOPE": [
-            "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+            "https://www.googleapis.com/auth/userinfo.profile "
+            + "https://www.googleapis.com/auth/userinfo.email"
         ],
         "AUTH_PARAMS": {"access_type": "offline"},
     },
@@ -360,7 +363,7 @@ REST_FRAMEWORK = {
     #
     "COERCE_DECIMAL_TO_STRING": False,
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
-    # NOTE: See: https://www.django-rest-framework.org/community/3.10-announcement/#continuing-to-use-coreapi
+    # https://www.django-rest-framework.org/community/3.10-announcement/#continuing-to-use-coreapi
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
 

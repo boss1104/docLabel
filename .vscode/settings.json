@@ -1,5 +1,5 @@
 {
-  "python.pythonPath": "/home/sondh/.pyenv/versions/3.6.9/bin/python",
+  "python.pythonPath": ".venv/bin/python",
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
@@ -7,8 +7,7 @@
   "python.linting.lintOnSave": true,
   "python.linting.flake8Args": [
     "--max-line-length=100",
-    "--ignore==E203,W503,W504,F401"
-    // "--ignore=E402,F841,,E302,E305,"
+    "--ignore==E203, E231, E266, E501, W503, F403, F401"
   ],
   "eslint.workingDirectories": ["./frontend"]
 }
