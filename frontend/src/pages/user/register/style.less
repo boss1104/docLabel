@@ -3,6 +3,9 @@
 .main {
   width: 368px;
   margin: 0 auto;
+  @media screen and (max-width: @screen-sm) {
+    width: 95%;
+  }
 
   :global {
     .ant-form-item {
@@ -13,11 +16,6 @@
   h2 {
     margin-bottom: 20px;
     font-size: 24px;
-  }
-
-  .getCaptcha {
-    display: block;
-    width: 100%;
   }
 
   .submit {

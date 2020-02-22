@@ -20,7 +20,7 @@ const errorHandler = error => {
       setAuthorization();
       // eslint-disable-next-line no-underscore-dangle
       window.g_app._store.dispatch({
-        type: 'login/logout',
+        type: 'auth/logout',
       });
     }
 

@@ -9,14 +9,14 @@ const Model = {
     *githubOAuth({ payload }, { call, put }) {
       const res = yield call(githubOAuth, payload);
       yield put({
-        type: 'login/changeLoginStatus',
+        type: 'auth/changeLoginStatus',
         payload: res,
       });
     },
     *googleOAuth({ payload }, { call, put }) {
       const res = yield call(googleOAuth, payload);
       yield put({
-        type: 'login/changeLoginStatus',
+        type: 'auth/changeLoginStatus',
         payload: res,
       });
     },

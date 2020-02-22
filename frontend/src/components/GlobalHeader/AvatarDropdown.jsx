@@ -17,7 +17,7 @@ class AvatarDropdown extends React.Component {
 
       if (dispatch) {
         await dispatch({
-          type: 'login/logout',
+          type: 'auth/logout',
         });
 
         const { redirect } = getPageQuery(); // redirect

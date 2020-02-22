@@ -1,14 +1,14 @@
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { queryCurrent } from '@/services/user';
 
 export interface CurrentUser {
-  id: number;
-  url: string;
-  username: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  full_name: string;
+  id: number;
+  username: string;
   avatar?: string;
   is_superuser: boolean;
 }
@@ -21,12 +21,11 @@ export interface UserModelType {
   namespace: 'user';
   state: UserModelState;
   effects: {
-    fetch: Effect;
     fetchCurrent: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
-    changeNotifyCount: Reducer<UserModelState>;
+    // changeNotifyCount: Reducer<UserModelState>;
   };
 }
 
@@ -34,18 +33,10 @@ const UserModel: UserModelType = {
   namespace: 'user',
 
   state: {
-    currentUser: {},
+    currentUser: undefined,
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-
     *fetchCurrent(_, { call, put }) {
       const res = yield call(queryCurrent);
       yield put({
@@ -61,21 +52,21 @@ const UserModel: UserModelType = {
       return { ...state, currentUser: action.payload || {} };
     },
 
-    changeNotifyCount(
-      state = {
-        currentUser: {},
-      },
-      action,
-    ) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
-      };
-    },
+    // changeNotifyCount(
+    //   state = {
+    //     currentUser: undefined,
+    //   },
+    //   action,
+    // ) {
+    //   return {
+    //     ...state,
+    //     currentUser: {
+    //       ...state.currentUser,
+    //       // notifyCount: action.payload.totalCount,
+    //       // unreadCount: action.payload.unreadCount,
+    //     },
+    //   };
+    // },
   },
 };
 export default UserModel;

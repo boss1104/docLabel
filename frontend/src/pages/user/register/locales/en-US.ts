@@ -1,14 +1,19 @@
 export const APP_NAME = 'doclabel';
-export const USER_FULLNAME_MAX_LENGTH = 255;
-export const USER_NAME_MAX_LENGTH = 255;
+export const FIRST_NAME_MAX_LENGTH = 30;
+export const LAST_NAME_MAX_LENGTH = 150;
+export const USER_NAME_MAX_LENGTH = 150;
 export const NOT_VALID_CHARS = '$#&\\/| ';
 
 export default {
   'user-register.register.register': 'Create an account',
 
-  'user-register.fullname.required': 'Please enter your full name!',
-  'user-register.fullname.length': `Full name must be between 3 and ${USER_FULLNAME_MAX_LENGTH} characters long`,
-  'user-register.fullname.placeholder': 'Full name',
+  'user-register.first_name.required': 'Please enter your first name!',
+  'user-register.first_name.length': `First name must be ${FIRST_NAME_MAX_LENGTH} characters long or fewer`,
+  'user-register.first_name.placeholder': 'First name',
+
+  'user-register.last_name.required': 'Please enter your last name!',
+  'user-register.last_name.length': `Last name must be ${LAST_NAME_MAX_LENGTH} characters long or fewer`,
+  'user-register.last_name.placeholder': 'Last name',
 
   'user-register.username.required': 'Please enter your user name!',
   'user-register.username.length': `User name must be between 3 and ${USER_NAME_MAX_LENGTH} characters long`,

@@ -1,9 +1,23 @@
 import React from 'react';
 import { Icon, Tag } from 'antd';
 
+export enum ProjectTypes {
+  TextClassificationProject = 'TextClassificationProject',
+  SequenceLabelingProject = 'SequenceLabelingProject',
+  Seq2seqProject = 'Seq2seqProject',
+  PdfLabelingProject = 'PdfLabelingProject',
+}
+
 export const PAGE_SIZE = 6;
 
-export const PROJECT_TYPE = {
+export const PROJECT_TYPE: Record<
+  ProjectTypes,
+  {
+    icon: React.ReactNode;
+    label: string;
+    tag: React.ReactNode;
+  }
+> = {
   TextClassificationProject: {
     icon: <Icon type="smile" theme="twoTone" />,
     label: 'Sentiment Analysis',
@@ -67,7 +81,14 @@ export const loginProviderSettings = {
   },
 };
 
-export const loginProviders = {
+export const loginProviders: Record<
+  'google' | 'github' | 'facebook',
+  {
+    title: string;
+    type: string;
+    theme: 'filled' | 'outlined' | 'twoTone' | undefined;
+  }
+> = {
   google: {
     title: 'Google',
     type: 'google-circle',
