@@ -11,7 +11,7 @@ SECRET_KEY = env(
     default="DEx7wX8W2SRi1jZn1MMRLnWEmXUWsUkGvpXKIJEcuNITHNUVI4C8011eik7s5GLM",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", env.str("DJANGO_ALLOWED_HOSTS")]
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -26,7 +26,9 @@ CACHES = {
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
-EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+if env("USE_DOCKER") == "yes":
+    EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
 

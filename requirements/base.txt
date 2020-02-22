@@ -15,8 +15,6 @@ colour==0.1.5
 django==2.2.10  # pyup: < 3.0  # https://www.djangoproject.com/
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-model-utils==4.0.0  # https://github.com/jazzband/django-model-utils
-django-allauth==0.41.0  # https://github.com/pennersr/django-allauth
-django-crispy-forms==1.8.1  # https://github.com/django-crispy-forms/django-crispy-forms
 django-compressor==2.3  # https://github.com/django-compressor/django-compressor
 django-redis==4.11.0  # https://github.com/niwinz/django-redis
 django-filter==2.2.0  # https://github.com/carltongibson/django-filter
@@ -26,10 +24,11 @@ django-activity-stream==0.8.0
 # Django REST Framework
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
-django-rest-auth==0.9.5 # https://github.com/Tivix/django-rest-auth
 django-polymorphic==2.1.2 # https://github.com/django-polymorphic/django-polymorphic
 django-rest-polymorphic===0.1.8 # https://github.com/apirobot/django-rest-polymorphic
 djangorestframework-csv==2.1.0 # https://github.com/mjumbewu/django-rest-framework-csv
+djoser==2.0.3 # https://github.com/sunscrapers/djoser
+social-auth-app-django==3.1.0 # https://github.com/python-social-auth/social-app-django
 
 # Other API
 apache-libcloud==2.4.0

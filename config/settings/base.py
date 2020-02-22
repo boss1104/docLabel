@@ -67,18 +67,11 @@ DJANGO_APPS = [
     "django.contrib.admin",
 ]
 THIRD_PARTY_APPS = [
-    "crispy_forms",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.github",
-    "allauth.socialaccount.providers.facebook",
     "rest_framework",
-    "rest_framework.authtoken",
-    "rest_auth",
-    "rest_auth.registration",
     "corsheaders",
+    "rest_framework.authtoken",
+    "djoser",
+    "social_django",
     "django_celery_beat",
     "graphene_django",
     "polymorphic",
@@ -87,9 +80,8 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    # Your stuff: custom apps go here
-    "doclabel.users.apps.UsersConfig",
-    "doclabel.core.apps.CoreConfig",
+    "doclabel.users",
+    "doclabel.core",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -103,8 +95,10 @@ MIGRATION_MODULES = {"sites": "doclabel.contrib.sites.migrations"}
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
+    "doclabel.users.backends.GitLabOAuth2Override",
+    "doclabel.users.backends.GoogleOAuth2Override",
+    "doclabel.users.backends.GithubOAuth2Override",
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
@@ -290,41 +284,6 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-# django-allauth
-# ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "doclabel.users.adapters.AccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "doclabel.users.adapters.SocialAccountAdapter"
-# django-rest_auth
-# ------------------------------------------------------------------------------
-REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "doclabel.users.serializers.CustomUserDetailsSerializer",
-    "PASSWORD_RESET_SERIALIZER": "doclabel.users.serializers.PasswordResetSerializer",
-}
-
-REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "doclabel.users.serializers.CustomRegisterSerializer"
-}
-REST_SESSION_LOGIN = False
-
-SOCIALACCOUNT_PROVIDERS = {
-    "github": {"SCOPE": ["user", "repo", "user:email"]},
-    "google": {
-        "SCOPE": [
-            "https://www.googleapis.com/auth/userinfo.profile "
-            + "https://www.googleapis.com/auth/userinfo.email"
-        ],
-        "AUTH_PARAMS": {"access_type": "offline"},
-    },
-}
 
 # django-compressor
 # ------------------------------------------------------------------------------
@@ -347,7 +306,6 @@ CORS_ORIGIN_REGEX_WHITELIST = (r"^(https?://)?localhost", r"^(https?://)?127.")
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": (
@@ -366,6 +324,62 @@ REST_FRAMEWORK = {
     # https://www.django-rest-framework.org/community/3.10-announcement/#continuing-to-use-coreapi
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
+
+#  djoser
+# ------------------------------------------------------------------------------
+# https://djoser.readthedocs.io/en/latest/
+DJOSER = {
+    "SEND_ACTIVATION_EMAIL": True,
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "SET_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "user/activate/{uid}/{token}",
+    "SERIALIZERS": {"current_user": "doclabel.users.serializers.UserSerializer",},
+    "SOCIAL_AUTH_TOKEN_STRATEGY": "doclabel.users.token.TokenStrategy",
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": env.list(
+        "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS", default=[]
+    ),
+}
+
+#  social auth
+# ------------------------------------------------------------------------------
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.auth_allowed",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.social_auth.associate_by_email",  # <--- enable this one
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+)
+
+SOCIAL_AUTH_GITHUB_KEY = env.str("SOCIAL_AUTH_GITHUB_KEY", default="")
+SOCIAL_AUTH_GITHUB_SECRET = env.str("SOCIAL_AUTH_GITHUB_SECRET", default="")
+SOCIAL_AUTH_GITHUB_SCOPE = ["user:email"]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default=""
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+]
+
+SOCIAL_AUTH_GITLAB_KEY = env.str("SOCIAL_AUTH_GITLAB_KEY", default="")
+SOCIAL_AUTH_GITLAB_SECRET = env.str("SOCIAL_AUTH_GITLAB_SECRET", default="")
+
+SOCIAL_AUTH_GITLAB_SCOPE = ["api", "read_user"]
 
 # Graphene Setup
 # ------------------------------------------------------------------------------

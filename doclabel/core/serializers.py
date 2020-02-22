@@ -7,7 +7,7 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError as ValidationErrorCore
 from rest_framework.validators import UniqueTogetherValidator
 from django.core.files.storage import FileSystemStorage
-from doclabel.users.serializers import CustomUserDetailsSerializer
+from doclabel.users.serializers import UserSerializer
 from notifications.models import Notification
 from django.db.models import Count, Q
 
@@ -145,7 +145,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     current_users_role = serializers.SerializerMethodField()
-    users = CustomUserDetailsSerializer(read_only=True, many=True)
+    users = UserSerializer(read_only=True, many=True)
     project_stat = serializers.SerializerMethodField()
 
     def get_project_stat(self, instance):
@@ -395,8 +395,8 @@ class GenericNotificationRelatedField(serializers.RelatedField):
 
 class NotificationSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    actor = CustomUserDetailsSerializer(read_only=True)
-    recipient = CustomUserDetailsSerializer(read_only=True)
+    actor = UserSerializer(read_only=True)
+    recipient = UserSerializer(read_only=True)
     unread = serializers.BooleanField(read_only=True)
     target = GenericNotificationRelatedField(read_only=True)
     verb = serializers.CharField()
