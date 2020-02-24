@@ -1,5 +1,7 @@
 import React from 'react';
-import { Form, Modal, Input, Button, Select, Row, Col } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Modal, Input, Button, Select, Row, Col } from 'antd';
 import { TwitterPicker } from 'react-color';
 
 const FormItem = Form.Item;

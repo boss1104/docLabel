@@ -17,5 +17,5 @@ class UserAdmin(auth_admin.UserAdmin):
         + ((_("Personal info"), {"fields": ("email", "avatar")}),)
         + (old_fieldsets[2:])
     )
-    list_display = ["username", "is_superuser"]
+    list_display = ["username", "is_active", "is_superuser"]
     search_fields = ["username"]

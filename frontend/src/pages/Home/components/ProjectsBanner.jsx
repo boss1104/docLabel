@@ -2,7 +2,8 @@ import NamedEntityRecognition from '@/assets/types/Named_Entity_Recognition.png'
 import PDFLabeling from '@/assets/types/PDF_Labeling.png';
 import SentimentAnalysis from '@/assets/types/Sentiment_Analysis.png';
 import Translation from '@/assets/types/Translation.png';
-import { Carousel, Icon, Typography, Row, Col } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Carousel, Typography, Row, Col } from 'antd';
 import React from 'react';
 import classNames from 'classnames';
 
@@ -16,7 +17,7 @@ function SamplePrevArrow(props) {
       style={{ ...style, left: -36 }}
       onClick={onClick}
     >
-      <Icon type="left" />
+      <LeftOutlined />
     </div>
   );
 }
@@ -29,7 +30,7 @@ function SampleNextArrow(props) {
       style={{ ...style, right: -36 + 8 }}
       onClick={onClick}
     >
-      <Icon type="right" />
+      <RightOutlined />
     </div>
   );
 }

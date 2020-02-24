@@ -334,9 +334,9 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_RETYPE": True,
     "SET_PASSWORD_RETYPE": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
-    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
-    "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
-    "ACTIVATION_URL": "user/activate/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "user/reset-password/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "user/reset-username/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "user/activation/{uid}/{token}",
     "SERIALIZERS": {"current_user": "doclabel.users.serializers.UserSerializer",},
     "SOCIAL_AUTH_TOKEN_STRATEGY": "doclabel.users.token.TokenStrategy",
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": env.list(

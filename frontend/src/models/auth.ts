@@ -1,18 +1,20 @@
-import { Reducer } from 'redux';
-import { Effect } from 'dva';
-
 import {
+  activation,
+  getOAuth,
   login,
+  loginOAuth,
   logout,
   register,
-  activation,
-  forgotPassword,
-  confirmPassword,
+  resendActivation,
+  resetPassword,
+  resetPasswordConfirm,
 } from '@/services/auth';
-import { setAuthorization, setAuthority } from '@/utils/authority';
+import { setAuthority, setAuthorization } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
-import { router } from 'umi';
 import { getPageQuery } from '@/utils/utils';
+import { Effect } from 'dva';
+import { Reducer } from 'redux';
+import { router } from 'umi';
 
 export interface AuthModelState {
   token?: string;
@@ -24,10 +26,13 @@ export interface AuthModelType {
   effects: {
     register: Effect;
     activation: Effect;
+    resendActivation: Effect;
     login: Effect;
     logout: Effect;
-    forgotPassword: Effect;
-    confirmPassword: Effect;
+    resetPassword: Effect;
+    resetPasswordConfirm: Effect;
+    getOAuth: Effect;
+    loginOAuth: Effect;
   };
   reducers: {
     changeAuth: Reducer<AuthModelState>;
@@ -42,19 +47,21 @@ const Model: AuthModelType = {
   },
 
   effects: {
-    *register({ payload }, { call, put }) {
+    *register({ payload }, { call }) {
       const res = yield call(register, payload);
       return res;
     },
-    *activation({ payload }, { call, put }) {
-      const res = yield call(activation, payload);
-      yield put({
-        type: 'changeAuth',
-        payload: res,
-      });
 
+    *activation({ payload }, { call }) {
+      const res = yield call(activation, payload);
       return res;
     },
+
+    *resendActivation({ payload }, { call }) {
+      const res = yield call(resendActivation, payload);
+      return res;
+    },
+
     *login({ payload }, { call, put }) {
       const res = yield call(login, payload);
 
@@ -68,22 +75,22 @@ const Model: AuthModelType = {
       // /**
       //  * Redirect
       //  */
-      // const urlParams = new URL(window.location.href);
-      // const params = getPageQuery();
-      // let { redirect } = params as { redirect: string };
-      // if (redirect) {
-      //   const redirectUrlParams = new URL(redirect);
-      //   if (redirectUrlParams.origin === urlParams.origin) {
-      //     redirect = redirect.substr(urlParams.origin.length + 4);
-      //     if (redirect.match(/^\/.*#/)) {
-      //       redirect = redirect.substr(redirect.indexOf('#') + 1);
-      //     }
-      //   } else {
-      //     window.location.href = redirect;
-      //     return;
-      //   }
-      // }
-      // router.replace(redirect || '/');
+      const urlParams = new URL(window.location.href);
+      const params = getPageQuery();
+      let { redirect } = params as { redirect: string };
+      if (redirect) {
+        const redirectUrlParams = new URL(redirect);
+        if (redirectUrlParams.origin === urlParams.origin) {
+          redirect = redirect.substr(urlParams.origin.length + 4);
+          if (redirect.match(/^\/.*#/)) {
+            redirect = redirect.substr(redirect.indexOf('#') + 1);
+          }
+        } else {
+          window.location.href = redirect;
+          return;
+        }
+      }
+      router.replace(redirect || '/');
     },
 
     *logout(_, { call, put }) {
@@ -102,19 +109,29 @@ const Model: AuthModelType = {
       reloadAuthorized();
       return res;
     },
-    *forgotPassword({ payload }, { call, put }) {
-      const res = yield call(forgotPassword, payload);
+    *resetPassword({ payload }, { call }) {
+      yield call(resetPassword, payload);
+    },
+    *resetPasswordConfirm({ payload }, { call, put }) {
+      const res = yield call(resetPasswordConfirm, payload);
       yield put({
         type: 'changeAuth',
         payload: res,
       });
       return res;
     },
-    *confirmPassword({ payload }, { call, put }) {
-      const res = yield call(confirmPassword, payload);
+    *getOAuth({ payload }, { call }) {
+      const res = yield call(getOAuth, payload);
+
+      return res;
+    },
+    *loginOAuth({ payload }, { call, put }) {
+      const res = yield call(loginOAuth, payload);
       yield put({
         type: 'changeAuth',
-        payload: res,
+        payload: {
+          token: res.access,
+        },
       });
       return res;
     },

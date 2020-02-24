@@ -1,6 +1,8 @@
 import React from 'react';
 import { useModalForm } from 'sunflower-antd';
-import { Modal, Button, Form, Spin, message } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Modal, Button, Spin, message } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 
 import { connect } from 'dva';

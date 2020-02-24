@@ -1,4 +1,5 @@
-import { Avatar, Card, Icon, List, Tooltip, Row, Col, Typography } from 'antd';
+import { DownloadOutlined, EditOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { Avatar, Card, List, Tooltip, Row, Col, Typography } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -70,16 +71,13 @@ const Projects = connect(({ user, accountCenter, loading }) => ({
                 }}
                 actions={[
                   <Tooltip title="Edit" key="edit">
-                    <Icon
-                      type="edit"
-                      onClick={() => router.push(`/projects/${item.id}/dashboard`)}
-                    />
+                    <EditOutlined onClick={() => router.push(`/projects/${item.id}/dashboard`)} />
                   </Tooltip>,
                   <Tooltip title="Download" key="download">
-                    <Icon type="download" />
+                    <DownloadOutlined />
                   </Tooltip>,
                   <Tooltip title="Share" key="share">
-                    <Icon type="share-alt" />
+                    <ShareAltOutlined />
                   </Tooltip>,
                 ]}
               >

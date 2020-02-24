@@ -1,3 +1,4 @@
+import { CloseOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Empty, Input, List, Row, Spin, Typography } from 'antd';
 import classNames from 'classnames';
 import React from 'react';
@@ -112,7 +113,7 @@ function Seq2seqProject(props) {
                       </Col>
                       <Col>
                         <Button
-                          icon="close"
+                          icon={<CloseOutlined />}
                           shape="circle"
                           onClick={() => handleRemoveAnno(item.id)}
                         />

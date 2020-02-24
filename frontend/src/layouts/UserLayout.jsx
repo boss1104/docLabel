@@ -5,11 +5,12 @@ import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 
-import { Icon } from 'antd';
+import { GithubOutlined } from '@ant-design/icons';
 import SelectLang from '@/components/SelectLang';
 import { getAuthorization } from '@/utils/authority';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
+import LayoutFooter from './components/LayoutFooter';
 
 const UserLayout = props => {
   const {
@@ -48,32 +49,6 @@ const UserLayout = props => {
     ...props,
   });
 
-  const defaultFooterDom = (
-    <DefaultFooter
-      copyright="2019 ICT"
-      links={[
-        {
-          key: 'Ant Design Pro',
-          title: 'Ant Design Pro',
-          href: 'https://pro.ant.design',
-          blankTarget: true,
-        },
-        {
-          key: 'github',
-          title: <Icon type="github" />,
-          href: 'https://github.com/ant-design/ant-design-pro',
-          blankTarget: true,
-        },
-        {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
-          blankTarget: true,
-        },
-      ]}
-    />
-  );
-
   return (
     <React.Fragment>
       <Helmet>
@@ -97,7 +72,7 @@ const UserLayout = props => {
           </div>
           {children}
         </div>
-        {defaultFooterDom}
+        <LayoutFooter />
       </div>
     </React.Fragment>
   );

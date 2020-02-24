@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Button, Card, Dropdown, Icon, Menu, Popconfirm, Tag, message } from 'antd';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Dropdown, Menu, Popconfirm, Tag, message } from 'antd';
 import styles from './index.less';
 import StandardTable from './components/StandardTable';
 import CreateForm from './components/CreateForm';
@@ -142,7 +143,7 @@ function Contributor({ dispatch, contributor, loading, currentProject }) {
           <Dropdown overlay={menu} trigger={['click']}>
             <a href="#">
               <Tag color={ROLE_COLORS[record.role]}>{ROLE_LABELS[record.rolename]}</Tag>
-              <Icon type="down" />
+              <DownOutlined />
             </a>
           </Dropdown>
         );
@@ -168,7 +169,7 @@ function Contributor({ dispatch, contributor, loading, currentProject }) {
   return (
     <PageHeaderWrapper
       content={
-        <Button icon="plus" type="primary" onClick={() => setModalVisible(true)}>
+        <Button icon={<PlusOutlined />} type="primary" onClick={() => setModalVisible(true)}>
           Add Existing User
         </Button>
       }

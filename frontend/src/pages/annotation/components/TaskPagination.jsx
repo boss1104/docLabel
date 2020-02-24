@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Pagination, Icon, Card, Row, Col } from 'antd';
+import { DoubleLeftOutlined, DoubleRightOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Button, Pagination, Card, Row, Col } from 'antd';
 
 function TaskPagination({
   onNextPage,
@@ -20,7 +21,7 @@ function TaskPagination({
             disabled={!pagination.previous}
             onClick={onPrevPagination}
           >
-            <Icon type="double-left" />
+            <DoubleLeftOutlined />
           </PageButton>
         </Col>
         <Col>
@@ -33,14 +34,14 @@ function TaskPagination({
               if (type === 'next') {
                 return (
                   <PageButton title="Next Task" disabled={current === total} onClick={onNextPage}>
-                    <Icon type="right" />
+                    <RightOutlined />
                   </PageButton>
                 );
               }
               if (type === 'prev') {
                 return (
                   <PageButton title="Previous Task" disabled={current === 1} onClick={onPrevPage}>
-                    <Icon type="left" />
+                    <LeftOutlined />
                   </PageButton>
                 );
               }
@@ -50,7 +51,7 @@ function TaskPagination({
         </Col>
         <Col>
           <PageButton title="Next Page" disabled={!pagination.next} onClick={onNextPagination}>
-            <Icon type="double-right" />
+            <DoubleRightOutlined />
           </PageButton>
         </Col>
       </Row>

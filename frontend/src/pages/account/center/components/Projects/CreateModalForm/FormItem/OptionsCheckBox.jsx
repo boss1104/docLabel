@@ -1,6 +1,8 @@
 import React from 'react';
 import { formatMessage } from 'umi-plugin-react/locale';
-import { Form, Checkbox, Row, Col } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Checkbox, Row, Col } from 'antd';
 import { useFormContext } from '../FormContext';
 
 export default () => {

@@ -1,4 +1,5 @@
-import { Card, Col, Divider, Icon, Row, Button } from 'antd';
+import { MailTwoTone, SmileTwoTone } from '@ant-design/icons';
+import { Card, Col, Divider, Row, Button } from 'antd';
 import React from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -217,11 +218,11 @@ const Center = connect(({ loading, user, accountCenter }) => ({
                 </div>
                 <div className={styles.detail}>
                   <p>
-                    <Icon type="mail" theme="twoTone" />
+                    <MailTwoTone />
                     {currentUser.email}
                   </p>
                   <p>
-                    <Icon type="smile" theme="twoTone" />
+                    <SmileTwoTone />
                     {currentUser.username}
                   </p>
                 </div>

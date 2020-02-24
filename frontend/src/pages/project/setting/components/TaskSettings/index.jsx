@@ -1,5 +1,7 @@
 import React from 'react';
-import { Form, Button, Card, Typography, Select, InputNumber, message, Spin } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Card, Typography, Select, InputNumber, message, Spin } from 'antd';
 import { connect } from 'dva';
 
 import styles from './index.less';

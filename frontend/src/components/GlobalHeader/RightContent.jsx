@@ -1,4 +1,5 @@
-import { Icon, Tooltip } from 'antd';
+import { BulbFilled, BulbOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
@@ -54,7 +55,7 @@ const GlobalHeaderRight = props => {
         })}
       >
         <a href="#" className={styles.action} onClick={handleSwitchTheme}>
-          {theme === 'dark' ? <Icon type="bulb" theme="filled" /> : <Icon type="bulb" />}
+          {theme === 'dark' ? <BulbFilled /> : <BulbOutlined />}
         </a>
       </Tooltip>
       <Avatar menu />

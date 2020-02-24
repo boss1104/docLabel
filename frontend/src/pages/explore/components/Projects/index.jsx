@@ -1,16 +1,5 @@
-import {
-  Avatar,
-  Card,
-  Icon,
-  List,
-  Tooltip,
-  Row,
-  Col,
-  Typography,
-  Modal,
-  Select,
-  message,
-} from 'antd';
+import { HighlightTwoTone, NotificationTwoTone, ShareAltOutlined } from '@ant-design/icons';
+import { Avatar, Card, List, Tooltip, Row, Col, Typography, Modal, Select, message } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -125,17 +114,11 @@ function Projects({
                   <React.Fragment>
                     {!isProjectGuest(item) ? (
                       <Tooltip title="Contribute" key="contribute">
-                        <Icon
-                          type="highlight"
-                          theme="twoTone"
-                          onClick={() => router.push(`/annotation/${item.id}`)}
-                        />
+                        <HighlightTwoTone onClick={() => router.push(`/annotation/${item.id}`)} />
                       </Tooltip>
                     ) : (
                       <Tooltip title="Contribute" key="contribute">
-                        <Icon
-                          type="notification"
-                          theme="twoTone"
+                        <NotificationTwoTone
                           onClick={() => {
                             if (isLogin) {
                               setVisible(true);
@@ -146,13 +129,12 @@ function Projects({
                               });
                               router.replace(`/user/login?${queryString}`);
                             }
-                          }}
-                        />
+                          }} />
                       </Tooltip>
                     )}
                   </React.Fragment>,
                   <Tooltip title="Share" key="share">
-                    <Icon type="share-alt" />
+                    <ShareAltOutlined />
                   </Tooltip>,
                 ]}
               >

@@ -1,3 +1,4 @@
+import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Col, Collapse, Layout, List, Popconfirm, Row, Typography } from 'antd';
 import React, { useState } from 'react';
 import LabelPreview from '../../LabelPreview';
@@ -128,7 +129,7 @@ function Sidebar({
                             onConfirm={() => handleDeleteAnno(id)}
                             placement="topRight"
                           >
-                            <Button icon="delete" shape="circle-outline" type="dashed" />
+                            <Button icon={<DeleteOutlined />} shape="circle-outline" type="dashed" />
                           </Popconfirm>
                         )}
                       </Col>

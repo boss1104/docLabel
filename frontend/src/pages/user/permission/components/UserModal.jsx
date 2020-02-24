@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Modal, Form, Input, Select } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Modal, Input, Select } from 'antd';
 
 const FormItem = Form.Item;
 const { Option } = Select;

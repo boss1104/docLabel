@@ -1,5 +1,7 @@
 import React from 'react';
-import { Card, Form, Row, Col, Select, Input } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Card, Row, Col, Select, Input } from 'antd';
 import { router } from 'umi';
 import { connect } from 'dva';
 import { PROJECT_TYPE } from '@/pages/constants';

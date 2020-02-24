@@ -1,4 +1,5 @@
-import { Avatar, Card, Icon, List, Tooltip, Row, Col, Typography } from 'antd';
+import { HighlightTwoTone, ShareAltOutlined } from '@ant-design/icons';
+import { Avatar, Card, List, Tooltip, Row, Col, Typography } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -66,14 +67,10 @@ const Contributions = connect(({ user, accountCenter, loading }) => ({
                 }}
                 actions={[
                   <Tooltip title="Contribute" key="contribute">
-                    <Icon
-                      type="highlight"
-                      theme="twoTone"
-                      onClick={() => router.push(`/annotation/${item.id}`)}
-                    />
+                    <HighlightTwoTone onClick={() => router.push(`/annotation/${item.id}`)} />
                   </Tooltip>,
                   <Tooltip title="Share" key="share">
-                    <Icon type="share-alt" />
+                    <ShareAltOutlined />
                   </Tooltip>,
                 ]}
               >

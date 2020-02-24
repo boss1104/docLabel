@@ -5,7 +5,8 @@ export const USER_NAME_MAX_LENGTH = 150;
 export const NOT_VALID_CHARS = '$#&\\/| ';
 
 export default {
-  'user-register.register.register': 'Create an account',
+  'user-register.register.register': 'Sign up an account',
+  'user-register.register.sign-up': 'Sign up',
 
   'user-register.first_name.required': 'Please enter your first name!',
   'user-register.first_name.length': `First name must be ${FIRST_NAME_MAX_LENGTH} characters long or fewer`,
@@ -25,6 +26,7 @@ export default {
   'user-register.email.placeholder': 'Email',
 
   'user-register.password.required': 'Please enter your password!',
+  'user-register.password.length': 'Password too short!',
   'user-register.password.placeholder': 'Password',
   'user-register.password.twice': 'The passwords entered twice do not match!',
 
@@ -35,11 +37,9 @@ export default {
   'user-register.strength.short': 'Strength: too short',
 
   'user-register.confirm-password.required': 'Please confirm your password!',
-  'user-register.confirm-password.placeholder': 'Confirm password',
+  'user-register.confirm-password.placeholder': 'Confirm Password',
 
   'user-register.register.sign-in': 'Already have an account?',
+  'user-register.register.resend-activation': 'Resend activation email',
   'user-register.consent.content': `I accept receiving emails from ${APP_NAME}`,
-
-  'user-register.birth.required': 'Please select your birth day!',
-  'user-register.check-age': 'Check age',
 };

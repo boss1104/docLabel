@@ -1,5 +1,7 @@
 import React from 'react';
-import { Form, Button, Typography, Card, Spin, Input, Checkbox, message } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Typography, Card, Spin, Input, Checkbox, message } from 'antd';
 import { Link } from 'umi';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { connect } from 'dva';

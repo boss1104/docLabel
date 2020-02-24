@@ -1,6 +1,7 @@
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import { Route } from '@/models/connect';
+import { FieldData } from 'rc-field-form/lib/interface';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -29,9 +30,9 @@ export const isAntDesignProOrDev = (): boolean => {
 
   return isAntDesignPro();
 };
-export const getPageQuery = (href: string) => {
+export const getPageQuery = (href?: string) => {
   let url = href;
-  if (!href) {
+  if (!url) {
     url = window.location.href;
   }
   return parse(url.split('?')[1]);
@@ -62,3 +63,22 @@ export const arrayToObject = <T>(array: T[], keyField: string) =>
     newObj[item[keyField]] = item;
     return newObj;
   }, {});
+
+export const getFieldsFromErrorData: (
+  err: {
+    data: Record<string, Array<string>>;
+  },
+  values: {
+    [name: string]: any;
+  },
+) => FieldData[] = ({ data }, values) => {
+  const valueWithError: FieldData[] = [];
+  Object.entries(data).forEach(([key, val]) => {
+    valueWithError.push({
+      name: key,
+      value: values[key],
+      errors: val,
+    });
+  });
+  return valueWithError;
+};

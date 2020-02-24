@@ -1,4 +1,5 @@
 import React from 'react';
+import { GithubOutlined } from '@ant-design/icons';
 import { Button, Row, Col, Typography } from 'antd';
 import { Parallax } from 'react-parallax';
 
@@ -37,7 +38,7 @@ function TopBanner(props) {
                 </Col>
                 <Col className={styles.btnGithub}>
                   <a href="https://github.com/sonstephendo/doclabel">
-                    <Button size="large" type="default" icon="github">
+                    <Button size="large" type="default" icon={<GithubOutlined />}>
                       Github
                     </Button>
                   </a>

@@ -1,4 +1,5 @@
-import { Badge, Icon, Spin, Tabs } from 'antd';
+import { BellOutlined } from '@ant-design/icons';
+import { Badge, Spin, Tabs } from 'antd';
 import React from 'react';
 import useMergeValue from 'use-merge-value';
 import classNames from 'classnames';
@@ -98,7 +99,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
   });
   const noticeButtonClass = classNames(className, styles.noticeButton);
   const notificationBox = getNotificationBox();
-  const NoticeBellIcon = bell || <Icon type="bell" className={styles.icon} />;
+  const NoticeBellIcon = bell || <BellOutlined className={styles.icon} />;
   const trigger = (
     <span className={classNames(noticeButtonClass, { opened: visible })}>
       <Badge count={count} style={{ boxShadow: 'none' }} className={styles.badge}>

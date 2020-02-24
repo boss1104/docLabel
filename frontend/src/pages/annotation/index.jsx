@@ -6,7 +6,8 @@
 import logo from '@/assets/logo.svg';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import ProLayout from '@ant-design/pro-layout';
-import { Icon, message, notification, Spin } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { message, notification, Spin } from 'antd';
 import { connect } from 'dva';
 import React, { useMemo, useState } from 'react';
 import { Link, router } from 'umi';
@@ -429,7 +430,7 @@ function Annotation(props) {
         }}
         links={[
           <Link to="/explore">
-            <Icon type="arrow-left" /> Explore
+            <ArrowLeftOutlined /> Explore
           </Link>,
         ]}
         rightContentRender={rightProps => <RightContent {...rightProps} />}

@@ -1,4 +1,7 @@
-import { Form, Icon, Modal, Typography, Radio, Table, Upload, Button, message, Spin } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Modal, Typography, Radio, Table, Upload, Button, message, Spin } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -169,7 +172,7 @@ function CreateForm({
             })(
               <Upload {...uploadProps}>
                 <Button>
-                  <Icon type="upload" /> Click to Upload
+                  <UploadOutlined /> Click to Upload
                 </Button>
               </Upload>,
             )}

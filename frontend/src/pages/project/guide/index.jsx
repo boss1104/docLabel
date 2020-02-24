@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
+import { CloudUploadOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Spin, message } from 'antd';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -43,7 +44,7 @@ const Guide = props => {
   return (
     <PageHeaderWrapper
       content={
-        <Button icon="cloud-upload" type="primary" onClick={() => updateGuideLine()}>
+        <Button icon={<CloudUploadOutlined />} type="primary" onClick={() => updateGuideLine()}>
           Update guideline
         </Button>
       }

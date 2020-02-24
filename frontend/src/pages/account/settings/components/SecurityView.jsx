@@ -1,4 +1,6 @@
-import { Button, Form, Input, message, Typography } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Input, message, Typography } from 'antd';
 import { connect } from 'dva';
 import React, { useRef, useState } from 'react';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';

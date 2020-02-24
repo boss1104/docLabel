@@ -1,5 +1,5 @@
 export default {
-  'user-login.login.title': 'Login',
+  'user-login.login.title': 'Sign in',
   'user-login.login.username': 'Username',
   'user-login.login.password': 'Password',
   'user-login.username.required': 'Please enter your username!',
@@ -9,7 +9,7 @@ export default {
   'user-login.login.tab-login-credentials': 'Credentials',
   'user-login.login.tab-login-mobile': 'Mobile number',
   'user-login.login.remember-me': 'Remember me',
-  'user-login.login.forgot-password': 'Forgot your password?',
+  'user-login.login.reset-password': 'Forgot your password?',
   'user-login.login.sign-in-with': 'Sign in with',
   'user-login.login.signup': 'Sign up',
   'user-login.login.login': 'Login',

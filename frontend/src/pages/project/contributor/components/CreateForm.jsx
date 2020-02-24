@@ -1,4 +1,6 @@
-import { Form, Icon, Modal, Typography, Radio, message, Select, AutoComplete, Button } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Modal, Typography, Radio, message, Select, AutoComplete, Button } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { ROLE_LABELS } from '@/pages/constants';

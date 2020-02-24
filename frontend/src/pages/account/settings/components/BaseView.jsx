@@ -1,4 +1,7 @@
-import { Button, Form, Input, Upload, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Input, Upload, message } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Fragment, useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
@@ -20,7 +23,7 @@ const AvatarView = React.memo(props => {
       </div>
       <Upload {...uploadProps} showUploadList={false}>
         <div className={styles.button_view}>
-          <Button icon="upload" loading={uploading}>
+          <Button icon={<UploadOutlined />} loading={uploading}>
             <FormattedMessage
               id="accountSettings.basic.change-avatar"
               defaultMessage="Change avatar"

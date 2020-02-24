@@ -1,4 +1,5 @@
 import React from 'react';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Card, List, Button, Row, Col, Typography, Tag, Popconfirm } from 'antd';
 import styles from './index.less';
 
@@ -52,7 +53,7 @@ function UserRequestList({ list = [], onResolve, onReject, loading }) {
                           title="Are you sure resole this user request?"
                           onConfirm={() => onResolve(item)}
                         >
-                          <Button type="dashed" icon="check">
+                          <Button type="dashed" icon={<CheckOutlined />}>
                             Resolve
                           </Button>
                         </Popconfirm>
@@ -62,7 +63,7 @@ function UserRequestList({ list = [], onResolve, onReject, loading }) {
                           title="Are you sure reject this user request?"
                           onConfirm={() => onReject(item)}
                         >
-                          <Button type="danger" icon="close">
+                          <Button type="danger" icon={<CloseOutlined />}>
                             Reject
                           </Button>
                         </Popconfirm>

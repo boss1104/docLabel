@@ -1,4 +1,7 @@
-import { Button, Form, Icon, Modal, Radio, Spin, Card, Popconfirm, Select } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Modal, Radio, Spin, Card, Popconfirm, Select } from 'antd';
 import { connect } from 'dva';
 import React, { useState, useEffect, useMemo } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -126,7 +129,7 @@ const Extract = ({ dispatch, loading, currentProject, location: { query } }) => 
       <PageHeaderWrapper
         title="Export data"
         content={
-          <Button icon="download" type="primary" onClick={() => setModalVisible(true)}>
+          <Button icon={<DownloadOutlined />} type="primary" onClick={() => setModalVisible(true)}>
             Download
           </Button>
         }
@@ -220,7 +223,7 @@ const Extract = ({ dispatch, loading, currentProject, location: { query } }) => 
                 }}
               >
                 <Button type="primary" onClick={handleDownload}>
-                  <Icon type="download" /> Download
+                  <DownloadOutlined /> Download
                 </Button>
               </FormItem>
             </Form>

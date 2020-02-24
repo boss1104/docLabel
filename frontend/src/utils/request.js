@@ -16,13 +16,13 @@ const errorHandler = error => {
 
   if (response && response.status) {
     const { status } = response;
-    if (status === 401) {
-      setAuthorization();
-      // eslint-disable-next-line no-underscore-dangle
-      window.g_app._store.dispatch({
-        type: 'auth/logout',
-      });
-    }
+    // if (status === 401) {
+    //   setAuthorization();
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   window.g_app._store.dispatch({
+    //     type: 'auth/logout',
+    //   });
+    // }
 
     if (status === 403) {
       router.push('/exception/403');

@@ -1,4 +1,6 @@
 import React from 'react';
+import { DeploymentUnitOutlined } from '@ant-design/icons';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
 import { Button, Card, Row, Col, Progress, Modal, Typography, Tooltip, Popconfirm } from 'antd';
 import Markdown from '@/components/Markdown';
 import { useAnnotaionContext } from './AnnotationContext';
@@ -22,7 +24,7 @@ function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, ta
           <Row type="flex" gutter={24}>
             <Col>
               <Tooltip title="Guide line">
-                <Button icon="deployment-unit" size="large" onClick={() => setVisible(true)} />
+                <Button icon={<DeploymentUnitOutlined />} size="large" onClick={() => setVisible(true)} />
               </Tooltip>
 
               <Modal
@@ -47,7 +49,7 @@ function ProgressBar({ totalTask, remaining, currentProject, onClickApproved, ta
               <Col>
                 <Tooltip title={isApproved ? 'Approved' : 'Unapproved'}>
                   <Button
-                    icon={isApproved ? 'check-circle' : 'question-circle'}
+                    icon={<LegacyIcon type={isApproved ? 'check-circle' : 'question-circle'} />}
                     size="large"
                     style={isApproved ? { color: '#00a854' } : {}}
                     type={isApproved ? 'primary' : 'warning'}

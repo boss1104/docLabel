@@ -1,4 +1,5 @@
 import React from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Card, Divider, Table, Popconfirm, Typography } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -177,7 +178,7 @@ function LabelPage({ dispatch, updateLoading, createLoading, loading, label, cur
       content={
         <React.Fragment>
           {isShow && (
-            <Button icon="plus" type="primary" onClick={() => setModalVisible(true)}>
+            <Button icon={<PlusOutlined />} type="primary" onClick={() => setModalVisible(true)}>
               Add label
             </Button>
           )}

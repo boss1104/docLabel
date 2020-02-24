@@ -1,5 +1,14 @@
+import {
+  CheckCircleTwoTone,
+  GithubFilled,
+  GitlabFilled,
+  GoogleCircleFilled,
+  HeartTwoTone,
+  SmileTwoTone,
+} from '@ant-design/icons';
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import { Tag } from 'antd';
 import React from 'react';
-import { Icon, Tag } from 'antd';
 
 export enum ProjectTypes {
   TextClassificationProject = 'TextClassificationProject',
@@ -19,22 +28,22 @@ export const PROJECT_TYPE: Record<
   }
 > = {
   TextClassificationProject: {
-    icon: <Icon type="smile" theme="twoTone" />,
+    icon: <SmileTwoTone />,
     label: 'Sentiment Analysis',
     tag: <Tag color="purple">Sentiment Analysis</Tag>,
   },
   SequenceLabelingProject: {
-    icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,
+    icon: <HeartTwoTone twoToneColor="#eb2f96" />,
     label: 'Named Entity Recognition',
     tag: <Tag color="magenta">Named Entity Recognition</Tag>,
   },
   Seq2seqProject: {
-    icon: <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />,
+    icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
     label: 'Translation',
     tag: <Tag color="cyan">Translation</Tag>,
   },
   PdfLabelingProject: {
-    icon: <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />,
+    icon: <HeartTwoTone twoToneColor="#eb2f96" />,
     label: 'PDF Labeling',
     tag: <Tag color="blue">PDF Labeling</Tag>,
   },
@@ -52,56 +61,28 @@ export const ROLE_LABELS = {
   annotation_approver: 'Annotation Approver',
 };
 
-export const loginProviderSettings = {
-  google: {
-    authorizationUri: 'https://accounts.google.com/o/oauth2/v2/auth',
-    scope:
-      'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-    clientId: '330749056763-076b62f8he375ko10pshrdsa2ap2qoe1.apps.googleusercontent.com',
-    clientSecret: '7B8sNcYXdK406jTSLD2YxY6P',
-    redirectUri: 'http://localhost:8001/app/user/oauth/google',
-  },
-  github: {
-    authorizationUri: 'https://github.com/login/oauth/authorize',
-    scope: 'user:email',
-    clientId: '821fd7d157afbca77993',
-    clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
-    redirectUri: 'http://localhost:8001/app/user/oauth/github',
-  },
-  facebook: {
-    authorizationUri:
-      'https://facebook.com/login/oauth/authorize?scope=user&client_id=821fd7d157afbca77993',
-    scope:
-      'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+export type ProviderTypes = 'github' | 'google-oauth2' | 'gitlab';
 
-    clientId: '821fd7d157afbca77993',
-    clientSecret: '3e10a99d8057ff916944a4a0b950ec90a9ae13ae',
-
-    redirectUri: 'http://localhost:8001/app/user/oauth/github',
-  },
-};
-
-export const loginProviders: Record<
-  'google' | 'github' | 'facebook',
+export const LOGIN_PROVIDERS: Array<{
+  provider: ProviderTypes;
+  title: string;
+  IconProvider: (props: AntdIconProps) => JSX.Element;
+}> = [
   {
-    title: string;
-    type: string;
-    theme: 'filled' | 'outlined' | 'twoTone' | undefined;
-  }
-> = {
-  google: {
+    provider: 'github',
+    title: 'Github',
+    IconProvider: (props: AntdIconProps) => <GithubFilled {...props} />,
+  },
+  {
+    provider: 'google-oauth2',
     title: 'Google',
-    type: 'google-circle',
-    theme: 'filled',
+    IconProvider: (props: AntdIconProps) => <GoogleCircleFilled {...props} />,
   },
-  github: {
-    title: 'GitHub',
-    type: 'github',
-    theme: 'filled',
+  {
+    provider: 'gitlab',
+    title: 'Gitlab',
+    IconProvider: (props: AntdIconProps) => <GitlabFilled {...props} />,
   },
-  facebook: {
-    title: 'Facebook',
-    type: 'facebook',
-    theme: 'filled',
-  },
-};
+];
+
+export const REDIRECT_URI = 'http://doclabel.test/user/oauth/';

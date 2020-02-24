@@ -1,5 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Button, Card, Dropdown, Form, Icon, Menu, Popconfirm, message } from 'antd';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+
+import { Button, Card, Dropdown, Menu, Popconfirm, message } from 'antd';
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -188,7 +192,7 @@ const ProjectTask = connect(({ project, task, loading }) => ({
   return (
     <PageHeaderWrapper
       content={
-        <Button icon="plus" type="primary" onClick={() => setModalVisible(true)}>
+        <Button icon={<PlusOutlined />} type="primary" onClick={() => setModalVisible(true)}>
           Add task
         </Button>
       }
@@ -201,7 +205,7 @@ const ProjectTask = connect(({ project, task, loading }) => ({
               <span>
                 <Dropdown overlay={menu}>
                   <Button>
-                    More operations <Icon type="down" />
+                    More operations <DownOutlined />
                   </Button>
                 </Dropdown>
               </span>

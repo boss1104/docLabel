@@ -1,5 +1,6 @@
 import { PROJECT_TYPE } from '@/pages/constants';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PlayCircleOutlined } from '@ant-design/icons';
 import { Alert, Avatar, Button, Card, Col, message, Modal, Row, Skeleton, Statistic } from 'antd';
 import { connect } from 'dva';
 import React from 'react';
@@ -56,7 +57,7 @@ const ExtraContent = ({ currentProject, showConfirm, userNum, taskNum, labelNum 
       </div>
     ) : (
       <div className={styles.publishButton}>
-        <Button type="primary" size="large" onClick={showConfirm} icon="play-circle">
+        <Button type="primary" size="large" onClick={showConfirm} icon={<PlayCircleOutlined />}>
           Publish project
         </Button>
       </div>

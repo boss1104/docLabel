@@ -1,5 +1,6 @@
 import { PROJECT_TYPE } from '@/pages/constants';
-import { Button, Col, Descriptions, Icon, Modal, Row, Select, Typography, Spin } from 'antd';
+import { CheckOutlined } from '@ant-design/icons';
+import { Button, Col, Descriptions, Modal, Row, Select, Typography, Spin } from 'antd';
 import React, { useContext } from 'react';
 import { Link } from 'umi';
 import { useAnnotaionContext } from '../AnnotationContext';
@@ -154,7 +155,7 @@ function SiderList({ itemProps, onSubmit }) {
   return (
     <Row gutter={16} type="flex">
       <Col span={2}>
-        {annotations[name] && annotations[name].length !== 0 && <Icon type="check" />}
+        {annotations[name] && annotations[name].length !== 0 && <CheckOutlined />}
       </Col>
       <Col span={22}>
         <Typography.Paragraph ellipsis>{taskList[name].text}</Typography.Paragraph>
